@@ -1,4 +1,6 @@
 \documentclass{beamer}
+\usepackage{graphicx}
+
 \title{Squirmers: Understanding and Simulating their interactions}
 \author{Robin and Justine}
 
@@ -8,6 +10,40 @@
 \end{frame}
 
 \begin{frame}{What is a Squirmer ?}
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item Introduced by James Lighthill in 1952
+                \item Refined by John Blake in 1971
+                \item Model for a spherical microswimmer
+                \item Cannot modelize cilia so we impose boundary conditions
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{images/squirmer.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Objectives}
+    \begin{itemize}
+        \item Understand the "Squirmers" model
+        \item Study the dynamics between two squirmers
+        \begin{itemize}
+            \item Study the interactions between two squirmers
+            \item Reformulate the formulas in our own terms
+            \item Develop code to calculate the movement of two squirmers
+        \end{itemize}
+        \item Numerical Experiments
+        \begin{itemize}
+            \item Verify if our results align with previous studies
+            \item Verify if changing the $\beta$ and distance parameters affects behavior
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Roadmap}
     
 \end{frame}
 
