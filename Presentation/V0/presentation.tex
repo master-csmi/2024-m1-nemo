@@ -1,7 +1,7 @@
 \documentclass{beamer}
 \usepackage{graphicx}
 
-\title{Squirmers: Understanding and Similation of two interacting squirmers}
+\title{Squirmers: Understanding and Simulation of two interacting squirmers}
 \author{Robin and Justine}
 
 \begin{document}
@@ -14,16 +14,19 @@
         \begin{column}{0.5\textwidth}
             \begin{itemize}
                 \item Introduced by James Lighthill in 1952 \cite{Wikipedia}
-                \item Refined by John Blake in 1971 \cite{Wikipedia}
+                \item Extended by John Blake in 1971 \cite{Wikipedia}
                 \item Model for a spherical microswimmer
-                \item Cannot model cilia so we impose boundary conditions :
-                \\Tangential speed at the edge is independent of time, the squirmers are propelled.
-                \\In particullar, we fix the type $\beta$ and the speed $B1$.
+                \item Cannot model cilia so we impose boundary conditions
+                \begin{itemize}
+                    \item Tangential speed at the boundary remains constant over time, propelling the squirmers.
+                    \item In particullar, we fix the type $\beta$ and the speed $B1$.
+                \end{itemize}
             \end{itemize}
         \end{column}
         \begin{column}{0.5\textwidth}
             \centering
             \includegraphics[width=\textwidth]{images/squirmer.png}
+            \cite{Wikipedia}
         \end{column}
     \end{columns}
 \end{frame}
@@ -34,12 +37,12 @@
         \item Study the dynamics between two squirmers
         \begin{itemize}
             \item Study the interactions between two squirmers
-            \item Reformulate the formulas in our own terms
-            \item Develop code to calculate the movement of two squirmers
+            \item Reformulate the formulas of all present forces and torques (hydrodynamic and collision)
+            \item Develop code to calculate the motion of two squirmers
         \end{itemize}
         \item Numerical Experiments
         \begin{itemize}
-            \item Verify if our results align with previous studies
+            \item Verify if our results align with previous studies\cite{Brumley}\cite{Lauga}\cite{Stark}
             \item Verify if changing the value of $\beta$ and the initial distance affect the behavior
         \end{itemize}
     \end{itemize}
@@ -57,6 +60,7 @@
     \begin{thebibliography}{3}
         \bibitem{Brumley} D.R. Brumley and T.J. Pedley, \emph{Stability of arrays of bottom-heavy spherical squirmers}, American Physical Society, 2019
         \bibitem{Lauga} Théry A., Maaß C.C. and Lauga E., \emph{Hydrodynamic interactions between squirmers near walls: far-field dynamics and near-field cluster stability}, Royal Society Open Science, 2023
+        \bibitem{Stark} Miloš Knežević,Till Welker & Holger Stark, \emph{Collective motion of active particles exhibiting non reciprocal orientational interactions}, Scientific Reports, 2022
         \bibitem{Wikipedia} Wikipédia, \emph{Squirmer}, Wikipédia, 2022
     \end{thebibliography}
 \end{frame}
