@@ -1,7 +1,7 @@
 \documentclass{beamer}
 \usepackage{graphicx}
 
-\title{Squirmers: Understanding and Simulating their interactions}
+\title{Squirmers: Understanding and Similation of two interacting squirmers}
 \author{Robin and Justine}
 
 \begin{document}
@@ -13,10 +13,12 @@
     \begin{columns}[T]
         \begin{column}{0.5\textwidth}
             \begin{itemize}
-                \item Introduced by James Lighthill in 1952
-                \item Refined by John Blake in 1971
+                \item Introduced by James Lighthill in 1952 \cite{Wikipedia}
+                \item Refined by John Blake in 1971 \cite{Wikipedia}
                 \item Model for a spherical microswimmer
-                \item Cannot modelize cilia so we impose boundary conditions
+                \item Cannot model cilia so we impose boundary conditions :
+                \\Tangential speed at the edge is independent of time, the squirmers are propelled.
+                \\In particullar, we fix the type $\beta$ and the speed $B1$.
             \end{itemize}
         \end{column}
         \begin{column}{0.5\textwidth}
@@ -38,7 +40,7 @@
         \item Numerical Experiments
         \begin{itemize}
             \item Verify if our results align with previous studies
-            \item Verify if changing the $\beta$ and distance parameters affects behavior
+            \item Verify if changing the value of $\beta$ and the initial distance affect the behavior
         \end{itemize}
     \end{itemize}
 \end{frame}
