@@ -12,20 +12,22 @@
 \section{Context}
 Our project is part of the ANR project NEMO, Control of Magnetic Micro-swimmers in Complex and Confined Environments.
 Currently, a team of researchers is developing numerical methods to control a micro-swimmer in the arteries
-of the human body.
-Ultimately, the goal of these robots is to treat cancer cells.
+of the human body.\\
+The Squirmer model simulates bacteries with cilia by imposing boundary conditions.\\
+Ultimately, the goal of these robots is to treat cancer cells.\\
 
 \vspace{0.5cm}
-Our goal is to add Brumley's forces in the equation of the interactions between two squirmers, 
-and afterward we will model it in a program. 
+\section{Objectives}
+Our goal is to model the dynamics of two interacting squirmer, influenced by hydrodynamic \cite{Brumley} and collision forces.\\
+We will start by reformulating the formulas of all present forces and torques.\cite{Brumley}\cite{Lauga}\\
+In addition we will implement this model to realize numerical experiments. The aim of these experiments is: 
 \begin{itemize}
-    \item We also aim to investigate the effects of varying the distance between the squirmers to observe
+    \item Investigating the effects of varying the distance between the squirmers to observe
     potential modifications in their behaviors.
-    \item Furthermore, we plan to explore the impact of altering the parameter $\beta$, which defines the
+    \item To explore the impact of altering the parameter $\beta$, which defines the
     type of squirmers (pusher, puller, neutral), on their interactions.
-    \item Additionally, we will conduct a comparative analysis between a squirming micro-robot and a 
-    boundary. This analysis will involve varying the initial angle describing the micro-robot's 
-    movement, the distance between the swimmer and the wall, as well as the parameter $\beta$, 
+    \item To conduct a comparative analysis of the interaction between a squirming micro-robot and a 
+    boundary. This analysis will involve varying the initial angle of the the micro-robot, the distance between the swimmer and the wall, as well as the parameter $\beta$, 
     to comprehensively understand their influence on the system dynamics.
 \end{itemize}
 
