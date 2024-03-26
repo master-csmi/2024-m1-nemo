@@ -1,7 +1,8 @@
 \documentclass{beamer}
 \usepackage{graphicx}
+\usepackage{hyperref}
 
-\title{Squirmers: Understanding and Simulation of two interacting squirmers}
+\title{Simulation of two interacting squirmers}
 \author{Robin and Justine}
 
 \begin{document}
@@ -18,7 +19,7 @@
                 \item Model for a spherical microswimmer
                 \item Cannot model cilia so we impose boundary conditions
                 \begin{itemize}
-                    \item Tangential speed at the boundary remains constant over time, propelling the squirmers.
+                    \item Tangential time-independant velocity at the boundary, propelling the squirmers.
                     \item In particullar, we fix the type $\beta$ and the speed $B1$.
                 \end{itemize}
             \end{itemize}
@@ -50,8 +51,9 @@
 
 \begin{frame}{Roadmap}
     \begin{center}
+        \href{https://github.com/orgs/master-csmi/projects/23/views/2}{Roadmap}
         \includegraphics[width=0.9\textwidth]{images/roadmapV0_1.png}
-        \vspace{1em} % Ajoute un espace vertical
+        \vspace{1em}
         \includegraphics[width=0.9\textwidth]{images/roadmapV0_2.png}
     \end{center}
 \end{frame}
@@ -60,7 +62,7 @@
     \begin{thebibliography}{}
         \bibitem{Brumley} D.R. Brumley and T.J. Pedley, \emph{Stability of arrays of bottom-heavy spherical squirmers}, American Physical Society, 2019
         \bibitem{Lauga} Théry A., Maaß C.C. and Lauga E., \emph{Hydrodynamic interactions between squirmers near walls: far-field dynamics and near-field cluster stability}, Royal Society Open Science, 2023
-        \bibitem{Stark} Miloš Knežević,Till Welker \& Holger Stark, \emph{Collective motion of active particles exhibiting non reciprocal orientational interactions}, Scientific Reports, 2022
+        \bibitem{Stark} Miloš Knežević,Till Welker \& Holger Stark, \emph{Collective motion of active particles exhibiting non-reciprocal orientational interactions}, Scientific Reports, 2022
         \bibitem{Wikipedia} Wikipédia, \emph{Squirmer}, Wikipédia, 2022
     \end{thebibliography}
 \end{frame}
