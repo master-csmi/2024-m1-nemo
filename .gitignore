@@ -1,0 +1,23 @@
+# LaTeX specific
+*.aux
+*.bbl
+*.blg
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.fls
+*.fdb_latexmk
+
+# Generated PDF files
+*.pdf
+
+# Compiled files
+*.dvi
+
+# Editor specific files
+*.synctex.gz
+
+# Temporary files
+*.bak
