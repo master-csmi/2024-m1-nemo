@@ -2,6 +2,7 @@
 \usepackage[]{url}
 \usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage{mathtools}
 
 \begin{document}
 \title{Simulation of two interacting squirmers}
@@ -40,6 +41,95 @@ In addition we will implement this model to realize numerical experiments. The a
     \includegraphics[width=0.9\textwidth]{Presentation/V0/images/roadmapV0_2.png}
 \end{center}
 
+\newpage
+\section{Equation}
+The velocity $u$ is defined like :
+\newline $$ \left\{ u_r(R,\theta)=0
+\atop u_\theta(R,\theta) = B_1\mathrm{sin}(\theta)+B_2\mathrm{sin}(\theta)\mathrm{cos}(\theta) \right.$$
+in polar coordinates.
+\\ By asking $\beta=\frac{B_2}{B_1}$, we have :
+$u_\theta(R,\theta) = B_1(\mathrm{sin}(\theta) + \beta \mathrm{sin}(\theta)\mathrm{cos}(\theta))$, which $\beta$ is the type of the squirmers :
+$$\left\{
+    \begin{array}{ll}
+        \beta = 0 : \mathrm{neutral} \\
+        \beta < 0 : \mathrm{pusher} \\
+        \beta > 0 : \mathrm{puller} \\
+    \end{array}
+\right.$$
+\\ Now let us put $u$ in cartesian coordinates :
+\begin{align*}
+    u &= \begin{pmatrix}
+   u_x \\
+   u_y
+\end{pmatrix}
+= \begin{pmatrix}
+   \mathrm{cos}(\theta) & -\mathrm{sin}(\theta) \\
+   \mathrm{sin}(\theta) & \mathrm{cos}(\theta)
+\end{pmatrix}
+\begin{pmatrix}
+   u_r \\
+   u_\theta
+\end{pmatrix} \\
+&= B_1 (1 + \beta \mathrm{cos}(\theta))
+\begin{pmatrix}
+   -\mathrm{sin}^2(\theta) \\
+   \mathrm{sin}(\theta)\mathrm{cos}(\theta)
+\end{pmatrix}
+\end{align*}
+We have $B_1$ = $\frac{3}{2}u_0$, so :
+$u$ = $\frac{3}{2}u_0 (1 + \beta \mathrm{cos}(\theta))
+\begin{pmatrix}
+   -\mathrm{sin}^2(\theta) \\
+   \mathrm{sin}(\theta)\mathrm{cos}(\theta)
+\end{pmatrix}$
+
+We pose $e_r$ = $\begin{pmatrix}
+   \mathrm{cos}(\theta) \\
+   \mathrm{sin}(\theta)
+\end{pmatrix}$ the direction of the squirmer at each instant relative to $e$ = 
+$\begin{pmatrix}
+   \mathrm{cos}(\phi) \\
+   \mathrm{sin}(\phi) \end{pmatrix}$ or we fixe $\phi$ = 0, so : $e$ = $\begin{pmatrix}
+   1 \\
+   0 \end{pmatrix}$.
+\\ Also, 
+\begin{align*}
+u_r &= \frac{3}{2}u_0(1+\beta (e.e_r)) [(e.e_r)e_r - e] \\ 
+&= \frac{3}{2}u_0\left(1+\beta \begin{pmatrix}
+   1 \\
+   0 \end{pmatrix}\begin{pmatrix}
+   \mathrm{cos}(\theta) \\
+   \mathrm{sin}(\theta)
+\end{pmatrix}\right) \left[ \left( \begin{pmatrix}
+   1 \\
+   0 \end{pmatrix}\begin{pmatrix}
+   \mathrm{cos}(\theta) \\
+   \mathrm{sin}(\theta)
+\end{pmatrix}\right) \begin{pmatrix}
+   \mathrm{cos}(\theta) \\
+   \mathrm{sin}(\theta)
+\end{pmatrix} - \begin{pmatrix}
+   1 \\
+   0 \end{pmatrix}\right] \\
+ &= \frac{3}{2}u_0\left(1+\beta \mathrm{cos}(\theta) \right) \begin{pmatrix}
+   \mathrm{cos}^2(\theta)-1 \\
+   \mathrm{sin}(\theta)\mathrm{cos}(\theta)
+\end{pmatrix} \\
+&= \frac{3}{2}u_0\left(1+\beta \mathrm{cos}(\theta) \right) \begin{pmatrix}
+   -\mathrm{sin}^2(\theta) \\
+   \mathrm{sin}(\theta)\mathrm{cos}(\theta)
+\end{pmatrix} 
+\end{align*}
+
+\vspace{0.5 cm}
+Also, $u$ in cartesian coordinates is like :
+\begin{equation*}
+\boxed{u_r = \frac{3}{2}u_0(1+\beta (e.e_r)) [(e.e_r)e_r - e]
+    = \frac{3}{2}u_0\left(1+\beta \mathrm{cos}(\theta) \right) \begin{pmatrix}
+   -\mathrm{sin}^2(\theta) \\
+   \mathrm{sin}(\theta)\mathrm{cos}(\theta)
+\end{pmatrix}}
+\end{equation*}
 
 \nocite{*}
 \bibliographystyle{plain}
