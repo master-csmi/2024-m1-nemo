@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 v0 = 1
 L = 2
 R = L/2
-x1, y1 = -0.2, 0.1
+x1, y1 = -0.2, 0
 x2, y2 = 0.2, 0
 orient1, orient2 = 2*np.pi, np.pi
 a = 0.05
@@ -64,10 +64,10 @@ def plot_squirmers(R, history):
 
     for step in history:
         plt.scatter(step['squirmer1'].x, step['squirmer1'].y, color='blue', s=50)
-        plt.quiver(step['squirmer1'].x, step['squirmer1'].y, np.cos(step['squirmer1'].orientation), np.sin(step['squirmer1'].orientation), color='blue', scale=10)
+        #plt.quiver(step['squirmer1'].x, step['squirmer1'].y, np.cos(step['squirmer1'].orientation), np.sin(step['squirmer1'].orientation), color='blue', scale=10)
 
         plt.scatter(step['squirmer2'].x, step['squirmer2'].y, color='red', s=50)
-        plt.quiver(step['squirmer2'].x, step['squirmer2'].y, np.cos(step['squirmer2'].orientation), np.sin(step['squirmer2'].orientation), color='red', scale=10)
+        #plt.quiver(step['squirmer2'].x, step['squirmer2'].y, np.cos(step['squirmer2'].orientation), np.sin(step['squirmer2'].orientation), color='red', scale=10)
     
     plt.axis('equal')
     plt.xlabel('X')
@@ -100,7 +100,16 @@ def ref_bound(squirmer, R, a, R2):
     y = (2*(R - a) - R_part) * np.sin(phi_part)
     return x, y
 
-
+def forcesHydro(squirmer1, squirmer2):
+    eex = 
+    eez = 
+    alpha = np.arccos(eez)
+    somme = B1*np.sin(alpha) + B2*eez*np.sin(alpha)
+    epsilon = 
+    F_x = - np.pi * rayon * eex * somme * np.log(epsilon)
+    
+    
+    
 def loop_time(squirmer1, squirmer2, dt, T, R=R, dt_out=dt_out, Es=Es, a=a, Eo=Eo, lnEps_cr=lnEps_cr):
     tout = dt_out
     history = []
@@ -129,6 +138,7 @@ def loop_time(squirmer1, squirmer2, dt, T, R=R, dt_out=dt_out, Es=Es, a=a, Eo=Eo
             Fs_pw2[0], Fs_pw2[1] = compute_force_squirmer_border(squirmer2, Rpart2, R, a, Es)
         
         #Compute torques exerted on squirmer by other squirmer
+
         val1 = 0
         val2 = 0
         if dist < 3*a:
@@ -152,11 +162,11 @@ def loop_time(squirmer1, squirmer2, dt, T, R=R, dt_out=dt_out, Es=Es, a=a, Eo=Eo
         #Evolution of position
         squirmer1.x += dt*(squirmer1.velocity * np.cos(squirmer1.orientation) + Fs_x + Fs_pw1[0])
         squirmer1.y += dt*(squirmer1.velocity * np.sin(squirmer1.orientation) + Fs_y + Fs_pw1[1])
-        squirmer1.orientation += dt*(val1 + 0.25*val1 + gamma_w1)
+        #squirmer1.orientation += dt*(val1 + 0.25*val1 + gamma_w1)
 
         squirmer2.x += dt*(squirmer2.velocity * np.cos(squirmer2.orientation) - Fs_x + Fs_pw2[0])
         squirmer2.y += dt*(squirmer2.velocity * np.sin(squirmer2.orientation) - Fs_y + Fs_pw2[1])
-        squirmer2.orientation += dt*(val2 + 0.25*val2 + gamma_w2)
+        #squirmer2.orientation += dt*(val2 + 0.25*val2 + gamma_w2)
 
         #Reflective boundary
         R2_sq1 = squirmer1.x**2 + squirmer1.y**2
