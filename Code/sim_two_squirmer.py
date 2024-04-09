@@ -63,10 +63,10 @@ def plot_squirmers(R, history):
     plt.plot([R, R], [-R, R], 'k-', linewidth=2)  # Right side
 
     for step in history:
-        plt.scatter(step['squirmer1'].x, step['squirmer1'].y, color='blue', s=100)
+        plt.scatter(step['squirmer1'].x, step['squirmer1'].y, color='blue', s=50)
         plt.quiver(step['squirmer1'].x, step['squirmer1'].y, np.cos(step['squirmer1'].orientation), np.sin(step['squirmer1'].orientation), color='blue', scale=10)
 
-        plt.scatter(step['squirmer2'].x, step['squirmer2'].y, color='red', s=100)
+        plt.scatter(step['squirmer2'].x, step['squirmer2'].y, color='red', s=50)
         plt.quiver(step['squirmer2'].x, step['squirmer2'].y, np.cos(step['squirmer2'].orientation), np.sin(step['squirmer2'].orientation), color='red', scale=10)
     
     plt.axis('equal')
