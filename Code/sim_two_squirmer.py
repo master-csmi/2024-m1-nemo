@@ -101,14 +101,20 @@ def ref_bound(squirmer, R, a, R2):
     return x, y
 
 def forcesHydro(squirmer1, squirmer2):
-    eex = 
-    eez = 
+    Dx, Dy, dist = distance_sq(squirmer1, squirmer2)
+    theta = squirmer1.orientation
+    eex = (np.cos(theta)*Dy - np.sin(theta)*Dx)
+    eez = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
     alpha = np.arccos(eez)
     somme = B1*np.sin(alpha) + B2*eez*np.sin(alpha)
-    epsilon = 
-    F_x = - np.pi * rayon * eex * somme * np.log(epsilon)
-    
-    
+    epsilon = (dist - 2*squirmer1.radius)/squirmer1.radius
+
+    #lambda = mu = 1
+    F_x = - np.pi * squirmer1.radius * eex * somme * np.log(epsilon)
+    F_z = 
+    T_y1 = 0.6 * (squirmer1.radius**2) * np.pi * eex * somme * np.log(epsilon)
+    T_y2 = 0.4 * np.pi * (squirmer1.radius**2) * somme * np.log(epsilon)
+    return F_x, F_z, T_y1, T_y2
     
 def loop_time(squirmer1, squirmer2, dt, T, R=R, dt_out=dt_out, Es=Es, a=a, Eo=Eo, lnEps_cr=lnEps_cr):
     tout = dt_out
@@ -138,7 +144,6 @@ def loop_time(squirmer1, squirmer2, dt, T, R=R, dt_out=dt_out, Es=Es, a=a, Eo=Eo
             Fs_pw2[0], Fs_pw2[1] = compute_force_squirmer_border(squirmer2, Rpart2, R, a, Es)
         
         #Compute torques exerted on squirmer by other squirmer
-
         val1 = 0
         val2 = 0
         if dist < 3*a:
