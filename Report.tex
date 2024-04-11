@@ -18,7 +18,7 @@ The Squirmer model simulates bacteria with cilia by imposing boundary conditions
 Ultimately, the goal of these robots is to treat cancer cells.
 
 \vspace{0.5cm}
-\section{Objectives}
+\section{Objectives and Roadmap}
 Our goal is to model the dynamics of two interacting squirmers, influenced by hydrodynamic \cite{Brumley} and collision forces.\\
 We will start by reformulating the formulas of all present forces and torques.\cite{Brumley}\cite{Lauga}\\
 In addition we will implement this model to realize numerical experiments. The aim of these experiments is: 
@@ -33,7 +33,7 @@ In addition we will implement this model to realize numerical experiments. The a
 \end{itemize}
 
 \newpage
-\section{Roadmap}
+
 \begin{center}
     \href{https://github.com/orgs/master-csmi/projects/23/views/2}{Roadmap}
     \includegraphics[width=0.9\textwidth]{Presentation/V0/images/roadmapV0_1.png}
@@ -42,7 +42,7 @@ In addition we will implement this model to realize numerical experiments. The a
 \end{center}
 
 \newpage
-\section{Velocity field on the squirmer surface}
+\section{Squirmer model}
 
 \textbf{TODO : } ajouter un graphique avec les différents paramètres. Vous 
 pouvez utiliser tikz. \\
@@ -180,16 +180,18 @@ Thus, $u$ in cartesian coordinates is given by :
 %\end{pmatrix}}
 \end{equation*}
 
-\section{The evolution of the mass center of one squirmers}
-The evolution of the mass center $R_i$ = $(X_i, Y_i)$ of one squirmer $i$ is given by :
+\section{Dynamics of two interacting squirmers}
+The evolution of the mass center $R_i$ = $(X_i, Y_i)$ of one squirmer $i$ in presence of 
+another squirmer $j$ and rigid boundaries, is given by :
 \begin{center}
-$\boxed{\frac{dR_i}{dt}$ = $v_0 p_i - \sum \nabla_{R_{ij}} V_{ij} - \partial_{R_i} V_i + F^{hydro}}$
+$\boxed{\frac{dR_i}{dt}$ = $v_0 p_i -  \nabla_{R_{ij}} V_{ij} - \partial_{R_i} V_i + F^{hydro}}$
 \end{center}
 We have : \begin{itemize}
     \item $v_0$ the particle swimming speed,
-    \item $p_i$ = $(\mathrm{cos}(\theta),\mathrm{sin}(\theta))$ orientation,
-    \item $F^{hydro}$ the hydrodynamic forces given by Brumley,
-    \item $V_{ij}$ and $V_i$, Weeks-Chandler-Andersen potential : repulsive lubrication force avoiding the overlapping of two squirmers. Activated when the distance between two squirmers is small.
+    \item $p_i$ = $(\mathrm{cos}(\theta_i),\mathrm{sin}(\theta_i))$ orientation, 
+    \textbf{attention à utiliser la même notation que dans la section précedente poue $e$}
+    \item $F^{hydro}$ the hydrodynamic forces given by Brumley, \textbf{donner ref}
+    \item $V_{ij}$ and $V_i$, Weeks-Chandler-Andersen potential : repulsive lubrication force avoiding the overlapping of two squirmers or of one squirmer and a rigid boundary. Activated when the distance between two surfaces is small.
 \end{itemize} 
 \vspace{0,5cm}
 $V_{ij}$ = $E_s\left[\left(\frac{2r}{\lvert R_{ij}\rvert}\right)^{12} - \left(\frac{2r}{\lvert R_{ij}\rvert}\right)^6\right]$ and  $V_i$ = $E_s \left[ \left( \frac{r}{\lvert R - R_i \rvert} \right)^{12} - \left( \frac{r}{\lvert R - R_i \rvert} \right) ^6 \right]$ 
@@ -201,7 +203,7 @@ $V_{ij}$ = $E_s\left[\left(\frac{2r}{\lvert R_{ij}\rvert}\right)^{12} - \left(\f
 \end{itemize}
 
 \vspace{0,5cm}
-We want to calculate : $\nabla_{R_{ij}} V_{ij}$
+We want to compute the lubrication force, given by $\nabla_{R_{ij}} V_{ij}$:
 
 \begin{align*}
 \frac{\partial V_{ij}}{\partial D_x} &= \frac{\partial}{\partial D_x}E_s\left[\left(\frac{2r}{\lvert R_{ij}\rvert}\right)^{12} - \left(\frac{2r}{\lvert R_{ij}\rvert}\right)^6\right] \\
@@ -217,15 +219,16 @@ $\frac{\partial V_{ij}}{\partial D_y}$ = $\frac{-3 E_s}{r} \frac{D_y}{\sqrt{R_{i
 \begin{equation*}
     \boxed{\nabla_{R_{ij}} V_{ij} = 
     \begin{pmatrix}
-        \frac{-3 E_s}{r} \frac{D_x}{\sqrt{R_{ij}}}\left[ \frac{2(2r)^{13}}{(R_{ij})^13} - \frac{(2r)^7}{(R_{ij})^7} \right] \\
-        \frac{-3 E_s}{r} \frac{D_y}{\sqrt{R_{ij}}}\left[ \frac{2(2r)^{13}}{(R_{ij})^13} - \frac{(2r)^7}{(R_{ij})^7} \right]
+        \frac{-3 E_s}{r} \frac{D_x}{\sqrt{R_{ij}}}\left[ \frac{2(2r)^{13}}{(R_{ij})^{13}} - \frac{(2r)^7}{(R_{ij})^7} \right] \\
+        \frac{-3 E_s}{r} \frac{D_y}{\sqrt{R_{ij}}}\left[ \frac{2(2r)^{13}}{(R_{ij})^{13}} - \frac{(2r)^7}{(R_{ij})^7} \right]
     \end{pmatrix}}
 \end{equation*}
 
 \vspace{0,5cm}
 
-We want to calculate too : 
-$\partial_{R_i} V_i$
+In addition, we need to compute $\partial_{R_i} V_i$ to obtain the force applied between a squirmer and a rigid boundary.
+
+\textbf{Corriger calcul}
 \begin{align*}
     \partial_{R_i} V_i &= \partial_{R_i} \left( E_s \left[ \left( \frac{r}{\lvert R - R_i \rvert} \right)^{12} - \left( \frac{r}{\lvert R - R_i \rvert} \right) ^6 \right] \right) \\
     &= E_s\left[ \frac{12 r^{12}}{(R - R_i)^{13}} - \frac{6 r^6}{(R-R_i)^7} \right] \\
