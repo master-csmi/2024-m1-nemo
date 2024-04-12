@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 v0 = 1
 L = 2
 R = L/2
-x1, y1 = -0.2, 0.1
-x2, y2 = 0.2, 0
+x1, y1 = -0.2, 0.7
+x2, y2 = 0.2, 0.65
 orient1, orient2 = 2*np.pi, np.pi
 a = 0.05
 beta = -7.5
@@ -30,6 +30,8 @@ class Squirmer:
         self.velocity = velocity
         self.radius = radius
         self.beta = beta
+        self.B1 = (2/3)*velocity
+        self.B2 = beta*(2/3)*velocity
 
     def distance_center(self):
         return np.sqrt(self.x**2 + self.y**2)
@@ -45,10 +47,8 @@ def init_two_squirmers(R,x1,y1,x2,y2,orient1,orient2,radius=a,beta=beta,velocity
 
     if (squirmer1.is_in_square(R) == False) or (squirmer2.is_in_square(R) == False):
         raise ValueError("Squirmers must be inside the square")
-    
-    square = [R,R]
 
-    return square,squirmer1,squirmer2
+    return squirmer1,squirmer2
 
 def distance_sq(squirmer1, squirmer2):
     Dx = squirmer2.x - squirmer1.x
@@ -64,10 +64,10 @@ def plot_squirmers(R, history):
 
     for step in history:
         plt.scatter(step['squirmer1'].x, step['squirmer1'].y, color='blue', s=50)
-        plt.quiver(step['squirmer1'].x, step['squirmer1'].y, np.cos(step['squirmer1'].orientation), np.sin(step['squirmer1'].orientation), color='blue', scale=10)
+        #plt.quiver(step['squirmer1'].x, step['squirmer1'].y, np.cos(step['squirmer1'].orientation), np.sin(step['squirmer1'].orientation), color='blue', scale=10)
 
         plt.scatter(step['squirmer2'].x, step['squirmer2'].y, color='red', s=50)
-        plt.quiver(step['squirmer2'].x, step['squirmer2'].y, np.cos(step['squirmer2'].orientation), np.sin(step['squirmer2'].orientation), color='red', scale=10)
+        #plt.quiver(step['squirmer2'].x, step['squirmer2'].y, np.cos(step['squirmer2'].orientation), np.sin(step['squirmer2'].orientation), color='red', scale=10)
     
     plt.axis('equal')
     plt.xlabel('X')
@@ -100,10 +100,27 @@ def ref_bound(squirmer, R, a, R2):
     y = (2*(R - a) - R_part) * np.sin(phi_part)
     return x, y
 
+def forcesHydro(squirmer1, squirmer2):
+    Dx, Dy, dist = distance_sq(squirmer1, squirmer2)
+    theta = squirmer1.orientation
+    eex = (np.cos(theta)*Dy - np.sin(theta)*Dx)
+    eez = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
+    alpha = np.arccos(eez)
+    somme = squirmer1.B1 * np.sin(alpha) + squirmer1.B2 * eez * np.sin(alpha)
+    epsilon = (dist - 2*squirmer1.radius)/squirmer1.radius
 
+    #lambda = mu = 1
+    F_x = -np.pi * squirmer1.radius * eex * somme * np.log(epsilon)
+    F_z = 
+    T_y1 = 0.6 * (squirmer1.radius**2) * np.pi * eex * somme * np.log(epsilon)
+    T_y2 = 0.4 * np.pi * (squirmer1.radius**2) * somme * np.log(epsilon)
+    return F_x, F_z, T_y1, T_y2
+    
 def loop_time(squirmer1, squirmer2, dt, T, R=R, dt_out=dt_out, Es=Es, a=a, Eo=Eo, lnEps_cr=lnEps_cr):
     tout = dt_out
     history = []
+    dist_border = []
+    dist_list = []
     for t in np.arange(dt, T+1, dt):
         Fs_x = 0
         Fs_y = 0
@@ -152,11 +169,11 @@ def loop_time(squirmer1, squirmer2, dt, T, R=R, dt_out=dt_out, Es=Es, a=a, Eo=Eo
         #Evolution of position
         squirmer1.x += dt*(squirmer1.velocity * np.cos(squirmer1.orientation) + Fs_x + Fs_pw1[0])
         squirmer1.y += dt*(squirmer1.velocity * np.sin(squirmer1.orientation) + Fs_y + Fs_pw1[1])
-        squirmer1.orientation += dt*(val1 + 0.25*val1 + gamma_w1)
+        #squirmer1.orientation += dt*(val1 + 0.25*val1 + gamma_w1)
 
         squirmer2.x += dt*(squirmer2.velocity * np.cos(squirmer2.orientation) - Fs_x + Fs_pw2[0])
         squirmer2.y += dt*(squirmer2.velocity * np.sin(squirmer2.orientation) - Fs_y + Fs_pw2[1])
-        squirmer2.orientation += dt*(val2 + 0.25*val2 + gamma_w2)
+        #squirmer2.orientation += dt*(val2 + 0.25*val2 + gamma_w2)
 
         #Reflective boundary
         R2_sq1 = squirmer1.x**2 + squirmer1.y**2
@@ -174,10 +191,16 @@ def loop_time(squirmer1, squirmer2, dt, T, R=R, dt_out=dt_out, Es=Es, a=a, Eo=Eo
         if t >= tout:
             sq1_copie = copy.deepcopy(squirmer1)
             sq2_copie = copy.deepcopy(squirmer2)
+            #List that contains positions of squirmers
             history.append({'squirmer1':sq1_copie, 'squirmer2':sq2_copie})
+            #List that contains the distance between the border and each squirmer
+            dist_border.append([R-squirmer1.distance_center(), R-squirmer2.distance_center()])
+            #List that contains the distance between the squirmers
+            dist_list.append(dist)
             tout += dt_out
-    return history
 
-square, squirmer1, squirmer2 = init_two_squirmers(R, x1, y1, x2, y2, orient1, orient2)
-history = loop_time(squirmer1, squirmer2, dt, T, R)
+    return history, dist_list, dist_border
+
+squirmer1, squirmer2 = init_two_squirmers(R, x1, y1, x2, y2, orient1, orient2)
+history, dist_list, dist_border = loop_time(squirmer1, squirmer2, dt, T, R)
 plot_squirmers(R, history)
