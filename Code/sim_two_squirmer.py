@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 v0 = 1
 L = 2
 R = L/2
-x1, y1 = -0.2, 0
-x2, y2 = 0.2, 0
+x1, y1 = -0.2, 0.7
+x2, y2 = 0.2, 0.65
 orient1, orient2 = 2*np.pi, np.pi
 a = 0.05
 beta = -7.5
@@ -30,6 +30,8 @@ class Squirmer:
         self.velocity = velocity
         self.radius = radius
         self.beta = beta
+        self.B1 = (2/3)*velocity
+        self.B2 = beta*(2/3)*velocity
 
     def distance_center(self):
         return np.sqrt(self.x**2 + self.y**2)
@@ -45,10 +47,8 @@ def init_two_squirmers(R,x1,y1,x2,y2,orient1,orient2,radius=a,beta=beta,velocity
 
     if (squirmer1.is_in_square(R) == False) or (squirmer2.is_in_square(R) == False):
         raise ValueError("Squirmers must be inside the square")
-    
-    square = [R,R]
 
-    return square,squirmer1,squirmer2
+    return squirmer1,squirmer2
 
 def distance_sq(squirmer1, squirmer2):
     Dx = squirmer2.x - squirmer1.x
@@ -106,11 +106,11 @@ def forcesHydro(squirmer1, squirmer2):
     eex = (np.cos(theta)*Dy - np.sin(theta)*Dx)
     eez = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
     alpha = np.arccos(eez)
-    somme = B1*np.sin(alpha) + B2*eez*np.sin(alpha)
+    somme = squirmer1.B1 * np.sin(alpha) + squirmer1.B2 * eez * np.sin(alpha)
     epsilon = (dist - 2*squirmer1.radius)/squirmer1.radius
 
     #lambda = mu = 1
-    F_x = - np.pi * squirmer1.radius * eex * somme * np.log(epsilon)
+    F_x = -np.pi * squirmer1.radius * eex * somme * np.log(epsilon)
     F_z = 
     T_y1 = 0.6 * (squirmer1.radius**2) * np.pi * eex * somme * np.log(epsilon)
     T_y2 = 0.4 * np.pi * (squirmer1.radius**2) * somme * np.log(epsilon)
@@ -119,6 +119,8 @@ def forcesHydro(squirmer1, squirmer2):
 def loop_time(squirmer1, squirmer2, dt, T, R=R, dt_out=dt_out, Es=Es, a=a, Eo=Eo, lnEps_cr=lnEps_cr):
     tout = dt_out
     history = []
+    dist_border = []
+    dist_list = []
     for t in np.arange(dt, T+1, dt):
         Fs_x = 0
         Fs_y = 0
@@ -189,10 +191,16 @@ def loop_time(squirmer1, squirmer2, dt, T, R=R, dt_out=dt_out, Es=Es, a=a, Eo=Eo
         if t >= tout:
             sq1_copie = copy.deepcopy(squirmer1)
             sq2_copie = copy.deepcopy(squirmer2)
+            #List that contains positions of squirmers
             history.append({'squirmer1':sq1_copie, 'squirmer2':sq2_copie})
+            #List that contains the distance between the border and each squirmer
+            dist_border.append([R-squirmer1.distance_center(), R-squirmer2.distance_center()])
+            #List that contains the distance between the squirmers
+            dist_list.append(dist)
             tout += dt_out
-    return history
 
-square, squirmer1, squirmer2 = init_two_squirmers(R, x1, y1, x2, y2, orient1, orient2)
-history = loop_time(squirmer1, squirmer2, dt, T, R)
+    return history, dist_list, dist_border
+
+squirmer1, squirmer2 = init_two_squirmers(R, x1, y1, x2, y2, orient1, orient2)
+history, dist_list, dist_border = loop_time(squirmer1, squirmer2, dt, T, R)
 plot_squirmers(R, history)
