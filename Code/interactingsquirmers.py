@@ -17,7 +17,7 @@ beta = -7.5
 dt = 1e-4
 lnEps_cr = 5
 Es = 1
-T = 50
+T = 1
 dt_out = 0.1
 Eo = (3/10)*v0/a
 ds = 2**(7/6)*a
@@ -107,62 +107,96 @@ class InteractingSquirmers:
     def forcesHydro(self):
         Dx, Dy, dist = self.distance_sq()
         theta = self.squirmer1.orientation
+        B1 = self.squirmer1.B1
+        B2 = self.squirmer1.B2
+        a = self.squirmer1.raidus
+
         eex = (np.cos(theta)*Dy - np.sin(theta)*Dx)
         eez = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
-        alpha = np.arccos(eez)
-        somme = self.squirmer1.B1 * np.sin(alpha) + self.squirmer1.B2 * eez * np.sin(alpha)
-        epsilon = (dist - 2*self.squirmer1.radius)/self.squirmer1.radius
+        W1 = -eez
+        W2 = (1/2)*(3*(-eez)**2 - 1)
+        somme = B1 * W1 + B2 * W2
+        sommeFz = B1*W1*eez + (1/2)*B1*eex**2 + (1/2)*B2*(3*W1**2-1)*eez + (3/2)*B2*W1*eex**2
+        epsilon = (dist - 2*a)/a
 
         #lambda = mu = 1
-        F_x = -np.pi * self.squirmer1.radius * eex * somme * np.log(epsilon)
-        #F_z = #TODO
-        T_y1 = 0.6 * (self.squirmer1.radius**2) * np.pi * eex * somme * np.log(epsilon)
-        T_y2 = 0.4 * np.pi * (self.squirmer1.radius**2) * somme * np.log(epsilon)
-        return F_x, T_y1, T_y2
+        F_x = -np.pi * a * eex * somme * np.log(epsilon)
+        F_z = -9*np.pi*a*(1/4)*sommeFz*np.log(epsilon)
+        T_y1 = 0.6 * (a**2) * np.pi * eex * somme * np.log(epsilon)
+        T_y2 = 0.4 * np.pi * (a**2) * somme * np.log(epsilon)
+        return F_x, F_z, T_y1, T_y2
     
-    def compute_force_squirmer_border(self, dist, choice):
+    def compute_force_squirmer_border_x(self, choice):
         if (choice == 1):
             squirmer = self.squirmer1
         else:
             squirmer = self.squirmer2
-        tmp = -24*(self.Es/squirmer.radius)*(2*(squirmer.radius/(self.R-dist))**13-(squirmer.radius/(self.R-dist))**7)/dist
-        return tmp*squirmer.x, tmp*squirmer.y
+        x = squirmer.x
+        y = squirmer.y
+        RRi = np.sqrt((x - R)**2 + (y - R)**2)
+        tmp = 6*((self.Es*(self.R - x))/(squirmer.radius*RRi))*(2*(squirmer.radius/RRi)**13-(squirmer.radius/RRi)**7)
+        return tmp*squirmer.x
+    
+    def compute_force_squirmer_border_y(self, choice):
+        if (choice == 1):
+            squirmer = self.squirmer1
+        else:
+            squirmer = self.squirmer2
+        y = squirmer.y
+        x = squirmer.x
+        RRi = np.sqrt((x - R)**2 + (y - R)**2)
+        tmp = 6*((self.Es*(self.R - y))/(squirmer.radius*RRi))*(2*(squirmer.radius/RRi)**13-(squirmer.radius/RRi)**7)
+        return tmp*squirmer.y
         
 
     #Reflective boundary condition
-    def ref_bound(self,dist,choice):
+    def ref_bound_x(self, choice):
         if (choice == 1):
             squirmer = self.squirmer1
         else:
             squirmer = self.squirmer2
+        x = squirmer.x
         phi_part = np.arctan2(squirmer.y, squirmer.x)
-        x = (2*(self.R - squirmer.radius) - dist) * np.cos(phi_part)
-        y = (2*(self.R - squirmer.radius) - dist) * np.sin(phi_part)
-        return x, y
+        x = (self.R - squirmer.radius) * np.cos(phi_part)
+        return x
+    
+    def ref_bound_y(self, choice):
+        if (choice == 1):
+            squirmer = self.squirmer1
+        else:
+            squirmer = self.squirmer2
+        y = squirmer.y
+        phi_part = np.arctan2(squirmer.y, squirmer.x)
+        y = (2*(self.R - squirmer.radius) - y) * np.cos(phi_part)
+        return y
     
     def loop_time(self):
         tout = dt_out
         history = []
         dist_border = []
         dist_list = []
+        print("critère_x =", self.R - self.squirmer1.radius)
         for t in np.arange(0, self.T, self.dt):
             Fs_x = 0
             Fs_y = 0
             Dx, Dy, dist = self.distance_sq()
             #Force between squirmers
             if dist < self.ds:
-                tmp = -12*(self.Es/self.squirmer1.radius)*(2*(2*self.squirmer1.radius/dist)**13-(2*self.squirmer1.radius/dist)**7)/dist
+                tmp = -3*(self.Es/self.squirmer1.radius)*(Dy/dist)*(2*(2*self.squirmer1.radius/dist)**13-(2*self.squirmer1.radius/dist)**7)
                 Fs_x = tmp * Dx
                 Fs_y = tmp * Dy
 
             #Force between a squirmer and a border
-            dist_sq1, dist_sq2 = self.distance_center()
             Fs_pw1 = [0,0]
             Fs_pw2 = [0,0]
-            if ((self.R-dist_sq1) < 2**(1/6)*self.squirmer1.radius):
-                Fs_pw1[0], Fs_pw1[1] = self.compute_force_squirmer_border(dist_sq1, 1)
-            if ((self.R-dist_sq2) < 2**(1/6)*self.squirmer2.radius):
-                Fs_pw2[0], Fs_pw2[1] = self.compute_force_squirmer_border(dist_sq2, 2)
+            if ((self.R-self.squirmer1.x) < 2**(1/6)*self.squirmer1.radius):
+                Fs_pw1[0] = self.compute_force_squirmer_border_x(1)
+            if ((self.R-self.squirmer1.y) < 2**(1/6)*self.squirmer1.radius):
+                Fs_pw1[1] = self.compute_force_squirmer_border_y(1)
+            if ((self.R-self.squirmer2.x) < 2**(1/6)*self.squirmer1.radius):
+                Fs_pw2[0] = self.compute_force_squirmer_border_x(2)
+            if ((self.R-self.squirmer2.y) < 2**(1/6)*self.squirmer1.radius):
+                Fs_pw2[1] = self.compute_force_squirmer_border_y(2)
             
             #Compute torques exerted on squirmer by other squirmer
             val1 = 0
@@ -195,13 +229,27 @@ class InteractingSquirmers:
             #self.squirmer2.orientation += self.dt*(val2 + 0.25*val2 + gamma_w2)
 
             #Reflective boundary
-            if dist_sq1 > self.R-self.squirmer1.radius:
-                self.squirmer1.x, self.squirmer1.y = self.ref_bound(dist_sq1, 1)
-            if dist_sq2 > self.R-self.squirmer2.radius:
-                self.squirmer2.x, self.squirmer2.y = self.ref_bound(dist_sq2, 2)
+            print("squirmer1.x avant =", self.squirmer1.x)
+            if abs(self.squirmer1.x) > self.R-self.squirmer1.radius:
+                self.squirmer1.x = self.ref_bound_x(1)
+            print("squirmer1.x après =", self.squirmer1.x)
+            print("squirmer1.y avant =", self.squirmer1.y)
+            if abs(self.squirmer1.y) > self.R-self.squirmer1.radius:
+                self.squirmer1.y = self.ref_bound_y(1)
+            print("squirmer1.y après =", self.squirmer1.y)
+            
+            print("squirmer2.x avant =", self.squirmer2.x)
+            if abs(self.squirmer2.x) > self.R-self.squirmer2.radius:
+                self.squirmer2.x = self.ref_bound_x(2)
+            print("squirmer2.x après =", self.squirmer2.x)
+            print("squirmer2.y avant =", self.squirmer2.y)
+            if abs(self.squirmer2.y) > self.R-self.squirmer2.radius:
+                self.squirmer2.y = self.ref_bound_y(2)
+            print("squirmer2.y après =", self.squirmer2.y, "\n")
 
             #Plots
             if t >= tout:
+                dist_sq1, dist_sq2 = self.distance_center()
                 sq1_copie = copy.deepcopy(self.squirmer1)
                 sq2_copie = copy.deepcopy(self.squirmer2)
                 #List that contains positions of squirmers
@@ -226,4 +274,5 @@ class InteractingSquirmers:
             self.plot_dist_border(dist_border)
 
 interact_sq = InteractingSquirmers(squirmer1, squirmer2)
+history, dist_list, dist_border = interact_sq.loop_time()
 interact_sq.run(True, True)
