@@ -71,8 +71,11 @@ class InteractingSquirmers:
         plt.grid(True)
         plt.show()
 
-    def plot_dist_sq(self, dist_list):
+    def plot_dist_sq(self, history):
         plt.figure(figsize=(8, 6))
+        dist_list = []
+        for step in history:
+            dist_list.append(step[7])
         plt.plot(np.arange(0, self.T-self.dt_out, self.dt_out), dist_list)
         plt.xlabel('Time')
         plt.ylabel('Distance between squirmers')
@@ -175,3 +178,4 @@ class InteractingSquirmers:
         history = self.loop_time()
         export_data_csv(file_name, history)
         self.plot_squirmers_positions(history)
+        self.plot_dist_sq(history)
