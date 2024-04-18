@@ -173,4 +173,5 @@ class InteractingSquirmers:
     def run(self, file_name):
         self.init_two_squirmers()
         history = self.loop_time()
+        export_data_csv(file_name, history)
         self.plot_squirmers_positions(history)
