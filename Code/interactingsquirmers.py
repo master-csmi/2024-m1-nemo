@@ -188,11 +188,11 @@ class InteractingSquirmers:
     
     def run(self, dist_sq = False):
         self.init_two_squirmers()
-        history, dist_list, dist_border = self.loop_time()
+        history, dist_list = self.loop_time()
         self.plot_squirmers_positions(history)
         if (dist_sq == True):
             self.plot_dist_sq(dist_list)
 
 interact_sq = InteractingSquirmers(squirmer1, squirmer2)
-history, dist_list, dist_border = interact_sq.loop_time()
-interact_sq.run(True, True)
+history, dist_list = interact_sq.loop_time()
+interact_sq.run(True)
