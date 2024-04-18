@@ -1,34 +1,14 @@
 import matplotlib
 import copy
 import numpy as np
-import csv
 
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from squirmer import Squirmer
 
-v0 = 1
-L = 2
-R = L/2
-x1, y1 = -0.2, 0.01
-x2, y2 = 0.2, 0
-orient1, orient2 = 2*np.pi, np.pi
-a = 0.05
-beta = -7.5
-dt = 1e-4
-lnEps_cr = 5
-Es = 1
-T = 1
-dt_out = 0.05
-Eo = (3/10)*v0/a
-ds = 2**(7/6)*a
-D = 0
-squirmer1 = Squirmer(x1,y1,orient1,a,beta,v0)
-squirmer2 = Squirmer(x2,y2,orient2,a,beta,v0)
-
 class InteractingSquirmers:
     
-    def __init__(self, squirmer1, squirmer2, R=R, dt=dt, dt_out=dt_out, T=T, Es=Es, ds=ds, Eo=Eo):
+    def __init__(self, squirmer1, squirmer2, R, dt, dt_out, T, Es, ds, Eo, lnEps_cr):
         self.squirmer1 = squirmer1
         self.squirmer2 = squirmer2
         self.R = R
@@ -38,6 +18,7 @@ class InteractingSquirmers:
         self.Eo = Eo
         self.ds = ds
         self.T = T
+        self.lnEps_cr = lnEps_cr
 
     def distance_center(self):
         #Compute the distance between the squirmers and the center (0,0)
@@ -133,7 +114,8 @@ class InteractingSquirmers:
         return F_x, F_y
     
     def loop_time(self):
-        tout = dt_out
+        tout = self.dt_out
+        a = self.squirmer1.radius
         history = []
         dist_list = []
         for t in np.arange(0, self.T, self.dt):
@@ -142,7 +124,7 @@ class InteractingSquirmers:
             Dx, Dy, dist = self.distance_sq()
             #Force between squirmers
             if dist < self.ds:
-                tmp = -3*(self.Es/self.squirmer1.radius)*(Dy/dist)*(2*(2*self.squirmer1.radius/dist)**13-(2*self.squirmer1.radius/dist)**7)
+                tmp = -3*(self.Es/a)*(Dy/dist)*(2*(2*a/dist)**13-(2*a/dist)**7)
                 Fs_x = tmp * Dx
                 Fs_y = tmp * Dy
             
@@ -153,10 +135,10 @@ class InteractingSquirmers:
                 ex = Dx/dist
                 ey = Dy/dist
 
-                lnEps = min(lnEps_cr, -np.log(dist/a - 2))
-                val1 = Eo * (1 + beta * (np.cos(self.squirmer1.orientation) * ex + np.sin(self.squirmer1.orientation) * ey)) * \
+                lnEps = min(self.lnEps_cr, -np.log(dist/a - 2))
+                val1 = self.Eo * (1 + self.squirmer1.beta * (np.cos(self.squirmer1.orientation) * ex + np.sin(self.squirmer1.orientation) * ey)) * \
                         lnEps * (ex * np.sin(self.squirmer1.orientation) - ey * np.cos(self.squirmer1.orientation))
-                val2 = Eo * (1 + beta * (np.cos(self.squirmer2.orientation) * ex + np.sin(self.squirmer2.orientation) * ey)) * \
+                val2 = self.Eo * (1 + self.squirmer2.beta * (np.cos(self.squirmer2.orientation) * ex + np.sin(self.squirmer2.orientation) * ey)) * \
                         lnEps * (ex * np.sin(self.squirmer2.orientation) - ey * np.cos(self.squirmer2.orientation))
 
             #Lubrification forces
@@ -182,7 +164,7 @@ class InteractingSquirmers:
 
                 #List that contains the distance between the squirmers
                 dist_list.append(dist)
-                tout += dt_out
+                tout += self.dt_out
 
         return history, dist_list
     
@@ -192,7 +174,3 @@ class InteractingSquirmers:
         self.plot_squirmers_positions(history)
         if (dist_sq == True):
             self.plot_dist_sq(dist_list)
-
-interact_sq = InteractingSquirmers(squirmer1, squirmer2)
-history, dist_list = interact_sq.loop_time()
-interact_sq.run(True)
