@@ -1,4 +1,5 @@
 import csv
+import numpy as np
 from squirmer import Squirmer
 from interactingsquirmers import InteractingSquirmers
 
