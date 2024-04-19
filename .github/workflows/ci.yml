@@ -41,4 +41,4 @@ jobs:
         pwd
 
     - name: Tests
-      run: pytest tests/
+      run: python -m pytest tests/

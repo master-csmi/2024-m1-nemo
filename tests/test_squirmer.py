@@ -1,4 +1,4 @@
-from squirmer import Squirmer
+from Code.squirmer import Squirmer
 import numpy as np
 
 def test_sq():
