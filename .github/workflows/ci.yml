@@ -1,4 +1,4 @@
-name: CMake
+name: Python env
 
 on:
   push:
@@ -36,6 +36,9 @@ jobs:
     - name: Check code
       run: python Code/run.py
 
-    - name: Tests
+    - name: Print working directory
       run: |
-        pytest tests/
+        pwd
+
+    - name: Tests
+      run: pytest tests/
