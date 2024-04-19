@@ -4,7 +4,6 @@ import numpy as np
 
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-from squirmer import Squirmer
 
 class InteractingSquirmers:
     
