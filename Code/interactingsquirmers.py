@@ -161,15 +161,16 @@ class InteractingSquirmers:
                 #List that contains positions of squirmers
                 history.append({'squirmer1':sq1_copie, 'squirmer2':sq2_copie})
 
-                #List that contains the distance between the squirmers
+#               List that contains the distance between the squirmers
                 dist_list.append(dist)
                 tout += self.dt_out
 
         return history, dist_list
     
-    def run(self, dist_sq = False):
+
+    def run(self, dist_sq=False):
         self.init_two_squirmers()
         history, dist_list = self.loop_time()
         self.plot_squirmers_positions(history)
-        if (dist_sq == True):
+        if dist_sq is True:
             self.plot_dist_sq(dist_list)
