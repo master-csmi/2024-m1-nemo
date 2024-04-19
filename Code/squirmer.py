@@ -1,5 +1,3 @@
-import numpy as np
-
 class Squirmer:
     def __init__(self,x,y,orientation,radius,beta,velocity):
         self.x = x
