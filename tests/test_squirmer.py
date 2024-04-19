@@ -1,4 +1,3 @@
-from Code.interactingsquirmers import InteractingSquirmers
 from Code.squirmer import Squirmer
 import numpy as np
 
