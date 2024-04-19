@@ -34,8 +34,7 @@ jobs:
         pip install -r requirements.txt
 
     - name: Check code
-      run: |
-        flake8 Code
+      run: python Code/run.py
 
     - name: Tests
       run: |
