@@ -1,5 +1,5 @@
 class Squirmer:
-    def __init__(self,x,y,orientation,radius,beta,velocity):
+    def __init__(self, x, y, orientation, radius, beta, velocity):
         self.x = x
         self.y = y
         self.orientation = orientation
