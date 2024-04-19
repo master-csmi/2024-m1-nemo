@@ -1,12 +1,13 @@
 import matplotlib
 import copy
 import numpy as np
-
-matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
+matplotlib.use('TkAgg')
+
+
 class InteractingSquirmers:
-    
+
     def __init__(self, squirmer1, squirmer2, R, dt, dt_out, T, Es, ds, Eo, lnEps_cr):
         self.squirmer1 = squirmer1
         self.squirmer2 = squirmer2
@@ -160,8 +161,7 @@ class InteractingSquirmers:
 
                 #List that contains positions of squirmers
                 history.append({'squirmer1':sq1_copie, 'squirmer2':sq2_copie})
-
-#               List that contains the distance between the squirmers
+                #List that contains the distance between the squirmers
                 dist_list.append(dist)
                 tout += self.dt_out
 
