@@ -75,7 +75,7 @@ class InteractingSquirmers:
         plt.figure(figsize=(8, 6))
         dist_list = []
         for step in history:
-            dist_list.append(step[7])
+            dist_list.append(step[9])
         plt.plot(np.arange(0, self.T-self.dt_out, self.dt_out), dist_list)
         plt.xlabel('Time')
         plt.ylabel('Distance between squirmers')
@@ -166,7 +166,7 @@ class InteractingSquirmers:
 
             #Plots
             if t >= tout:
-                data = [self.squirmer1.x, self.squirmer1.y, self.squirmer2.x, self.squirmer2.y,
+                data = [self.squirmer1.x, self.squirmer1.y, self.squirmer2.x, self.squirmer2.y, self.squirmer1.orientation, self.squirmer2.orientation,
                             Fl_x1, Fl_y1, Fl_x2, Fl_y2, dist]
                 history.append(data)
                 tout += self.dt_out

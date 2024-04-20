@@ -10,7 +10,12 @@ def export_data_csv(file_name, data):
     path = os.path.join(reper, file_name)
     with open(path, 'w', newline='') as csv_file:
         writer = csv.writer(csv_file)
-        writer.writerow(["squirmer1.x", "squirmer1.y", "squirmer2.x", "squirmer2.y", "Fl_x_sq1", "Fl_y_sq1", "Fl_x_sq2", "Fl_y_sq2", "Dist"])
+        writer.writerow(["squirmer1.x", "squirmer1.y", 
+                         "squirmer2.x", "squirmer2.y", 
+                         "squirmer1.orientation", "squirmer2.orientation"
+                         "Fl_x_sq1", "Fl_y_sq1", 
+                         "Fl_x_sq2", "Fl_y_sq2", 
+                         "Dist"])
         for line in data:
             writer.writerow(line)
 
