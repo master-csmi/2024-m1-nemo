@@ -51,17 +51,26 @@ class InteractingSquirmers:
 
         squirmer1_x = []
         squirmer1_y = []
+        squirmer1_orient = []
         squirmer2_x = []
         squirmer2_y = []
+        squirmer2_orient = []
 
         for step in history:
             squirmer1_x.append(step[0])
             squirmer1_y.append(step[1])
+            squirmer1_orient.append(step[4])
             squirmer2_x.append(step[2])
             squirmer2_y.append(step[3])
+            squirmer2_orient.append(step[5])
         
         plt.scatter(squirmer1_x, squirmer1_y, color='blue', s=10, label = 'Squirmer 1')
         plt.scatter(squirmer2_x, squirmer2_y, color='red', s=10, label= 'Squirmer 2')
+        
+        for i in range(len(squirmer2_orient)):
+            plt.quiver(squirmer2_x[i], squirmer2_y[i], np.cos(squirmer2_orient[i]), np.sin(squirmer2_orient[i]), color='red', width=0.002)
+            plt.quiver(squirmer1_x[i], squirmer1_y[i], np.cos(squirmer1_orient[i]), np.sin(squirmer1_orient[i]), color='blue', width=0.002)
+
 
         plt.axis('equal')
         plt.xlabel('X')
@@ -166,8 +175,12 @@ class InteractingSquirmers:
 
             #Plots
             if t >= tout:
-                data = [self.squirmer1.x, self.squirmer1.y, self.squirmer2.x, self.squirmer2.y, self.squirmer1.orientation, self.squirmer2.orientation,
-                            Fl_x1, Fl_y1, Fl_x2, Fl_y2, dist]
+                data = [self.squirmer1.x, self.squirmer1.y, 
+                        self.squirmer2.x, self.squirmer2.y, 
+                        self.squirmer1.orientation, self.squirmer2.orientation,
+                        Fl_x1, Fl_y1, 
+                        Fl_x2, Fl_y2, 
+                        dist]
                 history.append(data)
                 tout += self.dt_out
 
