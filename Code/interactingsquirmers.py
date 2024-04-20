@@ -1,10 +1,9 @@
 import matplotlib
-import copy
 import numpy as np
-import matplotlib.pyplot as plt
-
+import os
 matplotlib.use('Agg')
-
+import matplotlib.pyplot as plt
+from csv_file import export_data_csv, read_csv_file
 
 class InteractingSquirmers:
 
@@ -42,38 +41,66 @@ class InteractingSquirmers:
         Dy = self.squirmer2.y - self.squirmer1.y
         return Dx, Dy, np.sqrt(Dx**2 + Dy**2)
     
-    def plot_squirmers_positions(self, history):
+    def plot_squirmers_positions(self, history, filename='position_graph', dir='graphs'):
         R = self.R
         plt.figure(figsize=(8, 8))
-        plt.plot([-R, R], [-R, -R], 'k-', linewidth=2)  # Bottom side
-        plt.plot([-R, R], [R, R], 'k-', linewidth=2)  # Top side
-        plt.plot([-R, -R], [-R, R], 'k-', linewidth=2)  # Left side
-        plt.plot([R, R], [-R, R], 'k-', linewidth=2)  # Right side
+        plt.plot([-R, R], [-R, -R], 'k-', linewidth=2)
+        plt.plot([-R, R], [R, R], 'k-', linewidth=2)
+        plt.plot([-R, -R], [-R, R], 'k-', linewidth=2)
+        plt.plot([R, R], [-R, R], 'k-', linewidth=2)
+
+        squirmer1_x = []
+        squirmer1_y = []
+        squirmer1_orient = []
+        squirmer2_x = []
+        squirmer2_y = []
+        squirmer2_orient = []
 
         for step in history:
-            plt.scatter(step['squirmer1'].x, step['squirmer1'].y, color='blue', s=50)
-            #plt.quiver(step['squirmer1'].x, step['squirmer1'].y, np.cos(step['squirmer1'].orientation), np.sin(step['squirmer1'].orientation), color='blue', scale=10)
-
-            plt.scatter(step['squirmer2'].x, step['squirmer2'].y, color='red', s=50)
-            #plt.quiver(step['squirmer2'].x, step['squirmer2'].y, np.cos(step['squirmer2'].orientation), np.sin(step['squirmer2'].orientation), color='red', scale=10)
+            squirmer1_x.append(step[0])
+            squirmer1_y.append(step[1])
+            squirmer1_orient.append(step[4])
+            squirmer2_x.append(step[2])
+            squirmer2_y.append(step[3])
+            squirmer2_orient.append(step[5])
         
+        plt.scatter(squirmer1_x, squirmer1_y, color='blue', s=10, label = 'Squirmer 1')
+        plt.scatter(squirmer2_x, squirmer2_y, color='red', s=10, label= 'Squirmer 2')
+        
+        for i in range(len(squirmer2_orient)):
+            plt.quiver(squirmer2_x[i], squirmer2_y[i], np.cos(squirmer2_orient[i]), np.sin(squirmer2_orient[i]), color='red', width=0.002)
+            plt.quiver(squirmer1_x[i], squirmer1_y[i], np.cos(squirmer1_orient[i]), np.sin(squirmer1_orient[i]), color='blue', width=0.002)
+
+
         plt.axis('equal')
         plt.xlabel('X')
         plt.ylabel('Y')
         plt.title('Positions and Orientations of Squirmers')
+        plt.legend()
         plt.grid(True)
-        plt.show()
+        
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        save_path = os.path.join(dir, filename + '.png')
+        plt.savefig(save_path)
 
-    def plot_dist_sq(self, dist_list):
+    def plot_dist_sq(self, history, filename='dist_squirmer_graph', dir='graphs'):
         plt.figure(figsize=(8, 6))
+        dist_list = []
+        for step in history:
+            dist_list.append(step[9])
         plt.plot(np.arange(0, self.T-self.dt_out, self.dt_out), dist_list)
         plt.xlabel('Time')
         plt.ylabel('Distance between squirmers')
         plt.title('Distance between squirmers over time')
         plt.grid(True)
-        plt.show()
 
-    def plot_dist_border(self, dist_border):
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        save_path = os.path.join(dir, filename + '.png')
+        plt.savefig(save_path)
+
+    def plot_dist_border(self, dist_border, filename='dist_to_border_graph', dir='graphs'):
         dist_x = [item[0] for item in dist_border]
         dist_y = [item[1] for item in dist_border]
         plt.figure(figsize=(8, 6))
@@ -84,7 +111,11 @@ class InteractingSquirmers:
         plt.title('Distance to border over time')
         plt.legend()
         plt.grid(True)
-        plt.show()
+        
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        save_path = os.path.join(dir, filename + '.png')
+        plt.savefig(save_path)
 
     def forcesLubrification(self, choice):
         Dx, Dy, dist = self.distance_sq()
@@ -100,8 +131,11 @@ class InteractingSquirmers:
         B2 = squirmer.B2
         a = squirmer.radius
 
+        print(Dx, Dy, dist)
+
         eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
         cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
+        print(cosalpha, "\n")
         sinalpha = np.sqrt(1 - cosalpha * cosalpha)
         somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
         sommeFz = B1*sinalpha*cosalpha - (1/2)*B1*cosalpha*eieijt**2 + B2*sinalpha*cosalpha**2 - (1/2)*B2*(2*cosalpha**2-1)*eieijt**2
@@ -116,17 +150,18 @@ class InteractingSquirmers:
     def loop_time(self):
         tout = self.dt_out
         a = self.squirmer1.radius
+        #List that contains data to export
         history = []
-        dist_list = []
         for t in np.arange(0, self.T, self.dt):
             Fs_x = 0
             Fs_y = 0
             Dx, Dy, dist = self.distance_sq()
             #Force between squirmers
             if dist < self.ds:
-                tmp = -3*(self.Es/a)*(Dy/dist)*(2*(2*a/dist)**13-(2*a/dist)**7)
-                Fs_x = tmp * Dx
-                Fs_y = tmp * Dy
+                tmp_y = -3*(self.Es/a)*(Dy/dist)*(2*(2*a/dist)**13-(2*a/dist)**7)
+                tmp_x = -3*(self.Es/a)*(Dx/dist)*(2*(2*a/dist)**13-(2*a/dist)**7)
+                Fs_x = tmp_x * Dx
+                Fs_y = tmp_y * Dy
             
             #Compute torques exerted on squirmer by other squirmer
             val1 = 0
@@ -156,21 +191,20 @@ class InteractingSquirmers:
 
             #Plots
             if t >= tout:
-                sq1_copie = copy.deepcopy(self.squirmer1)
-                sq2_copie = copy.deepcopy(self.squirmer2)
-
-                #List that contains positions of squirmers
-                history.append({'squirmer1':sq1_copie, 'squirmer2':sq2_copie})
-                #List that contains the distance between the squirmers
-                dist_list.append(dist)
+                data = [self.squirmer1.x, self.squirmer1.y, 
+                        self.squirmer2.x, self.squirmer2.y, 
+                        self.squirmer1.orientation, self.squirmer2.orientation,
+                        Fl_x1, Fl_y1, 
+                        Fl_x2, Fl_y2, 
+                        dist]
+                history.append(data)
                 tout += self.dt_out
 
-        return history, dist_list
+        return history
     
-
-    def run(self, dist_sq=False):
+    def run(self, file_name):
         self.init_two_squirmers()
-        history, dist_list = self.loop_time()
+        history = self.loop_time()
+        export_data_csv(file_name, history)
         self.plot_squirmers_positions(history)
-        if dist_sq is True:
-            self.plot_dist_sq(dist_list)
+        self.plot_dist_sq(history)
