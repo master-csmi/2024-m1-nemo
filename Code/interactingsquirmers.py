@@ -2,7 +2,7 @@ import matplotlib
 import numpy as np
 from csv_file import export_data_csv, read_csv_file
 
-matplotlib.use('TkAgg')
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 class InteractingSquirmers:
