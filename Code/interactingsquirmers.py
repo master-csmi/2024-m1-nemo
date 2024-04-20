@@ -131,8 +131,11 @@ class InteractingSquirmers:
         B2 = squirmer.B2
         a = squirmer.radius
 
+        print(Dx, Dy, dist)
+
         eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
         cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
+        print(cosalpha, "\n")
         sinalpha = np.sqrt(1 - cosalpha * cosalpha)
         somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
         sommeFz = B1*sinalpha*cosalpha - (1/2)*B1*cosalpha*eieijt**2 + B2*sinalpha*cosalpha**2 - (1/2)*B2*(2*cosalpha**2-1)*eieijt**2
@@ -155,9 +158,10 @@ class InteractingSquirmers:
             Dx, Dy, dist = self.distance_sq()
             #Force between squirmers
             if dist < self.ds:
-                tmp = -3*(self.Es/a)*(Dy/dist)*(2*(2*a/dist)**13-(2*a/dist)**7)
-                Fs_x = tmp * Dx
-                Fs_y = tmp * Dy
+                tmp_y = -3*(self.Es/a)*(Dy/dist)*(2*(2*a/dist)**13-(2*a/dist)**7)
+                tmp_x = -3*(self.Es/a)*(Dx/dist)*(2*(2*a/dist)**13-(2*a/dist)**7)
+                Fs_x = tmp_x * Dx
+                Fs_y = tmp_y * Dy
             
             #Compute torques exerted on squirmer by other squirmer
             val1 = 0
