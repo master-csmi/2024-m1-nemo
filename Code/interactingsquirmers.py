@@ -1,5 +1,6 @@
 import matplotlib
 import copy
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -42,7 +43,7 @@ class InteractingSquirmers:
         Dy = self.squirmer2.y - self.squirmer1.y
         return Dx, Dy, np.sqrt(Dx**2 + Dy**2)
     
-    def plot_squirmers_positions(self, history):
+    def plot_squirmers_positions(self, history, file_name='position_graph', dir='graphs'):
         R = self.R
         plt.figure(figsize=(8, 8))
         plt.plot([-R, R], [-R, -R], 'k-', linewidth=2)  # Bottom side
@@ -62,18 +63,26 @@ class InteractingSquirmers:
         plt.ylabel('Y')
         plt.title('Positions and Orientations of Squirmers')
         plt.grid(True)
-        plt.show()
 
-    def plot_dist_sq(self, dist_list):
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        save_path = os.path.join(dir, file_name + '.png')
+        plt.savefig(save_path)
+
+    def plot_dist_sq(self, dist_list, file_name='distance_squirmers_graph', dir='graphs'):
         plt.figure(figsize=(8, 6))
         plt.plot(np.arange(0, self.T-self.dt_out, self.dt_out), dist_list)
         plt.xlabel('Time')
         plt.ylabel('Distance between squirmers')
         plt.title('Distance between squirmers over time')
         plt.grid(True)
-        plt.show()
+        
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        save_path = os.path.join(dir, file_name + '.png')
+        plt.savefig(save_path)
 
-    def plot_dist_border(self, dist_border):
+    def plot_dist_border(self, dist_border, file_name='distance_to_border_graph', dir='graphs'):
         dist_x = [item[0] for item in dist_border]
         dist_y = [item[1] for item in dist_border]
         plt.figure(figsize=(8, 6))
@@ -84,7 +93,11 @@ class InteractingSquirmers:
         plt.title('Distance to border over time')
         plt.legend()
         plt.grid(True)
-        plt.show()
+
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        save_path = os.path.join(dir, file_name + '.png')
+        plt.savefig(save_path)
 
     def forcesLubrification(self, choice):
         Dx, Dy, dist = self.distance_sq()
