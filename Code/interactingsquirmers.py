@@ -6,7 +6,7 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 class InteractingSquirmers:
-    
+
     def __init__(self, squirmer1, squirmer2, R, dt, dt_out, T, Es, ds, Eo, lnEps_cr):
         self.squirmer1 = squirmer1
         self.squirmer2 = squirmer2
