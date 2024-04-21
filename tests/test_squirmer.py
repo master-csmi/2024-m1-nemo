@@ -8,5 +8,5 @@ def test_sq():
     beta = -2
     v0 = 0.7
     squirmer = Squirmer(x,y,orient,a,beta,v0)
-    assert squirmer.B1 == (2/3)*v0
-    assert squirmer.B2 == beta*(2/3)*v0
+    assert squirmer.B1 == (3./2.)*v0
+    assert squirmer.B2 == beta*(3./2.)*v0

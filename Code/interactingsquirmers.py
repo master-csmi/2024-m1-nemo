@@ -19,14 +19,6 @@ class InteractingSquirmers:
         self.ds = ds
         self.T = T
         self.lnEps_cr = lnEps_cr
-
-    """Pas besoin dans cette classe 
-    def distance_center(self):
-        #Compute the distance between the squirmers and the center (0,0)
-        dist_sq1 = np.sqrt(self.squirmer1.x**2 + self.squirmer1.y**2)
-        dist_sq2 = np.sqrt(self.squirmer2.x**2 + self.squirmer2.y**2)
-        return dist_sq1, dist_sq2
-    """
     
     def is_in_square(self):
         #return True if the squirmers are in the square
@@ -113,25 +105,6 @@ class InteractingSquirmers:
             os.makedirs(dir)
         save_path = os.path.join(dir, filename + '.png')
         plt.savefig(save_path)
-
-    """Pas besoin ici 
-    def plot_dist_border(self, dist_border, filename='dist_to_border_graph', dir='graphs'):
-        dist_x = [item[0] for item in dist_border]
-        dist_y = [item[1] for item in dist_border]
-        plt.figure(figsize=(8, 6))
-        plt.plot(np.arange(0, self.T-self.dt_out, self.dt_out), dist_x, label='Distance between squirmer1 and border')
-        plt.plot(np.arange(0, self.T-self.dt_out, self.dt_out), dist_y, label='Distance between squirmer2 and border')
-        plt.xlabel('Time')
-        plt.ylabel('Distance to border')
-        plt.title('Distance to border over time')
-        plt.legend()
-        plt.grid(True)
-        
-        if not os.path.exists(dir):
-            os.makedirs(dir)
-        save_path = os.path.join(dir, filename + '.png')
-        plt.savefig(save_path)
-    """
     
     def torquesLubrification(self,choice):
         Dx, Dy, dist = self.distance_sq()
@@ -170,18 +143,15 @@ class InteractingSquirmers:
         B2 = squirmer.B2
         a = squirmer.radius
 
-        print(Dx, Dy, dist)
-
         eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
         cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
-        print(cosalpha, "\n")
+
         sinalpha = np.sqrt(1 - cosalpha * cosalpha)
         somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
         sommeFz = B1*sinalpha*cosalpha - (1/2)*B1*cosalpha*eieijt**2 + B2*sinalpha*cosalpha**2 - (1/2)*B2*(2*cosalpha**2-1)*eieijt**2
-        #epsilon = max((dist - 2*a)/a, 0.01)
+
         lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)));
         
-        #lambda = mu = 1
         F_x = np.pi * self.mu * a * eieijt * somme * lnEps * Dx
         F_y = -9* self.mu * np.pi*a*(1/4)*sommeFz* lnEps * Dy
 
@@ -196,10 +166,10 @@ class InteractingSquirmers:
             Fs_x = 0
             Fs_y = 0
             Dx, Dy, dist = self.distance_sq()
+
             #Force between squirmers
             if dist < self.ds:
                 tmp = -3*(self.Es/a)*(2*(2*a/dist)**13-(2*a/dist)**7)/dist
-                #tmp_x = -3*(self.Es/a)*(Dx/dist)*(2*(2*a/dist)**13-(2*a/dist)**7)
                 Fs_x = tmp * Dx
                 Fs_y = tmp * Dy
             
@@ -231,9 +201,7 @@ class InteractingSquirmers:
             self.squirmer2.x += self.dt*(self.squirmer2.velocity * np.cos(self.squirmer2.orientation) - Fs_x + Fl_x2)
             self.squirmer2.y += self.dt*(self.squirmer2.velocity * np.sin(self.squirmer2.orientation) - Fs_y + Fl_y2)
             
-            
-
-            #Plots
+            #Update the data to export
             if t >= tout:
                 data = [self.squirmer1.x, self.squirmer1.y, 
                         self.squirmer2.x, self.squirmer2.y, 
