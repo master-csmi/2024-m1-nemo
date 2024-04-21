@@ -6,5 +6,5 @@ class Squirmer:
         self.velocity = velocity
         self.radius = radius
         self.beta = beta
-        self.B1 = (2/3)*velocity
-        self.B2 = beta*(2/3)*velocity
+        self.B1 = (3./2.)*self.velocity
+        self.B2 = self.beta*self.B1

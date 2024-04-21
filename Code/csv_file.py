@@ -12,10 +12,10 @@ def export_data_csv(file_name, data):
         writer = csv.writer(csv_file)
         writer.writerow(["squirmer1.x", "squirmer1.y", 
                          "squirmer2.x", "squirmer2.y", 
-                         "squirmer1.orientation", "squirmer2.orientation"
+                         "squirmer1.orientation", "squirmer2.orientation",
                          "Fl_x_sq1", "Fl_y_sq1", 
                          "Fl_x_sq2", "Fl_y_sq2", 
-                         "Dist"])
+                         "Dist","Time"])
         for line in data:
             writer.writerow(line)
 
