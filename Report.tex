@@ -238,6 +238,61 @@ Also :
     \boxed{\partial_{R_i} V_i = 6 \frac{E_s}{r} \left[ 2 \left( \frac{r}{R-R_i} \right)^{13} - \left( \frac{r}{R-R_i}\right)^7 \right]}
 \end{equation*}
 
+\newpage
+\section{Implementation}
+\subsection*{squirmer}
+The first file contains the \texttt{Squirmer} class which takes the initial: 
+\begin{itemize}
+   \item coordinates \texttt{x} and \texttt{y}
+   \item \texttt{orientation}
+   \item \texttt{radius}
+   \item \texttt{beta}
+   \item \texttt{velocity}
+\end{itemize}
+of a $Magnetozoon$ and compute \texttt{B1} and \texttt{B2}.
+
+\subsection*{csv\_file}
+This file contains two function:
+\begin{itemize}
+   \item \texttt{export\_data\_csv()} which takes a file name and squirmers data and export it.
+   \item \texttt{read\_csv\_file()} which takes a file name and return the data, we don't use it but it can be usefull in the future.
+\end{itemize}
+
+\subsection*{interactingsquirmers}
+The second file contains the \texttt{Interactingsquirmers} which takes:
+\begin{itemize}
+   \item two \texttt{Squirmer}
+   \item \texttt{R}, half of the length of one side of the square in which the two \texttt{Squirmer} will move
+   \item \texttt{dt}, the time step and \texttt{dt\_out} the time step for output
+   \item \texttt{T}, the final time of simulation
+   \item \texttt{Es}, the amplitude (intensity) of steric interactions
+   \item \texttt{ds}, the distance where the steric interactions become significative
+   \item \texttt{mu}
+   \item \texttt{Eo}, the amplitude of oriental interactions
+   \item \texttt{lnEps\_cr}, threshold value for \( -\log(\epsilon) \)
+\end{itemize}
+
+\newpage
+This class has many function:
+\begin{itemize}
+   \item \texttt{is\_in\_square()} and \texttt{check\_squirmers\_square()} verify if the $Magnetozoon$ 
+   in argument are initially in the square.
+   \item \texttt{distance\_sq()} return $(Dx, Dy)$ the direction vector of the $Magnetozoon1$ to the $Magnetozoon2$ 
+   and the distance between the two.
+   \item \texttt{forcesLubrification()} and \texttt{torquesLubrification()} each takes an argument $choice$ (1 for squirmer1 and 2 for squirmer2)
+   and return the according lubrification forces and torques.
+   \item \texttt{loop\_time()} is the primary function which update the positions and orientations of each $Magnetozoon$
+   for each time step \texttt{dt} with the forces and torques, then puts all of the usefull informations in a list \texttt{history}
+   at each time step \texttt{dt\_out}. The function then returns \texttt{history}.
+   \item \texttt{plot\_squirmers\_position(history, filename, dir)} and \texttt{plot\_dist\_sq(history, filename, dir)} each take \texttt{history}, a file name and a directory name
+   they then plot the position of the $Magnetozoons$ and the distance between them respectively over time.
+   \item \texttt{run()} verify if the $Magnetozoons$ are in the square then execute \texttt{loop\_time()}, export the data into a csv file
+   in the \texttt{csv\_files} directory and then plot the positions and distances of the $Magnetozoons$ in the \texttt{graphs}.
+\end{itemize}
+
+
+
+\newpage
 \nocite{*}
 \bibliographystyle{plain}
 \bibliography{/bibliography/biblio}

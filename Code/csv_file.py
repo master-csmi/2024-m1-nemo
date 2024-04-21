@@ -1,13 +1,13 @@
 import csv
 import os
 
-reper = "fichiers_csv"
+directory = "csv_files"
 
 def export_data_csv(file_name, data):
-    if not os.path.exists(reper):
-        os.makedirs(reper)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
         
-    path = os.path.join(reper, file_name)
+    path = os.path.join(directory, file_name)
     with open(path, 'w', newline='') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(["squirmer1.x", "squirmer1.y", 
@@ -21,7 +21,7 @@ def export_data_csv(file_name, data):
 
 def read_csv_file(file_name):
     data = []
-    path = os.path.join(reper, file_name)
+    path = os.path.join(directory, file_name)
     with open(path, 'r', newline='') as csv_file:
         reader = csv.reader(csv_file)
         #Ignore titles
