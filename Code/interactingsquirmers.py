@@ -37,6 +37,7 @@ class InteractingSquirmers:
         return Dx, Dy, np.sqrt(Dx**2 + Dy**2)
     
     def plot_squirmers_positions(self, history, filename='position_graph', dir='graphs'):
+        #Plot the position of each squirmers
         R = self.R
         plt.figure(figsize=(8, 8))
         plt.plot([-R, R], [-R, -R], 'k-', linewidth=2)
@@ -61,18 +62,14 @@ class InteractingSquirmers:
             squirmer2_orient.append(step[5])
             time.append(step[-1])
         
+        #Squirmers
         plt.scatter(squirmer1_x, squirmer1_y, color='blue', s=10, label = 'Squirmer 1')
         plt.scatter(squirmer2_x, squirmer2_y, color='red', s=10, label= 'Squirmer 2')
         
         for i in range(len(squirmer2_orient)):
+            #Orientation
             plt.quiver(squirmer2_x[i], squirmer2_y[i], np.cos(squirmer2_orient[i]), np.sin(squirmer2_orient[i]), color='red', width=0.002)
             plt.quiver(squirmer1_x[i], squirmer1_y[i], np.cos(squirmer1_orient[i]), np.sin(squirmer1_orient[i]), color='blue', width=0.002)
-        
-        #plt.plot(squirmer1_x,squirmer1_y,label = 'Squirmer 1')
-        #plt.plot(squirmer2_x,squirmer2_y,label = 'Squirmer 2')
-        #plt.plot(time,squirmer1_orient)
-        #plt.plot(time,squirmer2_orient)
-        
 
         plt.axis('equal')
         plt.xlabel('X')
