@@ -401,23 +401,23 @@ This file implement the \texttt{Interactingsquirmers} class which takes:
 \subsubsection*{Methods}
 This class has many function:
 \begin{itemize}
-   \item \texttt{is\_in\_square()} and \texttt{check\_squirmers\_square()} verify if the $Magnetozoon$ 
+   \item \texttt{is\_in\_square()} and \texttt{check\_squirmers\_square()} verify if the $Squirmers$ 
    in argument are initially in the square.
-   \item \texttt{distance\_sq()} return $(Dx, Dy)$ the directional vector of the $Magnetozoon1$ to the $Magnetozoon2$ 
+   \item \texttt{distance\_sq()} return $(Dx, Dy)$ the directional vector of $R_{i}$ to $R_{j}$ 
    and the distance between the two.
    \item \texttt{forcesLubrification()} and \texttt{torquesLubrification()} each accept an argument $choice$ (1 for squirmer1 and 2 for squirmer2)
    and return the according lubrification forces and torques.
-   \item \texttt{loop\_time()} is the primary function which update the positions and orientations of each $Magnetozoon$
+   \item \texttt{loop\_time()} is the primary function which update the positions and orientations of each $Squirmer$
    for each time step \texttt{dt} based on the lubrification forces and torques computed by \texttt{forcesLubrification}
    and \texttt{torquesLubrification}, then puts all of the relevant information in a list
    at each time step \texttt{dt\_out}. The function then returns the list.
    \item \texttt{plot\_squirmers\_position(history, filename, dir)} and \texttt{plot\_dist\_sq(history, filename, dir)} 
    each take the list of \texttt{loop\_time}, a file name and a directory name
-   they then respectively plot the position of the $Magnetozoons$ and the distance between them over time.
+   they then respectively plot the position of the $Squirmers$ and the distance between them over time.
    \item \texttt{run()} take three file name as inputs, for the csv file, position graph and distance graph name, 
    then execute \texttt{check\_squirmers\_square()} and \texttt{loop\_time()},
    export the data into a csv file in the \texttt{csv\_files} directory with \texttt{export\_data\_csv(filename\_csv, data)} 
-   , then plot the positions and distances of the $Magnetozoons$ in the \texttt{graphs} with \texttt{plot\_squirmers\_position(history, filename\_pos, dir)}
+   , then plot the positions and distances of the $Squirmers$ in the \texttt{graphs} with \texttt{plot\_squirmers\_position(history, filename\_pos, dir)}
    and \texttt{plot\_dist\_sq(history, filename\_dist, dir)}.
 \end{itemize}
 
