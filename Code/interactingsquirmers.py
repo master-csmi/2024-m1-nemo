@@ -36,7 +36,7 @@ class InteractingSquirmers:
         Dy = self.squirmer2.y - self.squirmer1.y
         return Dx, Dy, np.sqrt(Dx**2 + Dy**2)
     
-    def plot_squirmers_positions(self, history, filename='position_graph', dir='graphs'):
+    def plot_squirmers_positions(self, history, filename, dir='graphs'):
         #Plot the position of each squirmers
         R = self.R
         plt.figure(figsize=(8, 8))
@@ -83,7 +83,7 @@ class InteractingSquirmers:
         save_path = os.path.join(dir, filename + '.png')
         plt.savefig(save_path)
 
-    def plot_dist_sq(self, history, filename='dist_squirmer_graph', dir='graphs'):
+    def plot_dist_sq(self, history, filename, dir='graphs'):
         plt.figure(figsize=(8, 6))
         dist_list = []
         time_list = []
@@ -120,7 +120,7 @@ class InteractingSquirmers:
         ex = Dx/dist
         ey = Dy/dist
 
-        lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)));
+        lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)))
                 
         val = self.Eo * (1 + beta * (np.cos(theta) * ex + np.sin(theta) * ey)) * lnEps * (ex * np.sin(theta) - ey * np.cos(theta))
         
@@ -149,6 +149,7 @@ class InteractingSquirmers:
 
         lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)))
         
+        #lambda=1
         F_x = np.pi * self.mu * a * eieijt * somme * lnEps * Dx
         F_y = -9* self.mu * np.pi*a*(1/4)*sommeFz* lnEps * Dy
 
@@ -210,9 +211,9 @@ class InteractingSquirmers:
 
         return history
     
-    def run(self, file_name):
+    def run(self, file_name_csv, filename_pos='position_graph', filename_dist='dist_squirmer_graph',):
         self.check_squirmers_square()
         history = self.loop_time()
-        export_data_csv(file_name, history)
-        self.plot_squirmers_positions(history)
-        self.plot_dist_sq(history)
+        export_data_csv(file_name_csv, history)
+        self.plot_squirmers_positions(history, filename_pos)
+        self.plot_dist_sq(history, filename_dist)
