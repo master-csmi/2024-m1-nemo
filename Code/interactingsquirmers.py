@@ -1,4 +1,7 @@
 import matplotlib
+
+import copy
+import os
 import numpy as np
 import os
 matplotlib.use('Agg')
