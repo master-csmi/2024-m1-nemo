@@ -28,8 +28,6 @@ The Squirmer model simulates bacteria with cilia by imposing boundary conditions
 Ultimately, the goal of these robots is to treat cancer cells. \\
 
 
-
-\newpage
 \vspace{0.5cm}
 \section{Objectives and Roadmap}
 Our goal is to model the dynamics of two interacting squirmers, influenced by hydrodynamic \cite{Brumley} and collision forces.\\
@@ -45,14 +43,15 @@ In addition we will implement this model to realize numerical experiments. The a
     to comprehensively understand their influence on the system dynamics.
 \end{itemize}
 
-\newpage
-
 \begin{center}
     \href{https://github.com/orgs/master-csmi/projects/23/views/2}{Roadmap}
-    \includegraphics[width=0.9\textwidth]{Presentation/V0/images/roadmapV0_1.png}
+    \includegraphics[width=1.2\textwidth]{Presentation/V0/images/roadmapV0_1.png}
     \vspace{1em} % Ajoute un espace vertical
-    \includegraphics[width=0.9\textwidth]{Presentation/V0/images/roadmapV0_2.png}
+    \includegraphics[width=1.2\textwidth]{Presentation/V0/images/roadmapV1_1.png}
+    \vspace{1em} % Ajoute un espace vertical
+    \includegraphics[width=1.2\textwidth]{Presentation/V0/images/roadmapV1_2.png}
 \end{center}
+We chose to organize the code with classes and to keep the Brumley's torques as they were computed in the original code.
 
 \newpage
 \section{Squirmer model}
@@ -373,10 +372,10 @@ $T_y^{S_j}$ = $\frac{4 \lambda^2}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\
 \section{Implementation}
 In this section we will go over the files of the \texttt{Code} directory, providing explanations for each. 
 
-\subsection*{codemat}
+\subsection{codemat}
 This file is the original matlab code that we re-implemented in Python.
 
-\subsection*{squirmer}
+\subsection{squirmer}
 The first file contains the \texttt{Squirmer} class which takes the initial: 
 \begin{itemize}
    \item coordinates \texttt{x} and \texttt{y}
@@ -387,14 +386,14 @@ The first file contains the \texttt{Squirmer} class which takes the initial:
 \end{itemize}
 of a $Magnetozoon$ and compute \texttt{B1} and \texttt{B2}.
 
-\subsection*{csv\_file}
+\subsection{csv\_file}
 This file contains two function:
 \begin{itemize}
    \item \texttt{export\_data\_csv(filename, data)} takes a file name and data from \texttt{loop\_time()} (section \texttt{interactingsquirmers}) and export it.
    \item \texttt{read\_csv\_file(filename)} takes a file name and return the data, not currently utilized but may be usefull for future functions.
 \end{itemize}
 
-\subsection*{interactingsquirmers}
+\subsection{interactingsquirmers}
 \subsubsection*{Parameters}
 This file implement the \texttt{Interactingsquirmers} class which takes:
 \begin{itemize}
