@@ -44,8 +44,46 @@ In addition we will implement this model to realize numerical experiments. The a
 \newpage
 \section{Velocity field on the squirmer surface}
 
-\textbf{TODO : } ajouter un graphique avec les différents paramètres. Vous 
-pouvez utiliser tikz. \\
+\begin{center}
+   \begin{tikzpicture}
+   
+   \draw[color=blue, very thick](5,5) circle (1.5);
+   \draw[color=blue, very thick](0,5) circle (1.5);
+   
+   \draw[color=black, very thick](0,5) circle (0.01);
+   \draw[color=black, very thick](5,5) circle (0.01);
+   
+   \node  at (-0.3,5-0.2) {{$R_i$}};
+   \node  at (5+0.2,5+0.2) {{$R_j$}};
+   
+   \node  at (-2,5) {{$S_i$}};
+   \node  at (7,5) {{$S_j$}};
+   
+   \draw[thick, ->] (0,5) -- (1.7,5+0.6);
+   \draw[thick, ->] (5,5) -- (5-1.7,5+0.6);
+   
+   \node  at (1.9,5+0.6) {{$e_i$}};
+   \node  at (5-1.9,5+0.6) {{$e_j$}};
+   
+   \draw[thick] (0,5) -- ({-cos(45)*2}, {5+0.7*sin(45)});
+   \node  at (-0.8,5+0.5) {{$r$}};
+   
+   \draw[thick, ->] (0,5) -- (2,5);
+   \draw[thick, ->] (5,5) -- (3,5);
+   
+   \node  at (2,5-0.3) {{$e_{ij}$}};
+   \node  at (3,5-0.3) {{$e_{ji}$}};
+   
+   \draw[thick, ->] (0,5) -- (0,3);
+   \node  at (-0.3,3-0.3) {$e^{\perp}_{ij}$};
+   
+   
+   \draw[thick, ->] (5,5) -- (5,5-2);
+   \node  at (5+0.3,3-0.3) {$e^{\perp}_{ji}$};
+   
+   \end{tikzpicture}
+   \end{center}
+Here is the graph with the different vectors involved in the calculations which will follow. \\
 
 
 The time-independent velocity $u$ defined on the surface of the squirmer is given 
