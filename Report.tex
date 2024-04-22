@@ -228,17 +228,21 @@ $\frac{\partial V_{ij}}{\partial D_y}$ = $\frac{-3 E_s}{r} \frac{D_y}{\sqrt{R_{i
 
 In addition, we need to compute $\partial_{R_i} V_i$ to obtain the force applied between a squirmer and a rigid boundary.
 
-\textbf{Corriger calcul}
+$\nabla_{R_i} V_i$
 \begin{align*}
-    \partial_{R_i} V_i &= \partial_{R_i} \left( E_s \left[ \left( \frac{r}{\lvert R - R_i \rvert} \right)^{12} - \left( \frac{r}{\lvert R - R_i \rvert} \right) ^6 \right] \right) \\
-    &= E_s\left[ \frac{12 r^{12}}{(R - R_i)^{13}} - \frac{6 r^6}{(R-R_i)^7} \right] \\
-    &= \frac{E_s}{r} \left[ 12 \left( \frac{r}{R-R_i} \right)^{13} - 6\left( \frac{r}{R-R_i}\right)^7 \right] \\
-    &= 6 \frac{E_s}{r} \left[ 2 \left( \frac{r}{R-R_i} \right)^{13} - \left( \frac{r}{R-R_i}\right)^7 \right]
+    \frac{\partial V_i}{\partial X} &= \frac{\partial}{\partial X} \left( E_s \left[ \left( \frac{r}{\lvert R - R_i \rvert} \right)^{12} - \left( \frac{r}{\lvert R - R_i \rvert} \right) ^6 \right] \right) \\
+    &= \frac{\partial}{\partial X} \left( E_s \left[ \left( \frac{r}{\sqrt{( X-X_{box})^2 + (Y-Y_{box})^2)}} \right)^{12} - \left( \frac{r}{\sqrt{( X-X_{box})^2 + (Y-Y_{box})^2)}} \right) ^6 \right] \right) \\
+    &= E_s\left[ 12(X_{box}-X)\frac{r^{12}}{\lvert R - R_i\rvert^{14}} - 6(X_{box}-X)\frac{r^6}{\lvert R-R_i\rvert^8} \right] \\
+    &= -6 \frac{E_s (X-X_{box})}{r \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right] 
 \end{align*}
+Equivalently, we have : $\frac{\partial V_i}{\partial Y}$ = $ -6 \frac{E_s (Y-Y_{box})}{r \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right]$
 
 Also : 
 \begin{equation*}
-    \boxed{\partial_{R_i} V_i = 6 \frac{E_s}{r} \left[ 2 \left( \frac{r}{R-R_i} \right)^{13} - \left( \frac{r}{R-R_i}\right)^7 \right]}
+    \boxed{\nabla_{R_i} V_i = \begin{pmatrix}
+        -6 \frac{E_s (X-X_{box})}{r \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right] \\
+        -6 \frac{E_s (Y-Y_{box})}{r \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right]
+    \end{pmatrix}}
 \end{equation*}
 
 \nocite{*}
