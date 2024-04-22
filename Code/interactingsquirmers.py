@@ -24,7 +24,7 @@ class InteractingSquirmers:
         #return True if the squirmers are in the square
         return (abs(self.squirmer1.x) < (self.R-self.squirmer1.radius)) and (abs(self.squirmer1.y) < (self.R-self.squirmer1.radius)) and (abs(self.squirmer2.x) < (self.R-self.squirmer2.radius)) and (abs(self.squirmer2.y) < (self.R-self.squirmer2.radius))
 
-    def init_two_squirmers(self):
+    def check_squirmers_square(self):
         #return True if the squirmers have been successfully initialized
         if (self.is_in_square() == False):
             raise ValueError("Squirmers must be inside the square")
@@ -36,7 +36,7 @@ class InteractingSquirmers:
         Dy = self.squirmer2.y - self.squirmer1.y
         return Dx, Dy, np.sqrt(Dx**2 + Dy**2)
     
-    def plot_squirmers_positions(self, history, filename='position_graph', dir='graphs'):
+    def plot_squirmers_positions(self, history, filename, dir='graphs'):
         #Plot the position of each squirmers
         R = self.R
         plt.figure(figsize=(8, 8))
@@ -83,7 +83,7 @@ class InteractingSquirmers:
         save_path = os.path.join(dir, filename + '.png')
         plt.savefig(save_path)
 
-    def plot_dist_sq(self, history, filename='dist_squirmer_graph', dir='graphs'):
+    def plot_dist_sq(self, history, filename, dir='graphs'):
         plt.figure(figsize=(8, 6))
         dist_list = []
         time_list = []
@@ -120,7 +120,7 @@ class InteractingSquirmers:
         ex = Dx/dist
         ey = Dy/dist
 
-        lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)));
+        lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)))
                 
         val = self.Eo * (1 + beta * (np.cos(theta) * ex + np.sin(theta) * ey)) * lnEps * (ex * np.sin(theta) - ey * np.cos(theta))
         
@@ -145,10 +145,11 @@ class InteractingSquirmers:
 
         sinalpha = np.sqrt(1 - cosalpha * cosalpha)
         somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
-        sommeFz = B1*sinalpha*cosalpha - (1/2)*B1*cosalpha*eieijt**2 + B2*sinalpha*cosalpha**2 - (1/2)*B2*(2*cosalpha**2-1)*eieijt**2
+        sommeFz = B1 * sinalpha * cosalpha - (1/2)*B1 * cosalpha * eieijt**2 + B2 * sinalpha * cosalpha**2 - (1/2)*B2 * (2*cosalpha**2-1) * eieijt**2
 
-        lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)));
+        lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)))
         
+        #lambda=1
         F_x = np.pi * self.mu * a * eieijt * somme * lnEps * Dx
         F_y = -9* self.mu * np.pi*a*(1/4)*sommeFz* lnEps * Dy
 
@@ -193,7 +194,6 @@ class InteractingSquirmers:
             self.squirmer1.x += self.dt*(self.squirmer1.velocity * np.cos(self.squirmer1.orientation) + Fs_x + Fl_x1)
             self.squirmer1.y += self.dt*(self.squirmer1.velocity * np.sin(self.squirmer1.orientation) + Fs_y + Fl_y1)
             
-            
             self.squirmer2.orientation += self.dt*(val2 + 0.25*val1)
             self.squirmer2.x += self.dt*(self.squirmer2.velocity * np.cos(self.squirmer2.orientation) - Fs_x + Fl_x2)
             self.squirmer2.y += self.dt*(self.squirmer2.velocity * np.sin(self.squirmer2.orientation) - Fs_y + Fl_y2)
@@ -211,9 +211,9 @@ class InteractingSquirmers:
 
         return history
     
-    def run(self, file_name):
-        self.init_two_squirmers()
+    def run(self, file_name_csv, filename_pos='position_graph', filename_dist='dist_squirmer_graph',):
+        self.check_squirmers_square()
         history = self.loop_time()
-        export_data_csv(file_name, history)
-        self.plot_squirmers_positions(history)
-        self.plot_dist_sq(history)
+        export_data_csv(file_name_csv, history)
+        self.plot_squirmers_positions(history, filename_pos)
+        self.plot_dist_sq(history, filename_dist)
