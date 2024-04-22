@@ -281,15 +281,17 @@ Also :
    
    \end{tikzpicture}
    \end{center}
-Here is the graph with the different vectors involved in the calculations which will follow. \\
-The forces acting on the two spheres can be calculated explicitly by :
-\\ $F_z^{S_i}$ = $-9 \mu \pi a \frac{\lambda ^2}{(\lambda +1)^2} \sum_{n} \left[ B_n W_n(e_i.e_{ij})e_i.e_{ij} + \frac{1}{2} B_n W_n'(e_i.e_{ij})(e_i.e_x)^2 \right] (ln \epsilon + O(1))$
-\\ With : 
+Here is the graph with the different vectors involved in the calculations which will follow.
+\\Also we have : 
 \begin{itemize}
     \item $W_n(\mathrm{cos}(\theta))$ = $\frac{2}{n(n+1)}Pn'(\mathrm{cos}(\theta))$
     \item $P_n(\mathrm{cos}(\theta))$ the Legendre polynomials
     \item $e_i.e_{ij} = \mathrm{cos}(\theta)$
+    \item $e_i.e^{\perp}_{ij}$ = $\frac{(Y_{R_j} - Y_{R_i})\mathrm{cos}(\theta) - (X_{R_j} - X_{R_i})\mathrm{sin}(\theta)}{\lvert R_{ij} \rvert} $
 \end{itemize}
+\subsection{Forces}
+The forces in z axes acting on the two spheres can be calculated explicitly by :
+\\ $F_z^{S_i}$ = $-9 \mu \pi r \frac{\lambda ^2}{(\lambda +1)^2} \sum_{n} \left[ B_n W_n(e_i.e_{ij})e_i.e_{ij} + \frac{1}{2} B_n W_n'(e_i.e_{ij})(e_i.e^{\perp}_{ij})^2 \right] (ln \epsilon + O(1))$
 
 For $n$ = 1 : \begin{align*}
     W_1(\mathrm{cos}(\theta)) &= -\mathrm{sin}(\theta) \\
@@ -304,10 +306,35 @@ For $n$ = 2 : \begin{align*}
     &= -B_2 \mathrm{cos}^2(\theta) - \frac{1}{2} B_2 (e_i.e^{\perp}_{ij})^2
 \end{align*}  
 
-So : $F_z^{S_i}$ = $-9 \mu \pi a \frac{\lambda ^2}{(\lambda +1)^2} \left[ -B_1 \mathrm{sin}(\theta)\mathrm{cos}(\theta) - \frac{1}{2} B_1  \mathrm{cos}(\theta) (e_i.e^{\perp}_{ij})^2 -B_2 \mathrm{cos}^2(\theta) - \frac{1}{2} B_2 (e_i.e^{\perp}_{ij})^2(e_i.e^{\perp}_{ij})^2\right]$
+So :
+\begin{equation*}
+\boxed{
+    F_z^{S_i} = -9 \mu \pi r \frac{\lambda ^2}{(\lambda +1)^2} \left[ -B_1 \mathrm{sin}(\theta)\mathrm{cos}(\theta) - \frac{1}{2} B_1  \mathrm{cos}(\theta) (e_i.e^{\perp}_{ij})^2 -B_2 \mathrm{cos}^2(\theta) - \frac{1}{2} B_2 (e_i.e^{\perp}_{ij})^2(e_i.e^{\perp}_{ij})^2\right](ln \epsilon + O(1))}
+\end{equation*}
 
-With $e_i.e^{\perp}_{ij}$ = $\frac{(Y_{R_j} - Y_{R_i})\mathrm{cos}(\theta) - (X_{R_j} - X_{R_i})\mathrm{sin}(\theta)}{\lvert R_{ij} \rvert} $ 
+\vspace{0.5cm}
 
+The forces in x axes acting on the two spheres can be calculated explicitly by : \\
+ $F_x^{S_i}$ = $-\frac{4}{5} \mu \pi r \frac{\lambda(\lambda +4)}{(\lambda +1)^2} \sum_{n} B_n W_n(e_i.e_{ij}) (ln \epsilon + O(1))$
+\\ So :
+\begin{equation*}
+    \boxed{F_x^{S_i} = -\frac{4}{5} \mu \pi r \frac{\lambda(\lambda +4)}{(\lambda +1)^2} \left[ -B_1\mathrm{sin}(\theta) -B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta)\right] (ln \epsilon + O(1))}
+\end{equation*}
+
+\subsection{Torques}
+The torques in y axes acting on the squirmer $i$ can be calculated explicitly by : \\
+$T_y^{S_i}$ = $\frac{16 \lambda}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\sum_{n} B_n W_n(e_i.e_{ij}) (ln \epsilon + O(1))$
+\\ So :
+\begin{equation*}
+    \boxed{T_y^{S_i} = \frac{16 \lambda}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\left[-B_1\mathrm{sin}(\theta) -B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta) \right] (ln \epsilon + O(1))}
+\end{equation*}
+
+The torques in y axes acting on the squirmer $j$ can be calculated explicitly by : \\
+$T_y^{S_j}$ = $\frac{4 \lambda^2}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\sum_{n} B_n W_n(e_i.e_{ij}) (ln \epsilon + O(1))$
+\\ So :
+\begin{equation*}
+    \boxed{T_y^{S_j} = \frac{4 \lambda^2}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\left[-B_1\mathrm{sin}(\theta) -B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta) \right] (ln \epsilon + O(1))}
+\end{equation*}
 
 \nocite{*}
 \bibliographystyle{plain}
