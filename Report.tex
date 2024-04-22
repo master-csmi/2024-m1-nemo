@@ -43,49 +43,6 @@ In addition we will implement this model to realize numerical experiments. The a
 
 \newpage
 \section{Squirmer model}
-
-\begin{center}
-   \begin{tikzpicture}
-   
-   \draw[color=blue, very thick](5,5) circle (1.5);
-   \draw[color=blue, very thick](0,5) circle (1.5);
-   
-   \draw[color=black, very thick](0,5) circle (0.01);
-   \draw[color=black, very thick](5,5) circle (0.01);
-   
-   \node  at (-0.3,5-0.2) {{$R_i$}};
-   \node  at (5+0.2,5+0.2) {{$R_j$}};
-   
-   \node  at (-2,5) {{$S_i$}};
-   \node  at (7,5) {{$S_j$}};
-   
-   \draw[thick, ->] (0,5) -- (1.7,5+0.6);
-   \draw[thick, ->] (5,5) -- (5-1.7,5+0.6);
-   
-   \node  at (1.9,5+0.6) {{$e_i$}};
-   \node  at (5-1.9,5+0.6) {{$e_j$}};
-   
-   \draw[thick] (0,5) -- ({-cos(45)*2}, {5+0.7*sin(45)});
-   \node  at (-0.8,5+0.5) {{$r$}};
-   
-   \draw[thick, ->] (0,5) -- (2,5);
-   \draw[thick, ->] (5,5) -- (3,5);
-   
-   \node  at (2,5-0.3) {{$e_{ij}$}};
-   \node  at (3,5-0.3) {{$e_{ji}$}};
-   
-   \draw[thick, ->] (0,5) -- (0,3);
-   \node  at (-0.3,3-0.3) {$e^{\perp}_{ij}$};
-   
-   
-   \draw[thick, ->] (5,5) -- (5,5-2);
-   \node  at (5+0.3,3-0.3) {$e^{\perp}_{ji}$};
-   
-   \end{tikzpicture}
-   \end{center}
-Here is the graph with the different vectors involved in the calculations which will follow. \\
-
-
 The time-independent velocity $u$ defined on the surface of the squirmer is given 
 in polar coordinates by :
 
@@ -282,6 +239,74 @@ Also :
         -6 \frac{E_s (Y-Y_{box})}{r \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right]
     \end{pmatrix}}
 \end{equation*}
+
+\section{Dynamics of two interacting squirmers}
+\begin{center}
+   \begin{tikzpicture}
+   
+   \draw[color=blue, very thick](5,5) circle (1.5);
+   \draw[color=blue, very thick](0,5) circle (1.5);
+   
+   \draw[color=black, very thick](0,5) circle (0.01);
+   \draw[color=black, very thick](5,5) circle (0.01);
+   
+   \node  at (-0.3,5-0.2) {{$R_i$}};
+   \node  at (5+0.2,5+0.2) {{$R_j$}};
+   
+   \node  at (-2,5) {{$S_i$}};
+   \node  at (7,5) {{$S_j$}};
+   
+   \draw[thick, ->] (0,5) -- (1.7,5+0.6);
+   \draw[thick, ->] (5,5) -- (5-1.7,5+0.6);
+   
+   \node  at (1.9,5+0.6) {{$e_i$}};
+   \node  at (5-1.9,5+0.6) {{$e_j$}};
+   
+   \draw[thick] (0,5) -- ({-cos(45)*2}, {5+0.7*sin(45)});
+   \node  at (-0.8,5+0.5) {{$r$}};
+   
+   \draw[thick, ->] (0,5) -- (2,5);
+   \draw[thick, ->] (5,5) -- (3,5);
+   
+   \node  at (2,5-0.3) {{$e_{ij}$}};
+   \node  at (3,5-0.3) {{$e_{ji}$}};
+   
+   \draw[thick, ->] (0,5) -- (0,3);
+   \node  at (-0.3,3-0.3) {$e^{\perp}_{ij}$};
+   
+   
+   \draw[thick, ->] (5,5) -- (5,5-2);
+   \node  at (5+0.3,3-0.3) {$e^{\perp}_{ji}$};
+   
+   \end{tikzpicture}
+   \end{center}
+Here is the graph with the different vectors involved in the calculations which will follow. \\
+The forces acting on the two spheres can be calculated explicitly by :
+\\ $F_z^{S_i}$ = $-9 \mu \pi a \frac{\lambda ^2}{(\lambda +1)^2} \sum_{n} \left[ B_n W_n(e_i.e_{ij})e_i.e_{ij} + \frac{1}{2} B_n W_n'(e_i.e_{ij})(e_i.e_x)^2 \right] (ln \epsilon + O(1))$
+\\ With : 
+\begin{itemize}
+    \item $W_n(\mathrm{cos}(\theta))$ = $\frac{2}{n(n+1)}Pn'(\mathrm{cos}(\theta))$
+    \item $P_n(\mathrm{cos}(\theta))$ the Legendre polynomials
+    \item $e_i.e_{ij} = \mathrm{cos}(\theta)$
+\end{itemize}
+
+For $n$ = 1 : \begin{align*}
+    W_1(\mathrm{cos}(\theta)) &= -\mathrm{sin}(\theta) \\
+    W_1'(\mathrm{cos}(\theta)) &= -\mathrm{cos}(\theta) \\
+    B_1 W_1(\mathrm{cos}(\theta))e_i.e_{ij}+ \frac{1}{2} B_1  W_1'(\mathrm{cos}(\theta)) (e_i.e^{\perp}_{ij})^2  &= -B_1 \mathrm{sin}(\theta)e_i.e_{ij} - \frac{1}{2} B_1  \mathrm{cos}(\theta) (e_i.e^{\perp}_{ij})^2 \\
+    &= -B_1 \mathrm{sin}(\theta)\mathrm{cos}(\theta) - \frac{1}{2} B_1  \mathrm{cos}(\theta) (e_i.e^{\perp}_{ij})^2
+\end{align*} 
+For $n$ = 2 : \begin{align*}
+    W_2(\mathrm{cos}(\theta)) &= -\mathrm{cos}(\theta)\mathrm{sin}(\theta) \\
+    W_2'(\mathrm{cos}(\theta)) &= \mathrm{cos}^2(\theta)+ \mathrm{sin}^2(\theta) = 1\\
+    B_2 W_2(\mathrm{cos}(\theta))e_i.e_{ij}+ \frac{1}{2} B_2  W_2'(\mathrm{cos}(\theta)) (e_i.e_x)^2  &= -B_2 \mathrm{cos}(\theta)e_i.e_{ij} - \frac{1}{2} B_2 (e_i.e^{\perp}_{ij})^2 \\
+    &= -B_2 \mathrm{cos}^2(\theta) - \frac{1}{2} B_2 (e_i.e^{\perp}_{ij})^2
+\end{align*}  
+
+So : $F_z^{S_i}$ = $-9 \mu \pi a \frac{\lambda ^2}{(\lambda +1)^2} \left[ -B_1 \mathrm{sin}(\theta)\mathrm{cos}(\theta) - \frac{1}{2} B_1  \mathrm{cos}(\theta) (e_i.e^{\perp}_{ij})^2 -B_2 \mathrm{cos}^2(\theta) - \frac{1}{2} B_2 (e_i.e^{\perp}_{ij})^2(e_i.e^{\perp}_{ij})^2\right]$
+
+With $e_i.e^{\perp}_{ij}$ = $\frac{(Y_{R_j} - Y_{R_i})\mathrm{cos}(\theta) - (X_{R_j} - X_{R_i})\mathrm{sin}(\theta)}{\lvert R_{ij} \rvert} $ 
+
 
 \nocite{*}
 \bibliographystyle{plain}
