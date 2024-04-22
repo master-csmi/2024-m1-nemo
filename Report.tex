@@ -240,6 +240,7 @@ Also :
 
 \newpage
 \section{Implementation}
+In this section we will go over the files of the \texttt{Code} directory, providing explanations for each. 
 
 \subsection*{codemat}
 This file is the original matlab code that we re-implemented in Python.
@@ -263,7 +264,8 @@ This file contains two function:
 \end{itemize}
 
 \subsection*{interactingsquirmers}
-The second file contains the \texttt{Interactingsquirmers} which takes:
+\subsubsection*{Parameters}
+This file implement the \texttt{Interactingsquirmers} class which takes:
 \begin{itemize}
    \item two \texttt{Squirmer}
    \item \texttt{R}, half of the length of one side of the square in which the two \texttt{Squirmer} will move
@@ -276,6 +278,7 @@ The second file contains the \texttt{Interactingsquirmers} which takes:
    \item \texttt{lnEps\_cr}, threshold value for \( -\log(\epsilon) \)
 \end{itemize}
 
+\subsubsection*{Methods}
 This class has many function:
 \begin{itemize}
    \item \texttt{is\_in\_square()} and \texttt{check\_squirmers\_square()} verify if the $Magnetozoon$ 
