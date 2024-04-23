@@ -18,14 +18,13 @@ Supervisors: Van Landeghem Céline, Giraldi Laetitia,\\ Prud'Homme Christophe}
 \section{Context}
 Our project is part of the ANR project NEMO, Control of Magnetic Micro-swimmers in Complex and Confined Environments.
 This projects aims to develop numerical methods for driving micro-robots composed of magnetic heads and flexible tails imitating spermatozoa, referred to as $Magnetozoom$.\\
-The $Magnetozoom$ behavior is controlled by a magnetic field which produces a torque on the magnetic head leading the tail to move.
-This tail motion pushes the fluid surrounding the robot causing the robot movement.
+The $Magnetozoom$ behavior is controlled by a magnetic field which produces a torque on the magnetic head leading to the motion of the tail.
+This tail motion pushes the fluid surrounding the robot causing deformations and displacements of the robots.
 Currently, a team of researchers is developing numerical methods to control a micro-swimmer in the arteries
-of the human body.\\
-The squirmer is a model for a spherical microswimmer swimming in Stokes flow. \cite{Wikipedia}
+of the human body. Ultimately, the goal of these robots is to treat cancer cells. \\
+In this project, we study the interaction between squirmers. The squirmer is a model for a spherical microswimmer swimming in Stokes flow. \cite{Wikipedia}
 A Stokes flow is a type of fluid flow where advective inertial forces are small compared with viscous forces.
 The Squirmer model simulates bacteria with cilia by imposing boundary conditions.
-Ultimately, the goal of these robots is to treat cancer cells. \\
 
 
 \vspace{0.5cm}
@@ -99,7 +98,7 @@ $$\left\{
         \beta > 0 : \mathrm{puller} \\
     \end{array}
 \right.$$
-and $B_1$ describes the swimming velocity $u_0 = \frac{2 B_1}{3}$.
+and $B_1$ describes the swimming velocity $v_0 = \frac{2 B_1}{3}$.
 \\ Now let us put $u$ in cartesian coordinates :
 \begin{align*}
     u &= \begin{pmatrix}
@@ -219,8 +218,8 @@ $\boxed{\frac{dR_i}{dt}$ = $v_0 p_i -  \nabla_{R_{ij}} V_{ij} - \partial_{R_i} V
 We have : \begin{itemize}
     \item $v_0$ the particle swimming speed,
     \item $p_i$ = $(\mathrm{cos}(\theta_i),\mathrm{sin}(\theta_i))$ orientation,
-    \item $F^{hydro}$ the hydrodynamic forces given by Brumley\cite{Brumley},
-    \item $V_{ij}$ and $V_i$, Weeks-Chandler-Andersen potential : repulsive lubrication force avoiding the overlapping of two squirmers or of one squirmer and a rigid boundary. Activated when the distance between two surfaces is small.
+    \item $F^{hydro}$ the lubrification forces given by Brumley\cite{Brumley},
+    \item $V_{ij}$ and $V_i$, Weeks-Chandler-Andersen potential : repulsive steric force avoiding the overlapping of two squirmers or of one squirmer and a rigid boundary. The force is activated when the distance between two surfaces is small.
 \end{itemize} 
 \vspace{0,5cm}
 $V_{ij}$ = $E_s\left[\left(\frac{2r}{\lvert R_{ij}\rvert}\right)^{12} - \left(\frac{2r}{\lvert R_{ij}\rvert}\right)^6\right]$ and  $V_i$ = $E_s \left[ \left( \frac{r}{\lvert R - R_i \rvert} \right)^{12} - \left( \frac{r}{\lvert R - R_i \rvert} \right) ^6 \right]$ 
@@ -232,7 +231,7 @@ $V_{ij}$ = $E_s\left[\left(\frac{2r}{\lvert R_{ij}\rvert}\right)^{12} - \left(\f
 \end{itemize}
 
 \vspace{0,5cm}
-We want to compute the lubrication force, given by $\nabla_{R_{ij}} V_{ij}$:
+We want to compute the steric force, given by $\nabla_{R_{ij}} V_{ij}$:
 
 \begin{align*}
 \frac{\partial V_{ij}}{\partial D_x} &= \frac{\partial}{\partial D_x}E_s\left[\left(\frac{2r}{\lvert R_{ij}\rvert}\right)^{12} - \left(\frac{2r}{\lvert R_{ij}\rvert}\right)^6\right] \\
@@ -244,7 +243,7 @@ We want to compute the lubrication force, given by $\nabla_{R_{ij}} V_{ij}$:
 \end{align*}
 Equivalently, we have : 
 $\frac{\partial V_{ij}}{\partial D_y}$ = $\frac{-3 E_s}{r} \frac{D_y}{\sqrt{R_{ij}}}\left[ \frac{2(2r)^{13}}{(R_{ij})^13} - \frac{(2r)^7}{(R_{ij})^7} \right]$
-\\ Also : 
+\\ We find : 
 \begin{equation*}
     \boxed{\nabla_{R_{ij}} V_{ij} = 
     \begin{pmatrix}
@@ -257,7 +256,6 @@ $\frac{\partial V_{ij}}{\partial D_y}$ = $\frac{-3 E_s}{r} \frac{D_y}{\sqrt{R_{i
 
 In addition, we need to compute $\partial_{R_i} V_i$ to obtain the force applied between a squirmer and a rigid boundary.
 
-$\nabla_{R_i} V_i$
 \begin{align*}
     \frac{\partial V_i}{\partial X} &= \frac{\partial}{\partial X} \left( E_s \left[ \left( \frac{r}{\lvert R - R_i \rvert} \right)^{12} - \left( \frac{r}{\lvert R - R_i \rvert} \right) ^6 \right] \right) \\
     &= \frac{\partial}{\partial X} \left( E_s \left[ \left( \frac{r}{\sqrt{( X-X_{box})^2 + (Y-Y_{box})^2)}} \right)^{12} - \left( \frac{r}{\sqrt{( X-X_{box})^2 + (Y-Y_{box})^2)}} \right) ^6 \right] \right) \\
@@ -266,7 +264,7 @@ $\nabla_{R_i} V_i$
 \end{align*}
 Equivalently, we have : $\frac{\partial V_i}{\partial Y}$ = $ -6 \frac{E_s (Y-Y_{box})}{r \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right]$
 
-Also : 
+We have : 
 \begin{equation*}
     \boxed{\nabla_{R_i} V_i = \begin{pmatrix}
         -6 \frac{E_s (X-X_{box})}{r \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right] \\
@@ -284,7 +282,7 @@ Also :
    \draw[color=black, very thick](5,5) circle (0.01);
    
    \node  at (-0.3,5-0.2) {{$R_i$}};
-   \node  at (5+0.2,5+0.2) {{$R_j$}};
+   \node  at (5+0.2,5-0.2) {{$R_j$}};
    
    \node  at (-2,5) {{$S_i$}};
    \node  at (7,5) {{$S_j$}};
@@ -308,13 +306,13 @@ Also :
    \node  at (-0.3,3-0.3) {$e^{\perp}_{ij}$};
    
    
-   \draw[thick, ->] (5,5) -- (5,5-2);
-   \node  at (5+0.3,3-0.3) {$e^{\perp}_{ji}$};
+   \draw[thick, ->] (5,5) -- (5,7);
+   \node  at (5+0.3,7+0.2) {$e^{\perp}_{ji}$};
    
    \end{tikzpicture}
    \end{center}
-Here is the graph with the different vectors involved in the calculations which will follow.
-\\Also we have : 
+The figure shows the different vectors involved in the computations which will follow.
+\\We define : 
 \begin{itemize}
     \item $W_n(\mathrm{cos}(\theta))$ = $\frac{2}{n(n+1)}Pn'(\mathrm{cos}(\theta))$ \cite{Brumley}
     \item $P_n(\mathrm{cos}(\theta))$ the Legendre polynomials \cite{Wikipedia}
@@ -322,7 +320,7 @@ Here is the graph with the different vectors involved in the calculations which 
     \item $e_i.e^{\perp}_{ij}$ = $\frac{(Y_{R_j} - Y_{R_i})\mathrm{cos}(\theta) - (X_{R_j} - X_{R_i})\mathrm{sin}(\theta)}{\lvert R_{ij} \rvert} $
 \end{itemize}
 \subsection{Forces}
-The forces in z axes acting on the two spheres can be calculated explicitly by :
+The tangential lubrification forces acting on the two spheres can be calculated explicitly by :
 \\ $F_z^{S_i}$ = $-9 \mu \pi r \frac{\lambda ^2}{(\lambda +1)^2} \sum_{n} \left[ B_n W_n(e_i.e_{ij})e_i.e_{ij} + \frac{1}{2} B_n W_n'(e_i.e_{ij})(e_i.e^{\perp}_{ij})^2 \right] (ln \epsilon + O(1))$ \cite{Brumley}
 
 For $n$ = 1 : \begin{align*}
@@ -340,20 +338,30 @@ For $n$ = 2 : \begin{align*}
 
 So :
 \begin{equation*}
+\footnotesize
 \boxed{
     F_z^{S_i} = -9 \mu \pi r \frac{\lambda ^2}{(\lambda +1)^2} \left[ -B_1 \mathrm{sin}(\theta)\mathrm{cos}(\theta) - \frac{1}{2} B_1  \mathrm{cos}(\theta) (e_i.e^{\perp}_{ij})^2 -B_2 \mathrm{cos}^2(\theta) - \frac{1}{2} B_2 (e_i.e^{\perp}_{ij})^2(e_i.e^{\perp}_{ij})^2\right](ln \epsilon + O(1))}
 \end{equation*}
-
+\normalsize
 \vspace{0.5cm}
 
-The forces in x axes acting on the two spheres can be calculated explicitly by : \\
+The normal forces acting on the two spheres can be calculated explicitly by : \\
  $F_x^{S_i}$ = $-\frac{4}{5} \mu \pi r \frac{\lambda(\lambda +4)}{(\lambda +1)^2} \sum_{n} B_n W_n(e_i.e_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
 \\ So :
 \begin{equation*}
     \boxed{F_x^{S_i} = -\frac{4}{5} \mu \pi r \frac{\lambda(\lambda +4)}{(\lambda +1)^2} \left[ -B_1\mathrm{sin}(\theta) -B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta)\right] (ln \epsilon + O(1))}
 \end{equation*}
 
-\subsection{Torques}
+\subsection{The evolution of $\theta_i$}
+The evolution of the rotation of one squirmer is given by : 
+$$
+\frac{d \theta_i}{dt} = \sum \Gamma_{ij->i} + \sum \Gamma_{ji->i} +  \Gamma_{i}^W.
+$$
+
+$\Gamma_{ij->k}$ the torque exerted on the $k^\mathrm{th}$ particle by the flow associated to the $i^\mathrm{th}$ particle, but perturbed by the presence of the $j^\mathrm{th}$ particle.\\
+
+\vspace{0.5cm}
+
 The torques in y axes acting on the squirmer $i$ can be calculated explicitly by : \\
 $T_y^{S_i}$ = $\frac{16 \lambda}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\sum_{n} B_n W_n(e_i.e_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
 \\ So :
