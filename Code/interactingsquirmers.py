@@ -105,6 +105,13 @@ class InteractingSquirmers:
             os.makedirs(dir)
         save_path = os.path.join(dir, filename + '.png')
         plt.savefig(save_path)
+
+    def forcesSteric(self, Dx, Dy, dist):
+        a = self.squirmer1.radius
+        tmp = -3*(self.Es/a)*(2*(2*a/dist)**13-(2*a/dist)**7)/dist
+        Fs_x = tmp * Dx
+        Fs_y = tmp * Dy
+        return Fs_x, Fs_y
     
     def torquesLubrification(self,choice):
         Dx, Dy, dist = self.distance_sq()
@@ -170,9 +177,7 @@ class InteractingSquirmers:
 
             #Force between squirmers
             if dist < self.ds:
-                tmp = -3*(self.Es/a)*(2*(2*a/dist)**13-(2*a/dist)**7)/dist
-                Fs_x = tmp * Dx
-                Fs_y = tmp * Dy
+                Fs_x, Fs_y = self.forcesSteric(Dx, Dy, dist)
             
             #Compute torques exerted on squirmer by other squirmer
             val1 = 0

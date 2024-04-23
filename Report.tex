@@ -43,6 +43,7 @@ In addition we will implement this model to realize numerical experiments. The a
     to comprehensively understand their influence on the system dynamics.
 \end{itemize}
 
+The original Roadmap of our project is given by:
 \begin{center}
     \href{https://github.com/orgs/master-csmi/projects/23/views/2}{Roadmap}
     \includegraphics[width=1.2\textwidth]{Presentation/V0/images/roadmapV0_1.png}
@@ -51,7 +52,7 @@ In addition we will implement this model to realize numerical experiments. The a
     \vspace{1em} % Ajoute un espace vertical
     \includegraphics[width=1.2\textwidth]{Presentation/V0/images/roadmapV1_2.png}
 \end{center}
-We chose to organize the code with classes and to keep the Brumley's torques as they were computed in the original code.
+
 
 \newpage
 \section{Squirmer model}
@@ -370,13 +371,13 @@ $T_y^{S_j}$ = $\frac{4 \lambda^2}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\
 
 \newpage
 \section{Implementation}
-In this section we will go over the files of the \texttt{Code} directory, providing explanations for each. 
+In this section we will detail the files of the \texttt{\href{https://github.com/master-csmi/2024-m1-nemo/tree/main/Code}{Code}} directory.
 
 \subsection{codemat}
 This file is the original matlab code that we re-implemented in Python.
 
 \subsection{squirmer}
-The first file contains the \texttt{Squirmer} class which takes the initial: 
+The first file contains the \texttt{Squirmer} class which takes the initial parameters: 
 \begin{itemize}
    \item coordinates \texttt{x} and \texttt{y}
    \item \texttt{orientation}
@@ -384,7 +385,7 @@ The first file contains the \texttt{Squirmer} class which takes the initial:
    \item \texttt{beta}
    \item \texttt{velocity}
 \end{itemize}
-of a $Magnetozoon$ and compute \texttt{B1} and \texttt{B2}.
+of a squirmer and compute \texttt{B1} and \texttt{B2}.
 
 \subsection{csv\_file}
 This file contains two function:
@@ -395,7 +396,7 @@ This file contains two function:
 
 \subsection{interactingsquirmers}
 \subsubsection*{Parameters}
-This file implement the \texttt{Interactingsquirmers} class which takes:
+This file implements the \texttt{Interactingsquirmers} class which takes:
 \begin{itemize}
    \item two \texttt{Squirmer}
    \item \texttt{R}, half of the length of one side of the square in which the two \texttt{Squirmer} will move
@@ -404,22 +405,23 @@ This file implement the \texttt{Interactingsquirmers} class which takes:
    \item \texttt{Es}, the amplitude (intensity) of steric interactions
    \item \texttt{ds}, the distance where the steric interactions become significative
    \item \texttt{mu}, the viscosity
-   \item \texttt{Eo}, the amplitude of oriental interactions
+   \item \texttt{Eo}, the amplitude of lubrication torque interactions
    \item \texttt{lnEps\_cr}, threshold value for \( -\log(\epsilon) \)
 \end{itemize}
 
 \subsubsection*{Methods}
-This class has many function:
+This class has many functions:
 \begin{itemize}
    \item \texttt{is\_in\_square()} and \texttt{check\_squirmers\_square()} verify if the $Squirmers$ 
    in argument are initially in the square.
    \item \texttt{distance\_sq()} return $(Dx, Dy)$ the directional vector of $R_{i}$ to $R_{j}$ 
    and the distance between the two.
+   \item \texttt{forcesSteric(Dx, Dy, dist)} return the steric forces $(Fs_x, Fs_y)$ computed with the directional vector and the distance calculated with \texttt{distance\_sq()}.
    \item \texttt{forcesLubrification()} and \texttt{torquesLubrification()} each accept an argument $choice$ (1 for squirmer1 and 2 for squirmer2)
    and return the according lubrification forces and torques.
    \item \texttt{loop\_time()} is the primary function which update the positions and orientations of each $Squirmer$
-   for each time step \texttt{dt} based on the lubrification forces and torques computed by \texttt{forcesLubrification}
-   and \texttt{torquesLubrification}, then puts all of the relevant information in a list
+   for each time step \texttt{dt} based on the lubrification forces and torques computed by \texttt{forcesLubrification()}, 
+   \texttt{torquesLubrification()} and \texttt{forcesSteric()}, then puts all of the relevant information in a list
    at each time step \texttt{dt\_out}. The function then returns the list.
    \item \texttt{plot\_squirmers\_position(history, filename, dir)} and \texttt{plot\_dist\_sq(history, filename, dir)} 
    each take the list of \texttt{loop\_time}, a file name and a directory name
@@ -432,14 +434,17 @@ This class has many function:
 \end{itemize}
 
 \section{Numerical experiments}
-\subsection*{Simulation of two squirmers colliding}
-The first simulation made was two squirmers colliding. We expect them to avoid each other while affecting their trajectories.
+\subsection{Simulation of two squirmers interacting}
+For the first simulation, we consider two interacting squirmers.
 \begin{center}
-   Position and orientation of two squirmers colliding
+   Position and orientation of two squirmers.
    \includegraphics[width=0.7\textwidth]{graphs/squirmers_colliding.png}\\
    Distance between two squirmers
    \includegraphics[width=0.7\textwidth]{graphs/dist_squirmers_colliding.png}
 \end{center}
+We show the trajectories of the two squirmers as well as their orientation. 
+One can observe that their  orientation changes due to the lubrication and steric forces which are applied on them. 
+This forces allow avoiding the overlapping of the two particles.
 \newpage
 
 \nocite{*}
