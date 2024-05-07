@@ -170,6 +170,13 @@ class InteractingSquirmers:
         a = self.squirmer1.radius
         #List that contains data to export
         history = []
+        data = [self.squirmer1.x, self.squirmer1.y, 
+                        self.squirmer2.x, self.squirmer2.y, 
+                        self.squirmer1.orientation, self.squirmer2.orientation,
+                        0, 0, 
+                        0, 0, 
+                        0, 0]
+        history.append(data)
         for t in np.arange(0, self.T, self.dt):
             Fs_x = 0
             Fs_y = 0
