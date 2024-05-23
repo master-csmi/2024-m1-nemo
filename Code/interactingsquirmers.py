@@ -1,7 +1,4 @@
 import matplotlib
-
-import copy
-import os
 import numpy as np
 import os
 matplotlib.use('Agg')
@@ -219,9 +216,9 @@ class InteractingSquirmers:
         diff = self.R - abs(x)
         if boundary == 1:
             #1 for the right border
-            x = x - diff
+            x = self.R - diff
         else:
-            x = x + diff
+            x = -self.R + diff
         return x, orient_new
     
     def ref_bound_y(self, choice, boundary):
@@ -234,9 +231,9 @@ class InteractingSquirmers:
         diff = self.R - abs(y)
         if boundary == 1:
             #1 for the up boundary
-            y = y - diff
+            y = self.R - diff
         else:
-            y = y + diff
+            y = -self.R + diff
         return y, orient_new
     
     def loop_time(self):
@@ -303,19 +300,19 @@ class InteractingSquirmers:
             #Compute torque exerted on squirmer by the wall
             gamma_w1 = 0
             gamma_w2 = 0
-            dist_sq1, dist_sq2 = self.distance_center()
-            if ((self.R - abs(self.squirmer1.x)) < 2**(1/6) * self.squirmer1.radius):
-                gamma_w1 += self.compute_torque_squirmer_border(1, dist_sq1)
-            if ((self.R - abs(self.squirmer1.y)) < 2**(1/6) * self.squirmer1.radius):
-                gamma_w1 += self.compute_torque_squirmer_border(1, dist_sq1)
-            if ((self.R - abs(self.squirmer2.x)) < 2**(1/6) * self.squirmer2.radius):
-                gamma_w2 += self.compute_torque_squirmer_border(2, dist_sq2)
-            if ((self.R - abs(self.squirmer2.y)) < 2**(1/6) * self.squirmer2.radius):
-                gamma_w2 += self.compute_torque_squirmer_border(2, dist_sq2)
+            # dist_sq1, dist_sq2 = self.distance_center()
+            # if ((self.R - abs(self.squirmer1.x)) < 2**(1/6) * self.squirmer1.radius):
+            #     gamma_w1 += self.compute_torque_squirmer_border(1, dist_sq1)
+            # if ((self.R - abs(self.squirmer1.y)) < 2**(1/6) * self.squirmer1.radius):
+            #     gamma_w1 += self.compute_torque_squirmer_border(1, dist_sq1)
+            # if ((self.R - abs(self.squirmer2.x)) < 2**(1/6) * self.squirmer2.radius):
+            #     gamma_w2 += self.compute_torque_squirmer_border(2, dist_sq2)
+            # if ((self.R - abs(self.squirmer2.y)) < 2**(1/6) * self.squirmer2.radius):
+            #     gamma_w2 += self.compute_torque_squirmer_border(2, dist_sq2)
 
-            #Update orientation
-            self.squirmer2.orientation += self.dt*(gamma_w1)
-            self.squirmer2.orientation += self.dt*(gamma_w2)
+            # #Update orientation
+            # self.squirmer2.orientation += self.dt*(gamma_w1)
+            # self.squirmer2.orientation += self.dt*(gamma_w2)
 
             #Reflective Boundary
             if ((self.R-self.squirmer1.x) < 2**(1/6)*self.squirmer1.radius):
