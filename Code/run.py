@@ -15,9 +15,9 @@ def plot_3squirmers(R, historyb0, historybinf, historybsup, filename, dir='graph
     plt.plot([R, R], [-R, R], 'k-', linewidth=2)
 
     histories = [(historyb0, 'beta=0'), (historybinf, 'beta<0'), (historybsup, 'beta>0')]
-    colors = ['blue', 'green', 'red']
+    colors = [('blue','cyan'), ('orange','gold'), ('green','lime')]
 
-    for history, label in zip(histories, colors):
+    for history, (color1,color2) in zip(histories, colors):
         squirmer1_x, squirmer1_y, squirmer1_orient = [], [], []
         squirmer2_x, squirmer2_y, squirmer2_orient = [], [], []
 
@@ -29,8 +29,8 @@ def plot_3squirmers(R, historyb0, historybinf, historybsup, filename, dir='graph
             squirmer2_y.append(step[3])
             squirmer2_orient.append(step[5])
         
-        plt.plot(squirmer1_x, squirmer1_y, label=f'Squirmer1 {history[1]}', color=label)
-        plt.plot(squirmer2_x, squirmer2_y, label=f'Squirmer2 {history[1]}', color=label)
+        plt.plot(squirmer1_x, squirmer1_y, label=f'Squirmer1 {history[1]}', color=color1)
+        plt.plot(squirmer2_x, squirmer2_y, label=f'Squirmer2 {history[1]}', color=color2)
 
     #Plot initial orientations
     plt.quiver(squirmer2_x[0], squirmer2_y[0], np.cos(squirmer2_orient[0]), np.sin(squirmer2_orient[0]), color='black', scale=50, width=0.002)
