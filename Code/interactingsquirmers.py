@@ -1,9 +1,6 @@
-import matplotlib
 import numpy as np
-import os
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 from csv_file import export_data_csv, read_csv_file
+from plot import plot_dist_sq, plot_squirmers_positions
 
 class InteractingSquirmers:
 
@@ -41,73 +38,6 @@ class InteractingSquirmers:
         dist_sq1 = np.sqrt(self.squirmer1.x**2 + self.squirmer1.y**2)
         dist_sq2 = np.sqrt(self.squirmer2.x**2 + self.squirmer2.y**2)
         return dist_sq1, dist_sq2
-    
-    def plot_squirmers_positions(self, history, filename, dir='graphs'):
-        #Plot the position of each squirmers
-        R = self.R
-        plt.figure(figsize=(8, 8))
-        plt.plot([-R, R], [-R, -R], 'k-', linewidth=2)
-        plt.plot([-R, R], [R, R], 'k-', linewidth=2)
-        plt.plot([-R, -R], [-R, R], 'k-', linewidth=2)
-        plt.plot([R, R], [-R, R], 'k-', linewidth=2)
-
-        squirmer1_x = []
-        squirmer1_y = []
-        squirmer1_orient = []
-        squirmer2_x = []
-        squirmer2_y = []
-        squirmer2_orient = []
-        time = []
-
-        for step in history:
-            squirmer1_x.append(step[0])
-            squirmer1_y.append(step[1])
-            squirmer1_orient.append(step[4])
-            squirmer2_x.append(step[2])
-            squirmer2_y.append(step[3])
-            squirmer2_orient.append(step[5])
-            time.append(step[-1])
-        
-        #Squirmers
-        plt.scatter(squirmer1_x, squirmer1_y, color='blue', s=10, label = 'Squirmer 1')
-        plt.scatter(squirmer2_x, squirmer2_y, color='red', s=10, label= 'Squirmer 2')
-        
-        for i in range(len(squirmer2_orient)):
-            #Orientation
-            plt.quiver(squirmer2_x[i], squirmer2_y[i], np.cos(squirmer2_orient[i]), np.sin(squirmer2_orient[i]), color='red', scale=20, width=0.002)
-            plt.quiver(squirmer1_x[i], squirmer1_y[i], np.cos(squirmer1_orient[i]), np.sin(squirmer1_orient[i]), color='blue', scale=20, width=0.002)
-
-        plt.axis('equal')
-        plt.xlabel('X')
-        plt.ylabel('Y')
-        plt.title('Positions and Orientations of Squirmers')
-        plt.legend()
-        plt.grid(True)
-        
-        if not os.path.exists(dir):
-            os.makedirs(dir)
-        save_path = os.path.join(dir, filename + '.png')
-        plt.savefig(save_path)
-
-    def plot_dist_sq(self, history, filename, dir='graphs'):
-        plt.figure(figsize=(8, 6))
-        dist_list = []
-        time_list = []
-        for step in history:
-            dist_list.append(step[10])
-            time_list.append(step[11])
-
-        plt.plot(time_list, dist_list, label="Distance")
-        
-        plt.xlabel('Time')
-        plt.ylabel('Distance between squirmers')
-        plt.title('Distance between squirmers over time')
-        plt.grid(True)
-
-        if not os.path.exists(dir):
-            os.makedirs(dir)
-        save_path = os.path.join(dir, filename + '.png')
-        plt.savefig(save_path)
 
     def forcesSteric(self, Dx, Dy, dist):
         a = self.squirmer1.radius
@@ -300,19 +230,19 @@ class InteractingSquirmers:
             #Compute torque exerted on squirmer by the wall
             gamma_w1 = 0
             gamma_w2 = 0
-            # dist_sq1, dist_sq2 = self.distance_center()
-            # if ((self.R - abs(self.squirmer1.x)) < 2**(1/6) * self.squirmer1.radius):
-            #     gamma_w1 += self.compute_torque_squirmer_border(1, dist_sq1)
-            # if ((self.R - abs(self.squirmer1.y)) < 2**(1/6) * self.squirmer1.radius):
-            #     gamma_w1 += self.compute_torque_squirmer_border(1, dist_sq1)
-            # if ((self.R - abs(self.squirmer2.x)) < 2**(1/6) * self.squirmer2.radius):
-            #     gamma_w2 += self.compute_torque_squirmer_border(2, dist_sq2)
-            # if ((self.R - abs(self.squirmer2.y)) < 2**(1/6) * self.squirmer2.radius):
-            #     gamma_w2 += self.compute_torque_squirmer_border(2, dist_sq2)
+            dist_sq1, dist_sq2 = self.distance_center()
+            if ((self.R - abs(self.squirmer1.x)) < 2**(1/6) * self.squirmer1.radius):
+                gamma_w1 += self.compute_torque_squirmer_border(1, dist_sq1)
+            if ((self.R - abs(self.squirmer1.y)) < 2**(1/6) * self.squirmer1.radius):
+                gamma_w1 += self.compute_torque_squirmer_border(1, dist_sq1)
+            if ((self.R - abs(self.squirmer2.x)) < 2**(1/6) * self.squirmer2.radius):
+                gamma_w2 += self.compute_torque_squirmer_border(2, dist_sq2)
+            if ((self.R - abs(self.squirmer2.y)) < 2**(1/6) * self.squirmer2.radius):
+                gamma_w2 += self.compute_torque_squirmer_border(2, dist_sq2)
 
-            # #Update orientation
-            # self.squirmer2.orientation += self.dt*(gamma_w1)
-            # self.squirmer2.orientation += self.dt*(gamma_w2)
+            #Update orientation
+            self.squirmer2.orientation += self.dt*(gamma_w1)
+            self.squirmer2.orientation += self.dt*(gamma_w2)
 
             #Reflective Boundary
             if ((self.R-self.squirmer1.x) < 2**(1/6)*self.squirmer1.radius):
@@ -350,5 +280,5 @@ class InteractingSquirmers:
         self.check_squirmers_square()
         history = self.loop_time()
         export_data_csv(file_name_csv, history)
-        self.plot_squirmers_positions(history, filename_pos)
-        self.plot_dist_sq(history, filename_dist)
+        plot_squirmers_positions(self.R, history, filename_pos)
+        plot_dist_sq(history, filename_dist)
