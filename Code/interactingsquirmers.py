@@ -192,7 +192,7 @@ class InteractingSquirmers:
             val1 = 0
             val2 = 0
             
-            if dist < 3*a:
+            if (dist < 3*a):
                 val1 = self.torquesLubrification(1)
                 val2 = self.torquesLubrification(2)
                     
@@ -209,14 +209,22 @@ class InteractingSquirmers:
             #Force between a squirmer and a border
             Fs_pw1 = [0,0]
             Fs_pw2 = [0,0]
-            if ((self.R-self.squirmer1.x) < 2**(1/6)*self.squirmer1.radius):
+            if ((self.R-abs(self.squirmer1.x)) < 2**(1/6)*self.squirmer1.radius):
                 Fs_pw1[0] = self.compute_force_squirmer_border_x(1)
-            if ((self.R-self.squirmer1.y) < 2**(1/6)*self.squirmer1.radius):
+                val1 += self.torquesLubrification(1)
+            if ((self.R-abs(self.squirmer1.y)) < 2**(1/6)*self.squirmer1.radius):
                 Fs_pw1[1] = self.compute_force_squirmer_border_y(1)
-            if ((self.R-self.squirmer2.x) < 2**(1/6)*self.squirmer1.radius):
+                val1 += self.torquesLubrification(1)
+            if ((self.R-abs(self.squirmer2.x)) < 2**(1/6)*self.squirmer1.radius):
                 Fs_pw2[0] = self.compute_force_squirmer_border_x(2)
-            if ((self.R-self.squirmer2.y) < 2**(1/6)*self.squirmer1.radius):
+                val2 += self.torquesLubrification(2)
+            if ((self.R-abs(self.squirmer2.y)) < 2**(1/6)*self.squirmer1.radius):
                 Fs_pw2[1] = self.compute_force_squirmer_border_y(2)
+                val2 += self.torquesLubrification(2)
+            # if val1 != 0:
+            #     print("val1 =", val1)
+            # if val2 != 0:
+            #     print("val2 =", val2)
         
             #Evolution of position
             self.squirmer1.orientation += self.dt*(val1 + 0.25*val2)
@@ -239,6 +247,11 @@ class InteractingSquirmers:
                 gamma_w2 += self.compute_torque_squirmer_border(2, dist_sq2)
             if ((self.R - abs(self.squirmer2.y)) < 2**(1/6) * self.squirmer2.radius):
                 gamma_w2 += self.compute_torque_squirmer_border(2, dist_sq2)
+            
+            # if gamma_w1 != 0:
+            #     print("gamma_w1 =", gamma_w1)
+            # if gamma_w2 != 0:
+            #     print("gamma_w2 =", gamma_w2)
 
             #Update orientation
             self.squirmer2.orientation += self.dt*(gamma_w1)
