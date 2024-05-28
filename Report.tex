@@ -4,6 +4,7 @@
 \usepackage{hyperref}
 \usepackage{mathtools}
 \usepackage{tikz}
+\usepackage{subcaption}
 
 \begin{document}
 \title{Simulation of two interacting squirmers}
@@ -402,6 +403,16 @@ This file contains two function:
    \item \texttt{read\_csv\_file(filename)} takes a file name and return the data, not currently utilized but may be usefull for future functions.
 \end{itemize}
 
+\subsection{plot}
+\begin{itemize}
+   \item \texttt{plot\_squirmers\_position(R, history, filename, dir)} and \texttt{plot\_dist\_sq(history, filename, dir)} 
+   each take the list of \texttt{loop\_time}, a file name and a directory name, \texttt{plot\_squirmers\_position(R, history, filename, dir)} takes half of the length of the square too,
+   they then respectively plot the position of the $Squirmers$ and the distance between them over time.
+   \item \texttt{plot\_3squirmers(R, historyb0, historybinf, historybsup, filename, dir)} takes R half of the length of the square, 3 lists
+   of \texttt{loop\_time} for $\beta=0$, $\beta<0$ and $\beta>0$, a filename and a directory.
+   It then plots the evolution of each squirmer's position over time. It is easier to see the effect of the $\beta$ parameter with this function.
+\end{itemize}
+
 \subsection{interactingsquirmers}
 \subsubsection*{Parameters}
 This file implements the \texttt{Interactingsquirmers} class which takes:
@@ -431,9 +442,6 @@ This class has many functions:
    for each time step \texttt{dt} based on the lubrification forces and torques computed by \texttt{forcesLubrification()}, 
    \texttt{torquesLubrification()} and \texttt{forcesSteric()}, then puts all of the relevant information in a list
    at each time step \texttt{dt\_out}. The function then returns the list.
-   \item \texttt{plot\_squirmers\_position(history, filename, dir)} and \texttt{plot\_dist\_sq(history, filename, dir)} 
-   each take the list of \texttt{loop\_time}, a file name and a directory name
-   they then respectively plot the position of the $Squirmers$ and the distance between them over time.
    \item \texttt{run()} take three file name as inputs, for the csv file, position graph and distance graph name, 
    then execute \texttt{check\_squirmers\_square()} and \texttt{loop\_time()},
    export the data into a csv file in the \texttt{csv\_files} directory with \texttt{export\_data\_csv(filename\_csv, data)} 
@@ -443,16 +451,81 @@ This class has many functions:
 
 \section{Numerical experiments}
 \subsection{Simulation of two squirmers interacting}
-For the first simulation, we consider two interacting squirmers.
+In this part eight simulation is made, one squirmer's parameters are fixed for every simulation 
+excluding $\beta$ which vary, the other one have his
+initial orientation and $\beta$ varied.\\
+The three $\beta$ parameters used are:
+\begin{equation*}
+   \beta_1 = 0, \quad \beta_2 = 7.5 \quad \beta_3 = -7.5
+\end{equation*}
+The left squirmer is the fixed one, his radius is $a=0.15$, his coordinates are $(\frac{-a}{1.1}, 0)$,
+ his initial orientation $\theta_1$ is $\frac{\pi}{2}$ and his $\beta$ vary between $\beta_1$, $\beta_2$ and $\beta_3$.\\
+The right one is the varying one, his radius is $a$, his coordinates are $(\frac{a}{1.1}, 0)$,
+ his $\beta$ vary between $\beta_1$, $\beta_2$ and $\beta_3$ and his initial orientation $\theta_2$ vary between
+ $\frac{\pi}{2}$, $\frac{-\pi}{2}$, $\frac{3\pi}{4}$, $\frac{-3\pi}{4}$, $\frac{\pi}{4}$, $\frac{-\pi}{4}$, $\pi$ and $2\pi$.\\
+We will then compare our results with those found in previous studies.
 \begin{center}
-   Position and orientation of two squirmers.
-   \includegraphics[width=0.7\textwidth]{graphs/squirmers_colliding.png}\\
-   Distance between two squirmers
-   \includegraphics[width=0.7\textwidth]{graphs/dist_squirmers_colliding.png}
+   Behavior observed in previous study.
+   \includegraphics[width=1\textwidth]{Presentation/V0/images/stark_behavior.png}\\
+   \cite{Stark}\\
+   $u_i$ and $u_j$ the current orientational vector and the directional rotation upon interaction in red.  
 \end{center}
-We show the trajectories of the two squirmers as well as their orientation. 
-One can observe that their  orientation changes due to the lubrication and steric forces which are applied on them. 
-This forces allow avoiding the overlapping of the two particles.
+
+\subsubsection{$\theta_2 = \frac{\pi}{2}$}
+\begin{center}
+   \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.pi.2.png}
+\end{center}
+We show the trajectories of the two squirmers as well as their initial orientation.
+One can observe that their orientation changes due to the lubrification and steric forces which are applied on them. 
+Those forces allow avoiding the overlapping of the two particles.\\
+Each squirmer gradually takes his distance from the other,
+ it is in line with the study\cite{Stark}.
+
+\subsubsection{$\theta_2 = \frac{-\pi}{2}$}
+\begin{center}
+   \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.-pi.2.png}
+\end{center}
+Our results are consistent with the previous study when both squirmers have a $\beta \le 0$,
+while when $\beta > 0$ our results diverge, one can see the steric forces pushing each squirmer from one another
+as attended but their orientation do not align with the study in that case.
+
+\subsubsection{$\theta_2 = \frac{3\pi}{4}$}
+\begin{center}
+   \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.3pi.4.png}
+\end{center}
+Our results converge from those found in the previous study when $\beta \ge 0$.\\
+When $\beta < 0$, one can observe that the right squirmer move closer to the left one while the left one moves away,
+at the end of the simulation the right one is behind the left one. This is not consistent with the results of the previous study.
+
+\subsubsection{$\theta_2 = \frac{-3\pi}{4}$}
+\begin{center}
+   \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.-3pi.4.png}
+\end{center}
+Our simulation align with the previous study when $\beta = 0$.\\
+When $\beta < 0$, the right squirmer moves towards the left squirmer and end behind it
+ while when $\beta > 0$, the orientation of the left squirmer does not align with the 
+ orientational vector observed in the previous study.\\
+Our results converge with the pevious study only with $\beta = 0$ when $\theta_2 = \frac{-3\pi}{4}$.
+
+\subsubsection{$\theta_2 = \frac{\pi}{4}$}
+\begin{center}
+   \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.pi.4.png}
+\end{center}
+
+\subsubsection{$\theta_2 = \frac{-\pi}{4}$}
+\begin{center}
+   \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.-pi.4.png}
+\end{center}
+
+\subsubsection{$\theta_2 = \pi$}
+\begin{center}
+   \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.pi.png}
+\end{center}
+
+\subsubsection{$\theta_2 = 2\pi$}
+\begin{center}
+   \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.2pi.png}
+\end{center}
 \newpage
 
 \nocite{*}
