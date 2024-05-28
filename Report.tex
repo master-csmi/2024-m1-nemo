@@ -18,8 +18,8 @@ Supervisors: Van Landeghem Céline, Giraldi Laetitia,\\ Prud'Homme Christophe}
 
 \section{Context}
 Our project is part of the ANR project NEMO, Control of Magnetic Micro-swimmers in Complex and Confined Environments.
-This projects aims to develop numerical methods for driving micro-robots composed of magnetic heads and flexible tails imitating spermatozoa, referred to as $Magnetozoon$.\cite{Nemov10}\\
-The $Magnetozoon$ behavior is controlled by a magnetic field which produces a torque on the magnetic head leading to the motion of the tail.
+This project aims to develop numerical methods for driving micro-robots composed of magnetic heads and flexible tails imitating spermatozoa, referred to as $Magnetozoon$.\cite{Nemov10}\\
+The $Magnetozoon$ behavior is controlled by a magnetic field which produces a torque on the magnetic head, leading to the motion of the tail.
 This tail motion pushes the fluid surrounding the robot causing deformations and displacements of the robots.
 Currently, a team of researchers is developing numerical methods to control a micro-swimmer in the arteries
 of the human body. Ultimately, the goal of these robots is to treat cancer cells. \\
@@ -46,11 +46,11 @@ In addition we will implement this model to realize numerical experiments. The a
 The original Roadmap of our project is given by:
 \begin{center}
     \href{https://github.com/orgs/master-csmi/projects/23/views/2}{Roadmap}
-    \includegraphics[width=1.2\textwidth]{Presentation/V0/images/roadmapV0_1.png}
+    \includegraphics[width=1.2\textwidth]{Presentation/images/roadmapV0_1.png}
     \vspace{1em} % Ajoute un espace vertical
-    \includegraphics[width=1.2\textwidth]{Presentation/V0/images/roadmapV1_1.png}
+    \includegraphics[width=1.2\textwidth]{Presentation/images/roadmapV1_1.png}
     \vspace{1em} % Ajoute un espace vertical
-    \includegraphics[width=1.2\textwidth]{Presentation/V0/images/roadmapV1_2.png}
+    \includegraphics[width=1.2\textwidth]{Presentation/images/roadmapV1_2.png}
 \end{center}
 
 
@@ -408,9 +408,12 @@ This file contains two function:
    \item \texttt{plot\_squirmers\_position(R, history, filename, dir)} and \texttt{plot\_dist\_sq(history, filename, dir)} 
    each take the list of \texttt{loop\_time}, a file name and a directory name, \texttt{plot\_squirmers\_position(R, history, filename, dir)} takes half of the length of the square too,
    they then respectively plot the position of the $Squirmers$ and the distance between them over time.
-   \item \texttt{plot\_3squirmers(R, historyb0, historybinf, historybsup, filename, dir)} takes R half of the length of the square, 3 lists
+   \item \texttt{plot\_sim\_6squirmers(R, historyb0, historybinf, historybsup, filename, dir)} takes R half of the length of the square, 3 lists
    of \texttt{loop\_time} for $\beta=0$, $\beta<0$ and $\beta>0$, a filename and a directory.
    It then plots the evolution of each squirmer's position over time. It is easier to see the effect of the $\beta$ parameter with this function.
+   \item \texttt{plot\_sim\_squirmer\_border(R, histories, filename, dir='graphs')} takes \texttt{histories = [[historyb01, historyb02], [historybinf1, historybinf2], [historybsup1, historybsup2]]}
+   with each \texttt{history} the list of \texttt{loop\_time}, this function is used to plot the simulations of squirmers
+   interacting with the borders.
 \end{itemize}
 
 \subsection{interactingsquirmers}
@@ -466,7 +469,7 @@ The right one has the same radius $a$ and velocity $v_0$, coordinates at $(\frac
 We then compare our results with those from previous studies.
 \begin{center}
    Behavior observed in a previous study.
-   \includegraphics[width=1\textwidth]{Presentation/V0/images/stark_behavior.png}\\
+   \includegraphics[width=1\textwidth]{Presentation/images/stark_behavior.png}\\
    \cite{Stark}\\
    $u_i$ and $u_j$ the current orientational vector and the directional rotation upon interaction shown in red.  
 \end{center}
