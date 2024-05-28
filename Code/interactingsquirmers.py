@@ -221,10 +221,10 @@ class InteractingSquirmers:
             if ((self.R-abs(self.squirmer2.y)) < 2**(1/6)*self.squirmer1.radius):
                 Fs_pw2[1] = self.compute_force_squirmer_border_y(2)
                 val2 += self.torquesLubrification(2)
-            if val1 != 0:
-                print("val1 =", val1)
-            if val2 != 0:
-                print("val2 =", val2)
+            # if val1 != 0:
+            #     print("val1 =", val1)
+            # if val2 != 0:
+            #     print("val2 =", val2)
         
             #Evolution of position
             self.squirmer1.orientation += self.dt*(val1 + 0.25*val2)
@@ -248,10 +248,10 @@ class InteractingSquirmers:
             if ((self.R - abs(self.squirmer2.y)) < 2**(1/6) * self.squirmer2.radius):
                 gamma_w2 += self.compute_torque_squirmer_border(2, dist_sq2)
             
-            if gamma_w1 != 0:
-                print("gamma_w1 =", gamma_w1)
-            if gamma_w2 != 0:
-                print("gamma_w2", gamma_w2)
+            # if gamma_w1 != 0:
+            #     print("gamma_w1 =", gamma_w1)
+            # if gamma_w2 != 0:
+            #     print("gamma_w2 =", gamma_w2)
 
             #Update orientation
             self.squirmer2.orientation += self.dt*(gamma_w1)
