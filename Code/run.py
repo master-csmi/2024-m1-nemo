@@ -8,11 +8,13 @@ v0 = 1
 L = 2
 R = L/2
 a = 0.15
+
 x1, y1 = -0.6, -0.2
 x2, y2 = 0.6, -0.2
 x3, y3 = 0.2, 0.6
 x4, y4 = -0.2, -0.6
 orient1, orient2, orient3, orient4 = 3*np.pi/4, np.pi/4, 3*np.pi/4, -np.pi/4
+
 beta0 = 0
 betainf = -7.5
 betasup = 7.5
@@ -60,3 +62,4 @@ histories = [[historyb01, historyb02], [historybinf1, historybinf2], [historybsu
 plot_sim_squirmer_border(R, histories, "sim_sq_border1")
 
 #plot_sim_6squirmers(R, historyb0, historybinf, historybsup, "sq2.2pi")
+
