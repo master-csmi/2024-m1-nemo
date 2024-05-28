@@ -451,24 +451,24 @@ This class has many functions:
 
 \section{Numerical experiments}
 \subsection{Simulation of two squirmers interacting}
-In this part eight simulation is made, one squirmer's parameters are fixed for every simulation 
-excluding $\beta$ which vary, the other one have his
-initial orientation and $\beta$ varied.\\
+In this section we run eight simulation where the parameters of one squirmer remain fixed for every simulation 
+except for its $\beta$ value, while the other squirmer's 
+initial orientation and $\beta$ value are varied.\\
 The three $\beta$ parameters used are:
 \begin{equation*}
    \beta_1 = 0, \quad \beta_2 = 7.5 \quad \beta_3 = -7.5
 \end{equation*}
-The left squirmer is the fixed one, his radius is $a=0.15$, his coordinates are $(\frac{-a}{1.1}, 0)$,
- his initial orientation $\theta_1$ is $\frac{\pi}{2}$ and his $\beta$ vary between $\beta_1$, $\beta_2$ and $\beta_3$.\\
-The right one is the varying one, his radius is $a$, his coordinates are $(\frac{a}{1.1}, 0)$,
- his $\beta$ vary between $\beta_1$, $\beta_2$ and $\beta_3$ and his initial orientation $\theta_2$ vary between
+The left squirmer is the fixed one with a radius of $a=0.15$, placed at $(\frac{-a}{1.1}, 0)$,
+ an initial orientation $\theta_1 = \frac{\pi}{2}$ and a $\beta$ value varying between $\beta_1$, $\beta_2$ and $\beta_3$.\\
+The right one has the same radius $a$, coordinates at $(\frac{a}{1.1}, 0)$,
+ a $\beta$ value varying bewteen $\beta_1$, $\beta_2$ and $\beta_3$ and an initial orientation $\theta_2$ varying among
  $\frac{\pi}{2}$, $\frac{-\pi}{2}$, $\frac{3\pi}{4}$, $\frac{-3\pi}{4}$, $\frac{\pi}{4}$, $\frac{-\pi}{4}$, $\pi$ and $2\pi$.\\
-We will then compare our results with those found in previous studies.
+We then compare our results with those from previous studies.
 \begin{center}
-   Behavior observed in previous study.
+   Behavior observed in a previous study.
    \includegraphics[width=1\textwidth]{Presentation/V0/images/stark_behavior.png}\\
    \cite{Stark}\\
-   $u_i$ and $u_j$ the current orientational vector and the directional rotation upon interaction in red.  
+   $u_i$ and $u_j$ the current orientational vector and the directional rotation upon interaction shown in red.  
 \end{center}
 
 \subsubsection{$\theta_2 = \frac{\pi}{2}$}
@@ -478,54 +478,71 @@ We will then compare our results with those found in previous studies.
 We show the trajectories of the two squirmers as well as their initial orientation.
 One can observe that their orientation changes due to the lubrification and steric forces which are applied on them. 
 Those forces allow avoiding the overlapping of the two particles.\\
-Each squirmer gradually takes his distance from the other,
- it is in line with the study\cite{Stark}.
+Each squirmer gradually distances itself from the other,
+ consistent with the study\cite{Stark}.
 
 \subsubsection{$\theta_2 = \frac{-\pi}{2}$}
 \begin{center}
    \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.-pi.2.png}
 \end{center}
-Our results are consistent with the previous study when both squirmers have a $\beta \le 0$,
-while when $\beta > 0$ our results diverge, one can see the steric forces pushing each squirmer from one another
-as attended but their orientation do not align with the study in that case.
+Our results align with the previous study when both squirmers have a $\beta \le 0$.\\
+However for $\beta > 0$, our results diverge, one can see the steric forces pushing each squirmer apart 
+as expected, but their orientation do not align with those in the study.\\
 
 \subsubsection{$\theta_2 = \frac{3\pi}{4}$}
 \begin{center}
    \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.3pi.4.png}
 \end{center}
-Our results converge from those found in the previous study when $\beta \ge 0$.\\
-When $\beta < 0$, one can observe that the right squirmer move closer to the left one while the left one moves away,
-at the end of the simulation the right one is behind the left one. This is not consistent with the results of the previous study.
+Our results are consistent with the previous study for $\beta \ge 0$.\\
+When $\beta < 0$, one can observe that the right squirmer moves closer to the left one, which moves away,
+the right one ends up behind the left one. This behavior does not match the results of the previous study.\\
 
 \subsubsection{$\theta_2 = \frac{-3\pi}{4}$}
 \begin{center}
    \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.-3pi.4.png}
 \end{center}
-Our simulation align with the previous study when $\beta = 0$.\\
-When $\beta < 0$, the right squirmer moves towards the left squirmer and end behind it
- while when $\beta > 0$, the orientation of the left squirmer does not align with the 
+Our simulation results align with the previous study when $\beta = 0$.\\
+For $\beta < 0$, the right squirmer moves towards the left squirmer and ends up behind it,
+ while for $\beta > 0$, the left squirmer's orientation does not match with the 
  orientational vector observed in the previous study.\\
-Our results converge with the pevious study only with $\beta = 0$ when $\theta_2 = \frac{-3\pi}{4}$.
 
 \subsubsection{$\theta_2 = \frac{\pi}{4}$}
 \begin{center}
    \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.pi.4.png}
 \end{center}
+Our results are consistent with the previous study for $\beta = 0$.\\
+The directional rotation upon interaction is weaker for the left squirmer than for the right one.
+ In our simulation for $\beta < 0$, the left squirmer has a greater directional rotation upon interaction,
+ and for $\beta > 0$, the left squirmer's rotation upon interaction does not replicate the expected behavior from the previous study.\\
 
 \subsubsection{$\theta_2 = \frac{-\pi}{4}$}
 \begin{center}
    \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.-pi.4.png}
 \end{center}
+Our results are consistent with the previous study when $\beta = 0$.\\
+For $\beta > 0$, there is a discrepancy between the squirmers' directional vector and the expected
+directional vector of the previous study. When both squirmers have $\beta < 0$ 
+the left squirmer's directional rotation upon interaction should be less than the right one's, 
+as shown in the previous study, but our simulation does not reflect this.
 
 \subsubsection{$\theta_2 = \pi$}
 \begin{center}
    \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.pi.png}
 \end{center}
+There is a discrepancy between our simulation and the expected behavior from the previous study for all $\beta$ values.\\
+The right squirmer's trajectory is altered by the steric and lubrication forces in every scenario, 
+contrary to the previous study's results.
 
 \subsubsection{$\theta_2 = 2\pi$}
 \begin{center}
    \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.2pi.png}
 \end{center}
+The previous study shows that the right squirmer's directional vector should not be altered. 
+Our simulation diverges from this result, showing small modifications to the right squirmer's 
+directional vector for $\beta \leq 0$, which do not correlate with the previous study.
+
+\subsection{Simulation of squirmers-border interacting}
+In this section we will 
 \newpage
 
 \nocite{*}
