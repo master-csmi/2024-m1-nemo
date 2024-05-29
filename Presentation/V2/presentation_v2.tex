@@ -5,7 +5,7 @@
 \usepackage{tikz}
 
 \title{Simulation of two interacting squirmers}
-\author{Robin and Justine}
+\author{Robin Roth and Justine Ehret}
 \institute{Supervised by: Van Landeghem Céline, Giraldi Laetitia}
 
 \begin{document}
@@ -58,9 +58,13 @@
         \includegraphics[width=0.9\textwidth]{../images/roadmapV0_1.png}
         \vspace{1em}
         \includegraphics[width=0.9\textwidth]{../images/roadmapV0_2.png}
+    \end{center}
+\end{frame}
+\begin{frame}{Roadmap}
+    \begin{center}
         \includegraphics[width=0.9\textwidth]{../images/roadmapV1_1.png}
+        \vspace{1em}
         \includegraphics[width=0.9\textwidth]{../images/roadmapV1_2.png}
-        \includegraphics[width=0.9\textwidth]{../images/roadmapV2.png}
     \end{center}
 \end{frame}
 
@@ -106,9 +110,9 @@
         \item In  cartesian coordinates :
         $u_r = B_1(1+\beta (e\cdot e_r)) [(e\cdot e_r)e_r - e]$
     \end{itemize}
-    \end{frame}
+\end{frame}
     
-    \begin{frame}{Dynamics of two interacting squirmers}
+\begin{frame}{Dynamics of two interacting squirmers}
         \framesubtitle{The evolution of the mass center $R_i$}
         The evolution of the mass center $R_i$ = $(X_i, Y_i)$ of one squirmer $i$ in presence of 
     another squirmer $j$ and rigid boundaries, is given by :
@@ -121,27 +125,30 @@
         \item $F^{hydro}$ the lubrification forces given by Brumley\cite{Brumley},
         \item $V_{ij}$ and $V_i$, Weeks-Chandler-Andersen potential : repulsive steric force avoiding the overlapping of two squirmers or of one squirmer and a rigid boundary. The force is activated when the distance between two surfaces is small.
     \end{itemize}
-    \end{frame}
+\end{frame}
     
-    \begin{frame}{Dynamics of two interacting squirmers}
-        \framesubtitle{The evolution of the mass center $R_i$}
-        \begin{center}
-            $\boxed{\frac{dR_i}{dt} = v_0 p_i -  \nabla_{R_{ij}} V_{ij} - \nabla_{R_i} V_i + F^{hydro}}$
-        \end{center}
-    \newline We have : \begin{itemize}
-        \item $\nabla_{R_{ij}} V_{ij}$ = 
+\begin{frame}{Dynamics of two interacting squirmers}
+    \framesubtitle{The evolution of the mass center $R_i$}
+    \begin{center}
+        \(\boxed{\frac{dR_i}{dt} = v_0 p_i -  \nabla_{R_{ij}} V_{ij} - \nabla_{R_i} V_i + F^{hydro}}\)
+    \end{center}
+    We have: 
+    \begin{itemize}
+        \item \(\nabla_{R_{ij}} V_{ij} = 
         \begin{pmatrix}
             \frac{-3 E_s}{r} \frac{D_x}{\sqrt{R_{ij}}}\left[ \frac{2(2r)^{13}}{(R_{ij})^{13}} - \frac{(2r)^7}{(R_{ij})^7} \right] \\
             \frac{-3 E_s}{r} \frac{D_y}{\sqrt{R_{ij}}}\left[ \frac{2(2r)^{13}}{(R_{ij})^{13}} - \frac{(2r)^7}{(R_{ij})^7} \right]
-        \end{pmatrix}
-        \item $\nabla_{R_i} V_i$ = \begin{pmatrix}
+        \end{pmatrix}\)
+        \item \(\nabla_{R_i} V_i = 
+        \begin{pmatrix}
             -6 \frac{E_s (X-X_{box})}{r \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right] \\
             -6 \frac{E_s (Y-Y_{box})}{r \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right]
-        \end{pmatrix}
+        \end{pmatrix}\)
     \end{itemize}
-    \end{frame}
+\end{frame}
+
     
-    \begin{frame}{Dynamics of two interacting squirmers}
+\begin{frame}{Dynamics of two interacting squirmers}
         \framesubtitle{Forces}
         \begin{center}
        \begin{tikzpicture}
@@ -184,9 +191,9 @@
        \end{center}
        The figure shows the different vectors involved in the computations which will follow.
         
-    \end{frame}
+\end{frame}
     
-    \begin{frame}{Dynamics of two interacting squirmers}
+\begin{frame}{Dynamics of two interacting squirmers}
         \framesubtitle{Forces}
         \begin{itemize}
             \item The tangential lubrification forces acting on the two spheres : \begin{equation*}
@@ -204,9 +211,9 @@
     \end{equation*}
         \end{itemize}
     
-    \end{frame}
+\end{frame}
     
-    \begin{frame}{Dynamics of two interacting squirmers}
+\begin{frame}{Dynamics of two interacting squirmers}
         \framesubtitle{The evolution of the rotation of one squirmer $\theta _i$}
     The evolution of the rotation of one squirmer is given by : 
     $$
@@ -227,7 +234,7 @@
     \end{equation*}
     \end{itemize}
         
-    \end{frame}
+\end{frame}
 
 % \begin{frame}{Implementation in Python}
     
@@ -262,7 +269,12 @@
     \end{center}
 \end{frame}
 
-
+\begin{frame}{Conclusion}
+    \begin{itemize}
+        \item Convergence of results with \beta = 0
+        \item Discrepancy of results for \beta \ne 0
+    \end{itemize}
+\end{frame}
 
 \begin{frame}{References}
     \begin{thebibliography}{}
