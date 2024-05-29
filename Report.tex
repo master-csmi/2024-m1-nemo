@@ -8,7 +8,7 @@
 
 \begin{document}
 \title{Simulation of two interacting squirmers}
-\author{Robin and Justine\\
+\author{Roth Robin and Ehret Justine\\
 \\
 Supervisors: Van Landeghem Céline, Giraldi Laetitia,\\ Prud'Homme Christophe}
 \date{May, 2024}
@@ -18,14 +18,14 @@ Supervisors: Van Landeghem Céline, Giraldi Laetitia,\\ Prud'Homme Christophe}
 
 \section{Context}
 Our project is part of the ANR project NEMO, Control of Magnetic Micro-swimmers in Complex and Confined Environments.
-This projects aims to develop numerical methods for driving micro-robots composed of magnetic heads and flexible tails imitating spermatozoa, referred to as $Magnetozoon$.\cite{Nemov10}\\
+This project aims to develop numerical methods for driving micro-robots composed of magnetic heads and flexible tails imitating spermatozoa, referred to as $Magnetozoon$.\cite{Nemov10}\\
 The $Magnetozoon$ behavior is controlled by a magnetic field which produces a torque on the magnetic head leading to the motion of the tail.
 This tail motion pushes the fluid surrounding the robot causing deformations and displacements of the robots.
 Currently, a team of researchers is developing numerical methods to control a micro-swimmer in the arteries
 of the human body. Ultimately, the goal of these robots is to treat cancer cells. \\
-In this project, we study the interaction between squirmers. The squirmer is a model for a spherical microswimmer swimming in Stokes flow. \cite{Wikipedia}
-A Stokes flow is a type of fluid flow where advective inertial forces are small compared with viscous forces.
-The Squirmer model simulates bacteria with cilia by imposing boundary conditions.
+In this project, we study the interaction between squirmers. The squirmer is a model for a spherical microswimmer swimming in a Stokes flow. \cite{Wikipedia}
+A Stokes flow is a type of fluid flow where advective inertial forces are small compared to viscous forces.
+The squirmer model simulates bacteria with cilia by imposing boundary conditions.
 
 
 \vspace{0.5cm}
@@ -92,7 +92,7 @@ By setting $\beta=\frac{B_2}{B_1}$, we have :
 $$
 u_\theta(R,\theta) = B_1(\mathrm{sin}(\theta) + \beta \mathrm{sin}(\theta)\mathrm{cos}(\theta)),
 $$
-where $\beta$ is the type of the squirmers :
+where $\beta$ is the type of the squirmer :
 $$\left\{
     \begin{array}{ll}
         \beta = 0 : \text{neutral swimmer}  \\
@@ -218,8 +218,8 @@ another squirmer $j$ and rigid boundaries, is given by :
 $\boxed{\frac{dR_i}{dt}$ = $v_0 p_i -  \nabla_{R_{ij}} V_{ij} - \partial_{R_i} V_i + F^{hydro}}$
 \end{center}
 We have : \begin{itemize}
-    \item $v_0$ the particle swimming speed,
-    \item $p_i$ = $(\mathrm{cos}(\theta_i),\mathrm{sin}(\theta_i))$ orientation,
+    \item $v_0$ the particle swimming velocity,
+    \item $p_i$ = $(\mathrm{cos}(\theta),\mathrm{sin}(\theta))$ orientation,
     \item $F^{hydro}$ the lubrification forces given by Brumley\cite{Brumley},
     \item $V_{ij}$ and $V_i$, Weeks-Chandler-Andersen potential : repulsive steric force avoiding the overlapping of two squirmers or of one squirmer and a rigid boundary. The force is activated when the distance between two surfaces is small.
 \end{itemize} 
@@ -321,7 +321,7 @@ The figure shows the different vectors involved in the computations which will f
     \item $e_i.e_{ij} = \mathrm{cos}(\theta)$
     \item $e_i.e^{\perp}_{ij}$ = $\frac{(Y_{R_j} - Y_{R_i})\mathrm{cos}(\theta) - (X_{R_j} - X_{R_i})\mathrm{sin}(\theta)}{\lvert R_{ij} \rvert} $
 \end{itemize}
-\subsection{Forces}
+
 The tangential lubrification forces acting on the two spheres can be calculated explicitly by :
 \\ $F_z^{S_i}$ = $-9 \mu \pi r \frac{\lambda ^2}{(\lambda +1)^2} \sum_{n} \left[ B_n W_n(e_i.e_{ij})e_i.e_{ij} + \frac{1}{2} B_n W_n'(e_i.e_{ij})(e_i.e^{\perp}_{ij})^2 \right] (ln \epsilon + O(1))$ \cite{Brumley}
 
@@ -354,24 +354,24 @@ The normal forces acting on the two spheres can be calculated explicitly by : \\
     \boxed{F_x^{S_i} = -\frac{4}{5} \mu \pi r \frac{\lambda(\lambda +4)}{(\lambda +1)^2} \left[ -B_1\mathrm{sin}(\theta) -B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta)\right] (ln \epsilon + O(1))}
 \end{equation*}
 
-\subsection{The evolution of $\theta_i$}
-The evolution of the rotation of one squirmer is given by : 
+\subsection{The evolution of the orientation}
+The evolution of the orientation of one squirmer is given by : 
 $$
 \frac{d \theta_i}{dt} = \sum \Gamma_{ij->i} + \sum \Gamma_{ji->i} +  \Gamma_{i}^W.
 $$
 
-$\Gamma_{ij->k}$ the torque exerted on the $k^\mathrm{th}$ particle by the flow associated to the $i^\mathrm{th}$ particle, but perturbed by the presence of the $j^\mathrm{th}$ particle.\\
+$\Gamma_{ij->k}$ is the torque exerted on the $k^\mathrm{th}$ particle by the flow associated to the $i^\mathrm{th}$ particle, but perturbed by the presence of the $j^\mathrm{th}$ particle.\\
 
 \vspace{0.5cm}
 
-The torques in y axes acting on the squirmer $i$ can be calculated explicitly by : \\
+The torques acting on the squirmer $i$ can be calculated explicitly by : \\
 $T_y^{S_i}$ = $\frac{16 \lambda}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\sum_{n} B_n W_n(e_i.e_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
 \\ So :
 \begin{equation*}
     \boxed{T_y^{S_i} = \frac{16 \lambda}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\left[-B_1\mathrm{sin}(\theta) -B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta) \right] (ln \epsilon + O(1))}
 \end{equation*}
 
-The torques in y axes acting on the squirmer $j$ can be calculated explicitly by : \\
+The torques acting on the squirmer $j$ can be calculated explicitly by : \\
 $T_y^{S_j}$ = $\frac{4 \lambda^2}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\sum_{n} B_n W_n(e_i.e_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
 \\ So :
 \begin{equation*}
