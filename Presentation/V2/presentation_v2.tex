@@ -254,7 +254,13 @@
 
 \section{Implementation in Python}
 \begin{frame}{Implementation in Python}
-    
+In the implementation of : \begin{center}
+        \(\boxed{\frac{dR_i}{dt} = v_0 p_i -  \nabla_{R_{ij}} V_{ij} - \nabla_{R_i} V_i + F^{hydro}}\)
+\end{center}
+\begin{itemize}
+    \item two squirmers are too close if $\lvert R_i-R_j\rvert < 3a$, we add $\nabla_{R_{ij}}V_{ij}$
+    \item a squirmers is too close from the boundary if $\lvert R-R_j\rvert < 2^{\frac{1}{6}}a$, we add $\nabla_{R_{i}}V_{i}$
+\end{itemize}    
 \end{frame}
 
 \begin{frame}{Numerical Experiments}
