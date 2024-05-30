@@ -45,7 +45,7 @@ class InteractingSquirmers:
         Fs_x = tmp * Dx
         Fs_y = tmp * Dy
         return Fs_x, Fs_y
-
+    
     def torquesLubrification(self,choice):
         Dx, Dy, dist = self.distance_sq()
         
@@ -95,9 +95,8 @@ class InteractingSquirmers:
         #lambda=1
         F_x = np.pi * self.mu * a * eieijt * somme * lnEps * Dx
         F_y = -9* self.mu * np.pi*a*(1/4)*sommeFz* lnEps * Dy
-        Ty1 = (16/10)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps*Dy
 
-        return F_x, F_y, Ty1
+        return F_x, F_y
     
     def compute_force_squirmer_border_x(self, choice):
         if (choice == 1):
@@ -192,6 +191,10 @@ class InteractingSquirmers:
             #Compute torques exerted on squirmer by other squirmer
             val1 = 0
             val2 = 0
+            
+            if (dist < 3*a):
+                val1 = self.torquesLubrification(1)
+                val2 = self.torquesLubrification(2)
                     
             #Lubrification forces
             Fl_x1 = 0.0
@@ -200,9 +203,8 @@ class InteractingSquirmers:
             Fl_y2 = 0.0
             
             if dist < 3*a:
-                Fl_x1, Fl_y1, val1 = self.forcesLubrification(1)
-                print(val1)
-                Fl_x2, Fl_y2, val2 = self.forcesLubrification(2)
+                Fl_x1, Fl_y1 = self.forcesLubrification(1)
+                Fl_x2, Fl_y2 = self.forcesLubrification(2)
 
             #Force between a squirmer and a border
             Fs_pw1 = [0,0]
@@ -217,8 +219,6 @@ class InteractingSquirmers:
                 Fs_pw2[1] = self.compute_force_squirmer_border_y(2)
         
             #Evolution of position
-            if (val1 + 0.25*val2)!= 0:
-                print((val1 + 0.25*val2))
             self.squirmer1.orientation += self.dt*(val1 + 0.25*val2)
             self.squirmer1.x += self.dt*(self.squirmer1.velocity * np.cos(self.squirmer1.orientation) + Fs_x + Fl_x1 + Fs_pw1[0])
             self.squirmer1.y += self.dt*(self.squirmer1.velocity * np.sin(self.squirmer1.orientation) + Fs_y + Fl_y1 + Fs_pw1[1])
