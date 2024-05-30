@@ -10,13 +10,13 @@ This project aims to determine the influence of two squirmers on each other.
 # Compilation
 to compile the project you need to follow these steps:
 '''
-# python3 -m pip install --upgrade pip
-# pip install -r requirements.txt
+python3 -m pip install --upgrade pip
+pip install -r requirements.txt
 '''
 
 # Execution
 '''
-# python3 Code/run.py
+python3 Code/run.py
 '''
 
 # Contributors
