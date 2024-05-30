@@ -13,7 +13,12 @@
     \titlepage
 \end{frame}
 
-\begin{frame}{What is a Squirmer ?}
+\begin{frame}
+    \tableofcontents
+\end{frame}
+
+\section{What is a squirmer ?}
+\begin{frame}{What is a squirmer ?}
     \begin{columns}[T]
         \begin{column}{0.5\textwidth}
             \begin{itemize}
@@ -35,6 +40,7 @@
     \end{columns}
 \end{frame}
 
+\section{Objectives}
 \begin{frame}{Objectives}
     \begin{itemize}
         \item Understand the "Squirmers" model
@@ -52,6 +58,7 @@
     \end{itemize}
 \end{frame}
 
+\section{Roadmap}
 \begin{frame}{Roadmap}
     \begin{center}
         \href{https://github.com/orgs/master-csmi/projects/23/views/2}{Roadmap}
@@ -64,6 +71,7 @@
     \end{center}
 \end{frame}
 
+\section{Squirmer model}
 \begin{frame}{Squirmer model}
     \begin{center}
         \begin{tikzpicture}
@@ -108,6 +116,8 @@
     \end{itemize}
     \end{frame}
     
+    \section{Dynamics of two interacting squirmers}
+    \subsection{The evolution of the mass center $R_i$}
     \begin{frame}{Dynamics of two interacting squirmers}
         \framesubtitle{The evolution of the mass center $R_i$}
         The evolution of the mass center $R_i$ = $(X_i, Y_i)$ of one squirmer $i$ in presence of 
@@ -116,8 +126,8 @@
     $\boxed{\frac{dR_i}{dt}$ = $v_0 p_i -  \nabla_{R_{ij}} V_{ij} - \nabla_{R_i} V_i + F^{hydro}}$
     \end{center}
     We have : \begin{itemize}
-        \item $v_0$ the particle swimming speed,
-        \item $p_i$ = $(\mathrm{cos}(\theta_i),\mathrm{sin}(\theta_i))$ orientation,
+        \item $v_0$ the particle swimming velocity,
+        \item $p_i$ = $(\mathrm{cos}(\theta),\mathrm{sin}(\theta))$ orientation,
         \item $F^{hydro}$ the lubrification forces given by Brumley\cite{Brumley},
         \item $V_{ij}$ and $V_i$, Weeks-Chandler-Andersen potential : repulsive steric force avoiding the overlapping of two squirmers or of one squirmer and a rigid boundary. The force is activated when the distance between two surfaces is small.
     \end{itemize}
@@ -141,8 +151,8 @@
     \end{itemize}
     \end{frame}
     
+
     \begin{frame}{Dynamics of two interacting squirmers}
-        \framesubtitle{Forces}
         \begin{center}
        \begin{tikzpicture}
        
@@ -187,7 +197,6 @@
     \end{frame}
     
     \begin{frame}{Dynamics of two interacting squirmers}
-        \framesubtitle{Forces}
         \begin{itemize}
             \item The tangential lubrification forces acting on the two spheres : \begin{equation*}
     \footnotesize
@@ -206,21 +215,22 @@
     
     \end{frame}
     
+    \subsection{The evolution of the orientation $\theta _i$}
     \begin{frame}{Dynamics of two interacting squirmers}
-        \framesubtitle{The evolution of the rotation of one squirmer $\theta _i$}
+        \framesubtitle{The evolution of the orientation $\theta _i$}
     The evolution of the rotation of one squirmer is given by : 
     $$
     \frac{d \theta_i}{dt} = \sum \Gamma_{ij->i} + \sum \Gamma_{ji->i} +  \Gamma_{i}^W.
     $$ 
-    $\Gamma_{ij->k}$ the torque exerted on the $k^\mathrm{th}$ particle by the flow associated to the $i^\mathrm{th}$ particle, but perturbed by the presence of the $j^\mathrm{th}$ particle.
+    $\Gamma_{ij->k}$ is the torque exerted on the $k^\mathrm{th}$ particle by the flow associated to the $i^\mathrm{th}$ particle, but perturbed by the presence of the $j^\mathrm{th}$ particle.
     
     \begin{itemize}
-        \item The torques in y axes acting on the squirmer $i$ :
+        \item The torques acting on the squirmer $i$ :
         \begin{equation*}
         \footnotesize
         \boxed{T_y^{S_i} = \frac{16 \lambda}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\left[-B_1\mathrm{sin}(\theta) -B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta) \right] (ln \epsilon + O(1))}
     \end{equation*}
-        \item The torques in y axes acting on the squirmer $j$ :
+        \item The torques acting on the squirmer $j$ :
         \begin{equation*}
         \footnotesize
         \boxed{T_y^{S_j} = \frac{4 \lambda^2}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\left[-B_1\mathrm{sin}(\theta) -B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta) \right] (ln \epsilon + O(1))}
@@ -229,10 +239,12 @@
         
     \end{frame}
 
+\section{Implementation in Python}
 \begin{frame}{Implementation in Python}
     
 \end{frame}
 
+\section{Numerical Experiments}
 \begin{frame}{Numerical Experiments}
     \begin{center}
         Results from previous study \cite{Stark}
@@ -262,6 +274,7 @@
     \end{center}
 \end{frame}
 
+\section{References}
 \begin{frame}{References}
     \begin{thebibliography}{}
         \bibitem{Brumley} D.R. Brumley and T.J. Pedley, \emph{Stability of arrays of bottom-heavy spherical squirmers}, American Physical Society, 2019
