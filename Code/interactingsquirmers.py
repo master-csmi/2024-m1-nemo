@@ -46,8 +46,36 @@ class InteractingSquirmers:
         Fs_y = tmp * Dy
         return Fs_x, Fs_y
     
+    # def torquesLubrification(self,choice):
+    #     Dx, Dy, dist = self.distance_sq()
+    #     if (choice == 1):
+    #         squirmer = self.squirmer1
+    #     else:
+    #         squirmer = self.squirmer2
+    #         Dx = -Dx
+    #         Dy = -Dy
+
+    #     theta = squirmer.orientation
+    #     B1 = squirmer.B1
+    #     B2 = squirmer.B2
+    #     a = squirmer.radius
+
+    #     eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
+    #     cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
+
+    #     sinalpha = np.sqrt(1 - cosalpha * cosalpha)
+
+    #     somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
+
+    #     lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)))
+                
+    #     Ty1 = (16/10)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
+    #     print(Ty1)
+        
+    #     return Ty1
     def torquesLubrification(self,choice):
         Dx, Dy, dist = self.distance_sq()
+        
         if (choice == 1):
             squirmer = self.squirmer1
         else:
@@ -56,22 +84,17 @@ class InteractingSquirmers:
             Dy = -Dy
 
         theta = squirmer.orientation
-        B1 = squirmer.B1
-        B2 = squirmer.B2
+        beta = squirmer.beta
         a = squirmer.radius
-
-        eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
-        cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
-
-        sinalpha = np.sqrt(1 - cosalpha * cosalpha)
-
-        somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
+        
+        ex = Dx/dist
+        ey = Dy/dist
 
         lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)))
                 
-        Ty1 = (16/10)*self.mu*np.pi*a**2*eieijt*somme*lnEps
+        val = self.Eo*(1 + beta*(np.cos(theta)*ex + np.sin(theta)*ey))*lnEps*(ex*np.sin(theta) - ey*np.cos(theta))
         
-        return Ty1
+        return val
         
     def forcesLubrification(self, choice):
         Dx, Dy, dist = self.distance_sq()
@@ -99,8 +122,9 @@ class InteractingSquirmers:
         #lambda=1
         F_x = np.pi * self.mu * a * eieijt * somme * lnEps * Dx
         F_y = -9* self.mu * np.pi*a*(1/4)*sommeFz* lnEps * Dy
+        Ty1 = (16/10)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
 
-        return F_x, F_y
+        return F_x, F_y, Ty1
     
     def compute_force_squirmer_border_x(self, choice):
         if (choice == 1):
@@ -195,10 +219,6 @@ class InteractingSquirmers:
             #Compute torques exerted on squirmer by other squirmer
             val1 = 0
             val2 = 0
-            
-            if (dist < 3*a):
-                val1 = self.torquesLubrification(1)
-                val2 = self.torquesLubrification(2)
                     
             #Lubrification forces
             Fl_x1 = 0.0
@@ -207,8 +227,8 @@ class InteractingSquirmers:
             Fl_y2 = 0.0
             
             if dist < 3*a:
-                Fl_x1, Fl_y1 = self.forcesLubrification(1)
-                Fl_x2, Fl_y2 = self.forcesLubrification(2)
+                Fl_x1, Fl_y1, val1 = self.forcesLubrification(1)
+                Fl_x2, Fl_y2, val2 = self.forcesLubrification(2)
 
             #Force between a squirmer and a border
             Fs_pw1 = [0,0]
@@ -221,10 +241,6 @@ class InteractingSquirmers:
                 Fs_pw2[0] = self.compute_force_squirmer_border_x(2)
             if ((self.R-abs(self.squirmer2.y)) < 2**(1/6)*self.squirmer1.radius):
                 Fs_pw2[1] = self.compute_force_squirmer_border_y(2)
-            # if val1 != 0:
-            #     print("val1 =", val1)
-            # if val2 != 0:
-            #     print("val2 =", val2)
         
             #Evolution of position
             self.squirmer1.orientation += self.dt*(val1 + 0.25*val2)
