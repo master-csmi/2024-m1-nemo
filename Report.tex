@@ -550,15 +550,26 @@ Our simulation diverges from this result, showing small modifications to the rig
 directional vector, which does not correlate with the previous study.
 
 \subsection{Simulation of squirmers-border interacting}
-In this section we run simulations of four squirmers near a border, each squirmer has a radius of $a$,
- a velocity of $v_0$ and a $\beta$ value varying between $\beta_1$, $\beta_2$ and $\beta_3$.
+In this section we run two simulations with the same parameters and we extend the time of the simulation
+ to see the behaviors of the squirmers near the borders.
+
+\subsubsection{$\theta_2 = \frac{\pi}{2}$}
+\begin{center}
+   \includegraphics[width=1\textwidth]{graphs/simulations/bordersquirmer/border_sq2.pi.2.png}
+\end{center}
+One can see that the squirmers' orientations are altered by the borders forces and torques.
+
+\subsubsection{$\theta_2 = \frac{\pi}{4}$}
+\begin{center}
+   \includegraphics[width=1\textwidth]{graphs/simulations/bordersquirmer/sq2.pi.4.png}
+\end{center}
 
 \section{Conclusion and perspective}
- In the foundational studies by Brumley \cite{Brumley} and Lauga \cite{Lauga}, we have successfully reformulated the expressions for all relevant forces and torques. These have been implemented in a Python codebase to analyze their variations as functions of orientation and distance, either between two squirmers or between a squirmer and a boundary.
+ In the studies by Brumley \cite{Brumley} and Lauga \cite{Lauga}, we have successfully reformulated the expressions for all relevant forces and torques. These have been implemented in a Python code to analyze their variations, either between two squirmers or between a squirmer and a border.
  
  Our numerical simulations have yielded trajectories for specific initial orientations that diverge from those reported by Stark \cite{Stark}.
  
- Having thoroughly examined the interactions between two squirmers and between a squirmer and a boundary, the next phase of our research involves investigating the interactions within a school of squirmers. This will allow us to understand collective behavior and emergent group effects.
+ Having thoroughly examined the interactions between two squirmers and between a squirmer and a boundary, the next phase of our research involves investigating the interactions within a schoal of squirmers. This will allow us to understand collective behavior and emergent group effects.
 \newpage
 
 \nocite{*}
