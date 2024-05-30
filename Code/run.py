@@ -11,7 +11,7 @@ a = 0.15
 
 x1, y1 = -a/1.1, 0
 x2, y2 = a/1.1, 0
-orient1, orient2 = np.pi/2, -np.pi/4
+orient1, orient2 = np.pi/2, np.pi/2
 
 beta0 = 0
 betainf = -7.5
@@ -43,5 +43,5 @@ historybinf = interact_sqbinf.loop_time()
 interact_sqbsup = InteractingSquirmers(squirmer1bsup, squirmer2bsup, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr)
 historybsup = interact_sqbsup.loop_time()
 
-plot_sim_6squirmers(R, historyb0, historybinf, historybsup, "sq2.-pi.4")
+plot_sim_6squirmers(R, historyb0, historybinf, historybsup, "sq2.pi.2")
 
