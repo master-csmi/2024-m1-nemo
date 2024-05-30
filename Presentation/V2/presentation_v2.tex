@@ -7,13 +7,19 @@
 \title{Simulation of two interacting squirmers}
 \author{Robin Roth and Justine Ehret}
 \institute{Supervised by: Van Landeghem Céline, Giraldi Laetitia}
+\date{May 30, 2024}
 
 \begin{document}
 \begin{frame}
     \titlepage
 \end{frame}
 
-\begin{frame}{What is a Squirmer ?}
+\begin{frame}{Table of contents}
+    \tableofcontents
+\end{frame}
+
+\section{What is a squirmer ?}
+\begin{frame}{What is a squirmer ?}
     \begin{columns}[T]
         \begin{column}{0.5\textwidth}
             \begin{itemize}
@@ -23,7 +29,7 @@
                 \item Cannot model cilia so we impose boundary conditions
                 \begin{itemize}
                     \item Tangential time-independant velocity at the boundary, propelling the squirmers.
-                    \item In particullar, we fix the type $\beta$ and the speed $B1$.
+                    \item In particullar, we fix the type $\beta$ and the velocity $B_1$.
                 \end{itemize}
             \end{itemize}
         \end{column}
@@ -35,6 +41,7 @@
     \end{columns}
 \end{frame}
 
+\section{Objectives}
 \begin{frame}{Objectives}
     \begin{itemize}
         \item Understand the "Squirmers" model
@@ -42,7 +49,7 @@
         \begin{itemize}
             \item Study the interactions between two squirmers \cite{Brumley}\cite{Lauga}
             \item Rewrite the existing code from Matlab to Python
-            \item Develop code to calculate the missing torques
+            \item Add missing lubrification torques to the code
         \end{itemize}
         \item Numerical Experiments
         \begin{itemize}
@@ -52,6 +59,7 @@
     \end{itemize}
 \end{frame}
 
+\section{Roadmap}
 \begin{frame}{Roadmap}
     \begin{center}
         \href{https://github.com/orgs/master-csmi/projects/23/views/2}{Roadmap}
@@ -74,9 +82,11 @@
     \end{center}
 \end{frame}
 
+\section{Squirmer model}
 \begin{frame}{Squirmer model}
     \begin{center}
         \begin{tikzpicture}
+        \small
         
         \draw[color=blue, very thick](2.5,2.5) circle (1.5);
         
@@ -103,7 +113,7 @@
         \item The velocity $u$ in polar coordinates \cite{Lauga} : \begin{align*}
        \left\{\begin{array}{rcl}
           u_r(R,\theta) &=& 0 \\
-          u_\theta(R,\theta) &=& B_1(\mathrm{sin}(\theta) + \beta \mathrm{sin}(\theta)\mathrm{cos}(\theta)),
+          u_\theta(R,\theta) &=& B_1(\mathrm{sin}(\theta) + \beta \mathrm{sin}(\theta)\mathrm{cos}(\theta)), B_1 = \frac{3}{2}v_0
        \end{array}\right.\;
         \end{align*} with $\beta=\frac{B_2}{B_1}$ :
     $\left\{
@@ -118,6 +128,8 @@
     \end{itemize}
 \end{frame}
     
+\section{Dynamics of two interacting squirmers}
+\subsection{The evolution of the mass center $R_i$}    
 \begin{frame}{Dynamics of two interacting squirmers}
         \framesubtitle{The evolution of the mass center $R_i$}
         The evolution of the mass center $R_i$ = $(X_i, Y_i)$ of one squirmer $i$ in presence of 
@@ -126,8 +138,8 @@
     $\boxed{\frac{dR_i}{dt}$ = $v_0 p_i -  \nabla_{R_{ij}} V_{ij} - \nabla_{R_i} V_i + F^{hydro}}$
     \end{center}
     We have : \begin{itemize}
-        \item $v_0$ the particle swimming speed,
-        \item $p_i$ = $(\mathrm{cos}(\theta_i),\mathrm{sin}(\theta_i))$ orientation,
+        \item $v_0$ the particle swimming velocity,
+        \item $p_i$ = $(\mathrm{cos}(\theta),\mathrm{sin}(\theta))$ orientation,
         \item $F^{hydro}$ the lubrification forces given by Brumley\cite{Brumley},
         \item $V_{ij}$ and $V_i$, Weeks-Chandler-Andersen potential : repulsive steric force avoiding the overlapping of two squirmers or of one squirmer and a rigid boundary. The force is activated when the distance between two surfaces is small.
     \end{itemize}
@@ -151,11 +163,9 @@
             -6 \frac{E_s (Y-Y_{box})}{r \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right]
         \end{pmatrix}\)
     \end{itemize}
-\end{frame}
-
+    \end{frame}
     
-\begin{frame}{Dynamics of two interacting squirmers}
-        \framesubtitle{Forces}
+    \begin{frame}{Dynamics of two interacting squirmers}
         \begin{center}
        \begin{tikzpicture}
        
@@ -199,8 +209,7 @@
         
 \end{frame}
     
-\begin{frame}{Dynamics of two interacting squirmers}
-        \framesubtitle{Forces}
+    \begin{frame}{Dynamics of two interacting squirmers}
         \begin{itemize}
             \item The tangential lubrification forces acting on the two spheres : \begin{equation*}
     \footnotesize
@@ -219,21 +228,22 @@
     
 \end{frame}
     
+\subsection{The evolution of the orientation $\theta _i$}
 \begin{frame}{Dynamics of two interacting squirmers}
-        \framesubtitle{The evolution of the rotation of one squirmer $\theta _i$}
+        \framesubtitle{The evolution of the orientation $\theta _i$}
     The evolution of the rotation of one squirmer is given by : 
     $$
     \frac{d \theta_i}{dt} = \sum \Gamma_{ij->i} + \sum \Gamma_{ji->i} +  \Gamma_{i}^W.
     $$ 
-    $\Gamma_{ij->k}$ the torque exerted on the $k^\mathrm{th}$ particle by the flow associated to the $i^\mathrm{th}$ particle, but perturbed by the presence of the $j^\mathrm{th}$ particle.
+    $\Gamma_{ij->k}$ is the torque exerted on the $k^\mathrm{th}$ particle by the flow associated to the $i^\mathrm{th}$ particle, but perturbed by the presence of the $j^\mathrm{th}$ particle.
     
     \begin{itemize}
-        \item The torques in y axes acting on the squirmer $i$ :
+        \item The torques acting on the squirmer $i$ :
         \begin{equation*}
         \footnotesize
         \boxed{T_y^{S_i} = \frac{16 \lambda}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\left[-B_1\mathrm{sin}(\theta) -B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta) \right] (ln \epsilon + O(1))}
     \end{equation*}
-        \item The torques in y axes acting on the squirmer $j$ :
+        \item The torques acting on the squirmer $j$ :
         \begin{equation*}
         \footnotesize
         \boxed{T_y^{S_j} = \frac{4 \lambda^2}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\left[-B_1\mathrm{sin}(\theta) -B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta) \right] (ln \epsilon + O(1))}
@@ -242,9 +252,16 @@
         
 \end{frame}
 
-% \begin{frame}{Implementation in Python}
-    
-% \end{frame}
+\section{Implementation in Python}
+\begin{frame}{Implementation in Python}
+In the implementation of : \begin{center}
+        \(\boxed{\frac{dR_i}{dt} = v_0 p_i -  \nabla_{R_{ij}} V_{ij} - \nabla_{R_i} V_i + F^{hydro}}\)
+\end{center}
+\begin{itemize}
+    \item two squirmers are too close if $\lvert R_i-R_j\rvert < 3a$, we add $\nabla_{R_{ij}}V_{ij}$
+    \item a squirmers is too close from the boundary if $\lvert R-R_i\rvert < 2^{\frac{1}{6}}r$, we add $\nabla_{R_{i}}V_{i}$
+\end{itemize}
+\end{frame}
 
 \begin{frame}{Numerical Experiments}
     \begin{center}
@@ -253,10 +270,11 @@
     \end{center}
 \end{frame}
 
+\section{Numerical Experiments}
 \begin{frame}{Numerical Experiments}
     \begin{center}
         Results from previous study \cite{Stark}
-        \includegraphics[width=0.9\textwidth]{../images/stark_behavior.png}
+        \includegraphics[width=0.8\textwidth]{../images/stark_behavior.png}
         \cite{Stark}
     \end{center}
 \end{frame}
@@ -264,34 +282,44 @@
 \begin{frame}{Numerical Experiments}
     \begin{center}
         Simulation consistent with previous study \cite{Stark}
-        \includegraphics[width=0.8\textwidth]{../../graphs/simulations/twosquirmerinter/sq2.pi.2.png}
+        \includegraphics[width=0.7\textwidth]{../../graphs/simulations/twosquirmerinter/sq2.pi.2.png}
     \end{center}
 \end{frame}
 
 \begin{frame}{Numerical Experiments}
     \begin{center}
         Example of divergence in results
-        \includegraphics[width=0.8\textwidth]{../../graphs/simulations/twosquirmerinter/sq2.3pi.4.png}
+        \includegraphics[width=0.7\textwidth]{../../graphs/simulations/twosquirmerinter/sq2.3pi.4.png}
     \end{center}
 \end{frame}
 
 \begin{frame}{Numerical Experiments}
     \begin{center}
         Example of divergence in results
-        \includegraphics[width=0.8\textwidth]{../../graphs/simulations/twosquirmerinter/sq2.pi.png}
+        \includegraphics[width=0.7\textwidth]{../../graphs/simulations/twosquirmerinter/sq2.pi.png}
     \end{center}
 \end{frame}
 
-\begin{frame}{Conclusion}
+\begin{frame}{Numerical Experiments}
+    \begin{center}
+        Simulation with steric and lubrification forces with borders
+        \includegraphics[width=0.7\textwidth]{../../graphs/simulations/bordersquirmer/border_sq2.pi.2.png}
+    \end{center}
+\end{frame}
+
+\section{Conclusion and perspective}
+\begin{frame}{Conclusion and perspective}
     \begin{center}
         \begin{itemize}
             \item Varying $\beta$ value affect behavior
             \item Convergence of results with $\beta = 0$
             \item Discrepancy of results for $\beta \ne 0$
+            \item Investigating the interactions within a shoal of squirmers : collective behavior and emergent group effects
         \end{itemize}
     \end{center}
 \end{frame}
 
+\section{References}
 \begin{frame}{References}
     \begin{thebibliography}{}
         \bibitem{Brumley} D.R. Brumley and T.J. Pedley, \emph{Stability of arrays of bottom-heavy spherical squirmers}, American Physical Society, 2019

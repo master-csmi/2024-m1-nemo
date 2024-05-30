@@ -59,26 +59,29 @@ The original Roadmap of our project is given by:
 \newpage
 \section{Squirmer model}
 \begin{center}
-    \begin{tikzpicture}
-    
-    \draw[color=blue, very thick](2.5,2.5) circle (1.5);
-    
-    \draw[color=black, very thick](2.5,2.5) circle (0.01);
-    
-    \node  at (2.5-0.3,2.5-0.3) {{$(x^{cm},y^{cm})$}};
-    
-    \node  at (0.5,0.7) {{$Squirmer$}};
-    
-    \draw[thick, ->] (2.5,2.5) -- (4,2.5);
-    \node  at (3.5,2.2) {{$e$}};
- 
-    \pgfmathsetmacro{\xcoord}{2.5 + 1.5*cos(45)}
-     \pgfmathsetmacro{\ycoord}{2.5 + 1.5*sin(45)}
-     \draw[thick, ->] (2.5,2.5) -- (\xcoord,\ycoord);
-    \node  at (3.1,3.5) {{$e_r$}}; 
-    
-       
-    \end{tikzpicture}
+   \begin{tikzpicture}
+      \small
+      
+      \draw[color=blue, very thick](2.5,2.5) circle (1.5);
+      
+      \draw[color=black, very thick](2.5,2.5) circle (0.01);
+      
+      \node  at (2.5-0.3,2.5-0.3) {{$(x^{cm},y^{cm})$}};
+      
+      \node  at (0.5,0.7) {{$Squirmer$}};
+      
+      \draw[thick, ->] (2.5,2.5) -- (4,2.5);
+      \node  at (3.5,2.2) {{$e$}};
+   
+      \pgfmathsetmacro{\xcoord}{2.5 + 1.5*cos(45)}
+       \pgfmathsetmacro{\ycoord}{2.5 + 1.5*sin(45)}
+       \draw[thick, ->] (2.5,2.5) -- (\xcoord,\ycoord);
+      \node  at (3.1,3.5) {{$e_r$}}; 
+      \draw[thick, -] (3.5,2.5) arc[start angle=0, end angle=32, radius=1.5];
+      \node at (3.6,3) {${\theta}$}; 
+      
+         
+      \end{tikzpicture}
     \end{center}
 The time-independent velocity $u$ defined on the surface of the squirmer is given 
 in polar coordinates by :
