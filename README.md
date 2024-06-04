@@ -8,16 +8,19 @@ This project aims to determine the influence of two squirmers on each other.
 - Verify if our results align with previous studies
 
 # Compilation
-to compile the project you need to follow these steps:
+To compile the project you need to follow these steps:
 ```
 python3 -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-# Execution
+# Reproducibility
+To run the eight simulations done in the report you need to run:
 ```
 python3 Code/run.py
 ```
+and the eight resulting graphs are stored in the **graph** directory.
+You can modify the simulation parameters by editing the file **Code/run.py**.
 
 # Contributors
 - Justine Ehret
