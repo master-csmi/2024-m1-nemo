@@ -41,7 +41,7 @@ class InteractingSquirmers:
 
     def forcesSteric(self, Dx, Dy, dist):
         a = self.squirmer1.radius
-        tmp = -3*(self.Es/a)*(2*(2*a/dist)**13-(2*a/dist)**7)/dist
+        tmp = -3*(self.Es/a)*(2*(2*a/dist)**13-(2*a/dist)**7)/np.sqrt(dist)
         Fs_x = tmp * Dx
         Fs_y = tmp * Dy
         return Fs_x, Fs_y
@@ -217,15 +217,6 @@ class InteractingSquirmers:
                 Fs_pw2[0] = self.compute_force_squirmer_border_x(2)
             if ((self.R-abs(self.squirmer2.y)) < 2**(1/6)*self.squirmer1.radius):
                 Fs_pw2[1] = self.compute_force_squirmer_border_y(2)
-        
-            #Evolution of position
-            self.squirmer1.orientation += self.dt*(val1 + 0.25*val2)
-            self.squirmer1.x += self.dt*(self.squirmer1.velocity * np.cos(self.squirmer1.orientation) + Fs_x + Fl_x1 + Fs_pw1[0])
-            self.squirmer1.y += self.dt*(self.squirmer1.velocity * np.sin(self.squirmer1.orientation) + Fs_y + Fl_y1 + Fs_pw1[1])
-            
-            self.squirmer2.orientation += self.dt*(val2 + 0.25*val1)
-            self.squirmer2.x += self.dt*(self.squirmer2.velocity * np.cos(self.squirmer2.orientation) - Fs_x + Fl_x2 + Fs_pw2[0])
-            self.squirmer2.y += self.dt*(self.squirmer2.velocity * np.sin(self.squirmer2.orientation) - Fs_y + Fl_y2 + Fs_pw2[1])
 
             #Compute torque exerted on squirmer by the wall
             gamma_w1 = 0
@@ -239,33 +230,34 @@ class InteractingSquirmers:
                 gamma_w2 += self.compute_torque_squirmer_border(2, dist_sq2)
             if ((self.R - abs(self.squirmer2.y)) < 2**(1/6) * self.squirmer2.radius):
                 gamma_w2 += self.compute_torque_squirmer_border(2, dist_sq2)
+        
+            #Evolution of position
+            self.squirmer1.orientation += self.dt*(val1 + 0.25*val2 + gamma_w1)
+            self.squirmer1.x += self.dt*(self.squirmer1.velocity * np.cos(self.squirmer1.orientation) + Fs_x + Fl_x1 + Fs_pw1[0])
+            self.squirmer1.y += self.dt*(self.squirmer1.velocity * np.sin(self.squirmer1.orientation) + Fs_y + Fl_y1 + Fs_pw1[1])
             
-            # if gamma_w1 != 0:
-            #     print("gamma_w1 =", gamma_w1)
-            # if gamma_w2 != 0:
-            #     print("gamma_w2 =", gamma_w2)
-
-            #Update orientation
-            self.squirmer2.orientation += self.dt*(gamma_w1)
-            self.squirmer2.orientation += self.dt*(gamma_w2)
+            self.squirmer2.orientation += self.dt*(val2 + 0.25*val1 + gamma_w2)
+            self.squirmer2.x += self.dt*(self.squirmer2.velocity * np.cos(self.squirmer2.orientation) - Fs_x + Fl_x2 + Fs_pw2[0])
+            self.squirmer2.y += self.dt*(self.squirmer2.velocity * np.sin(self.squirmer2.orientation) - Fs_y + Fl_y2 + Fs_pw2[1])
 
             #Reflective Boundary
-            if ((self.R-self.squirmer1.x) < 2**(1/6)*self.squirmer1.radius):
+            a = self.squirmer1.radius
+            if ((self.R-self.squirmer1.x) < a):
                 self.squirmer1.x, self.squirmer1.orientation = self.ref_bound_x(1,1)
-            if ((self.R+self.squirmer1.x) < 2**(1/6)*self.squirmer1.radius):
+            if ((self.R+self.squirmer1.x) < a):
                 self.squirmer1.x, self.squirmer1.orientation = self.ref_bound_x(1,2)
-            if ((self.R-self.squirmer1.y) < 2**(1/6)*self.squirmer1.radius):
+            if ((self.R-self.squirmer1.y) < a):
                 self.squirmer1.y, self.squirmer1.orientation = self.ref_bound_y(1,1)
-            if ((self.R+self.squirmer1.y) < 2**(1/6)*self.squirmer1.radius):
+            if ((self.R+self.squirmer1.y) < a):
                 self.squirmer1.y, self.squirmer1.orientation = self.ref_bound_y(1,2)
 
-            if ((self.R-self.squirmer2.x) < 2**(1/6)*self.squirmer2.radius):
+            if ((self.R-self.squirmer2.x) < a):
                 self.squirmer2.x, self.squirmer2.orientation = self.ref_bound_x(2,1)
-            if ((self.R+self.squirmer2.x) < 2**(1/6)*self.squirmer2.radius):
+            if ((self.R+self.squirmer2.x) < a):
                 self.squirmer2.x, self.squirmer2.orientation = self.ref_bound_x(2,2)
-            if ((self.R-self.squirmer2.y) < 2**(1/6)*self.squirmer2.radius):
+            if ((self.R-self.squirmer2.y) < a):
                 self.squirmer2.y, self.squirmer2.orientation = self.ref_bound_y(2,1)
-            if ((self.R+self.squirmer2.y) < 2**(1/6)*self.squirmer1.radius):
+            if ((self.R+self.squirmer2.y) < a):
                 self.squirmer2.y, self.squirmer2.orientation = self.ref_bound_y(2,2)
             
             #Update the data to export
