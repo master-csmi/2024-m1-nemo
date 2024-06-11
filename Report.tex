@@ -461,6 +461,21 @@ This class has many functions:
    and \texttt{plot\_dist\_sq(history, filename\_dist, dir)}.
 \end{itemize}
 
+\subsection{simulation}
+\begin{itemize}
+   \item \texttt{sim\_interacting\_sq(x1, y1, x2, y2, orient1, orient2, a, beta0, betainf, betasup, v0,  R, dt, dt\_out, T, Es, ds, mu, Eo, lnEps\_cr, file, dir)}
+   initializes two squirmers for each orientation in \texttt{orient2} and computes their 
+   interactions with \texttt{loop\_time}, then it uses \texttt{plot\_sim\_6squirmers} to plot each simulation, the resulting
+    graphs are stored in the \texttt{dir} directory.
+   \item \texttt{sim\_squirmer\_border(x\_positions, y\_positions, orientations, a, betas, v0, R, dt, dt\_out, T, Es, ds, mu, Eo, lnEps\_cr, filename, dir)}
+   takes \texttt{x\_positions}, \texttt{y\_positions} and \texttt{orientations} that are lists of the position and orientation of each squirmers,
+    it then compute the interactions between each pair of squirmers and uses \texttt{plot\_sim\_squirmer\_border} to plot the
+    simulations, it stores the graphs in the \texttt{dir} directory.
+   \item \texttt{sim\_vid\_interact\_squir(x1, y1, x2, y2, orient1, orient2, a, beta, v0, R, dt, dt\_out, T, Es, ds, mu, Eo, lnEps\_cr, filename, dir)}
+   initializes two squirmers and computes their interactions with \texttt{loop\_time}, it then uses \texttt{create\_video\_from\_history}
+    to create a video from the simulation and stores it in the \texttt{dir} directory.
+\end{itemize}
+
 \subsection{Reproducibility-\texttt{run.py}}
 The file \texttt{run.py} is utilized to simulate the squirmers' behaviors, their parameters are defined
  and eight simulations are conducted.\\
