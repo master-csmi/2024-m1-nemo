@@ -98,6 +98,17 @@ def plot_sim_6squirmers(R, historyb0, historybinf, historybsup, filename, dir='g
         plt.plot(squirmer1_x, squirmer1_y, label=f'Squirmer1 {history[1]}', color=color1)
         plt.plot(squirmer2_x, squirmer2_y, label=f'Squirmer2 {history[1]}', color=color2)
 
+        last_orient1 = squirmer1_orient[0]
+        last_orient2 = squirmer2_orient[0]
+
+        for i in range(len(squirmer1_orient)):
+            if squirmer1_orient[i] != last_orient1:
+                plt.quiver(squirmer1_x[i], squirmer1_y[i], np.cos(squirmer1_orient[i]), np.sin(squirmer1_orient[i]), color=color1, scale=25, width=0.005)
+                last_orient1 = squirmer1_orient[i]
+            if squirmer2_orient[i] != last_orient2:
+                plt.quiver(squirmer2_x[i], squirmer2_y[i], np.cos(squirmer2_orient[i]), np.sin(squirmer2_orient[i]), color=color2, scale=25, width=0.005)
+                last_orient2 = squirmer2_orient[i]
+
     #Plot initial orientations
     plt.quiver(squirmer2_x[0], squirmer2_y[0], np.cos(squirmer2_orient[0]), np.sin(squirmer2_orient[0]), color='black', scale=25, width=0.002)
     plt.quiver(squirmer1_x[0], squirmer1_y[0], np.cos(squirmer1_orient[0]), np.sin(squirmer1_orient[0]), color='black', scale=25, width=0.002)
@@ -153,6 +164,26 @@ def plot_sim_squirmer_border(R, histories, filename, dir='graphs'):
         plt.plot(squirmer2_x, squirmer2_y, label=f'Squirmer2 {label}', color=color2)
         plt.plot(squirmer3_x, squirmer3_y, label=f'Squirmer3 {label}', color=color3)
         plt.plot(squirmer4_x, squirmer4_y, label=f'Squirmer4 {label}', color=color4)
+
+        last_orient1 = squirmer1_orient[0]
+        last_orient2 = squirmer2_orient[0]
+        last_orient3 = squirmer3_orient[0]
+        last_orient4 = squirmer4_orient[0]
+
+        for i in range(len(squirmer1_orient)):
+            if squirmer1_orient[i] != last_orient1:
+                plt.quiver(squirmer1_x[i], squirmer1_y[i], np.cos(squirmer1_orient[i]), np.sin(squirmer1_orient[i]), color=color1, scale=25, width=0.005)
+                last_orient1 = squirmer1_orient[i]
+            if squirmer2_orient[i] != last_orient2:
+                plt.quiver(squirmer2_x[i], squirmer2_y[i], np.cos(squirmer2_orient[i]), np.sin(squirmer2_orient[i]), color=color2, scale=25, width=0.005)
+                last_orient2 = squirmer2_orient[i]
+            if squirmer3_orient[i] != last_orient3:
+                plt.quiver(squirmer3_x[i], squirmer3_y[i], np.cos(squirmer3_orient[i]), np.sin(squirmer3_orient[i]), color=color3, scale=25, width=0.005)
+                last_orient3 = squirmer3_orient[i]
+            if squirmer4_orient[i] != last_orient4:
+                plt.quiver(squirmer4_x[i], squirmer4_y[i], np.cos(squirmer4_orient[i]), np.sin(squirmer4_orient[i]), color=color4, scale=25, width=0.005)
+                last_orient4 = squirmer4_orient[i]
+
 
     #Plot initial orientations
     plt.quiver(squirmer1_x[0], squirmer1_y[0], np.cos(squirmer1_orient[0]), np.sin(squirmer1_orient[0]), color='black')
