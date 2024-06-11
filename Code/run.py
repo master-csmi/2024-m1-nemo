@@ -42,8 +42,8 @@ ds = 2**(7./6)*a
 #viscovity parameter
 mu = 0.01
 
-#sim_squirmer_border(xs, ys, orients, a, betas, v0,  R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, 'bordersimtest', dir='graphs')
+sim_squirmer_border(xs, ys, orients, a, betas, v0,  R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, 'bordersimtest', dir='graphs')
 
 #sim_intercating_squirmers(x1, y1, x2, y2, orient1, orient2, a, beta0, betainf, betasup, v0,  R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, file, dir='graphs')
 
-sim_vid_interact_squir(x1, y1, x2, y2, orient1, orients[0], a, betas[0], v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, 'sim_interact_sq', dir='videos', gif=True)
+#sim_vid_interact_squir(x1, y1, x2, y2, orient1, orients[0], a, betas[0], v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, 'sim_interact_sq', dir='videos', gif=True)
