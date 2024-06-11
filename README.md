@@ -29,6 +29,7 @@ with **sim_choice** a parameter used to choose which simulation is done.
 - **sq_border**, two simulations of two squirmers interacting with a border are done, the resulting graph is stored in the **graphs** directory
 
 **filename** a name file used with **vid_interact_sq** and **sq_border**.
+
 You can modify the simulation parameters by editing the file **Code/run.py**.
 
 # Contributors
