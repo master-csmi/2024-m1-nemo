@@ -34,7 +34,9 @@ jobs:
         pip install -r requirements.txt
 
     - name: Check code
-      run: python Code/run.py
+      run: python Code/run.py vid_interact_sq test
+      run: python Code/run.py interact_sq test
+      run: python Code/run.py sq_border test
 
     - name: Print working directory
       run: |
