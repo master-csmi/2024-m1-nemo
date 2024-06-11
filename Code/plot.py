@@ -204,13 +204,10 @@ def plot_sim_squirmer_border(R, histories, filename, dir='graphs'):
     plt.savefig(save_path)
     plt.close()
 
-def create_video_from_history(history, R, filename='squirmers_simulation.mp4', dir='videos', fps=30, gif=False):
+def create_video_from_history(history, R, filename='squirmers_simulation.mp4', dir='videos', fps=30):
     if not os.path.exists(dir):
         os.makedirs(dir)
-    if gif:
-        filename = filename if filename.endswith('.gif') else filename + '.gif'
-    else:
-        filename = filename if filename.endswith('.mp4') else filename + '.mp4'
+    filename = filename if filename.endswith('.mp4') else filename + '.mp4'
     save_path = os.path.join(dir, filename)
 
     fig, ax = plt.subplots()
@@ -238,10 +235,5 @@ def create_video_from_history(history, R, filename='squirmers_simulation.mp4', d
         return line1, line2, orientation1, orientation2
 
     ani = FuncAnimation(fig, update, frames=len(history), init_func=init, blit=True)
-
-    if gif == True:
-        #For saving animation as GIF
-        ani.save('squirmers_simulation.gif', writer=PillowWriter(fps=fps))
-    else:
-        #Save animation as video
-        ani.save(save_path, writer='ffmpeg', fps=fps)
+    #Save animation as video
+    ani.save(save_path, writer='ffmpeg', fps=fps)

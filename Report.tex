@@ -420,6 +420,9 @@ This file contains two functions:
    \item \texttt{plot\_sim\_squirmer\_border(R, histories, filename, dir='graphs')} takes \texttt{histories = [[historyb01, historyb02], [historybinf1, historybinf2], [historybsup1, historybsup2]]}
    with each \texttt{history} the list of \texttt{loop\_time}, this function is used to plot the simulations of squirmers
    interacting with the borders.
+   \item \texttt{create\_video\_from\_history(history, R, filename, dir, fps)} takes \texttt{history}
+   the list of \texttt{loop\_time}, this function is used to create a video from the simulation of two squirmers interacting. The video is stored
+    in the directory \texttt{dir}.
 \end{itemize}
 
 \subsection{interactingsquirmers}

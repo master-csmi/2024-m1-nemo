@@ -37,7 +37,7 @@ def sim_squirmer_border(x_positions, y_positions, orientations, a, betas, v0, R,
 
     plot_sim_squirmer_border(R, histories, filename, dir=dir)
 
-def sim_vid_interact_squir(x1, y1, x2, y2, orient1, orient2, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, filename, dir='videos', gif=False):
+def sim_vid_interact_squir(x1, y1, x2, y2, orient1, orient2, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, filename, dir='videos'):
     #Create a video of two squirmers interacting
     squirmer1 = Squirmer(x1, y1, orient1, a, beta, v0)
     squirmer2 = Squirmer(x2, y2, orient2, a, beta, v0)
@@ -45,4 +45,4 @@ def sim_vid_interact_squir(x1, y1, x2, y2, orient1, orient2, a, beta, v0, R, dt,
     interact_sq = InteractingSquirmers(squirmer1, squirmer2, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr)
     history = interact_sq.loop_time()
 
-    create_video_from_history(history, R=R, filename=filename, dir=dir, gif=gif)
+    create_video_from_history(history, R=R, filename=filename, dir=dir)
