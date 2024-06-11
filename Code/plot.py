@@ -3,6 +3,7 @@ import numpy as np
 import os
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation, PillowWriter
 
 def plot_squirmers_positions(R, history, filename, dir='graphs'):
     #Plot the position of each squirmers
@@ -171,3 +172,45 @@ def plot_sim_squirmer_border(R, histories, filename, dir='graphs'):
     save_path = os.path.join(dir, filename + '.png')
     plt.savefig(save_path)
     plt.close()
+
+def create_video_from_history(history, R, filename='squirmers_simulation.mp4', dir='videos', fps=30, gif=False):
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+    if gif:
+        filename = filename if filename.endswith('.gif') else filename + '.gif'
+    else:
+        filename = filename if filename.endswith('.mp4') else filename + '.mp4'
+    save_path = os.path.join(dir, filename)
+
+    fig, ax = plt.subplots()
+    ax.set_xlim(-R, R)
+    ax.set_ylim(-R, R)
+    line1, = ax.plot([], [], 'bo', markersize=8, label='Squirmer 1')
+    line2, = ax.plot([], [], 'ro', markersize=8, label='Squirmer 2')
+    orientation1, = ax.plot([], [], 'b-', lw=1)
+    orientation2, = ax.plot([], [], 'r-', lw=1)
+    ax.legend()
+
+    def init():
+        line1.set_data([], [])
+        line2.set_data([], [])
+        orientation1.set_data([], [])
+        orientation2.set_data([], [])
+        return line1, line2, orientation1, orientation2
+
+    def update(frame):
+        x1, y1, x2, y2, theta1, theta2, *_ = history[frame]
+        line1.set_data(x1, y1)
+        line2.set_data(x2, y2)
+        orientation1.set_data([x1, x1 + 0.1 * np.cos(theta1)], [y1, y1 + 0.1 * np.sin(theta1)])
+        orientation2.set_data([x2, x2 + 0.1 * np.cos(theta2)], [y2, y2 + 0.1 * np.sin(theta2)])
+        return line1, line2, orientation1, orientation2
+
+    ani = FuncAnimation(fig, update, frames=len(history), init_func=init, blit=True)
+
+    if gif == True:
+        #For saving animation as GIF
+        ani.save('squirmers_simulation.gif', writer=PillowWriter(fps=fps))
+    else:
+        #Save animation as video
+        ani.save(save_path, writer='ffmpeg', fps=fps)
