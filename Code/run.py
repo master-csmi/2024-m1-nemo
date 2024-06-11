@@ -13,7 +13,7 @@ def main(simulation, filename):
     #squirmers' radius
     a = 0.15
     #coordinates
-    x1, y1 = -a/1.1, 0
+    x1, y1 = -2*a, 0
     x2, y2 = a/1.1, 0
     #orientations
     orient1 = np.pi/2
