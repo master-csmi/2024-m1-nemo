@@ -32,11 +32,14 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
         pip install -r requirements.txt
+        sudo apt-get update
+        sudo apt-get install ffmpeg
 
     - name: Check code
-      run: python Code/run.py vid_interact_sq test
-      run: python Code/run.py interact_sq test
-      run: python Code/run.py sq_border test
+      run: |
+        python Code/run.py vid_interact_sq test
+        python Code/run.py interact_sq test
+        python Code/run.py sq_border test
 
     - name: Print working directory
       run: |
