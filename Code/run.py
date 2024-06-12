@@ -3,7 +3,7 @@ import numpy as np
 from squirmer import Squirmer
 from interactingsquirmers import InteractingSquirmers
 from plot import plot_squirmers_positions
-from simulation import sim_intercating_squirmers, sim_vid_interact_squir, sim_squirmer_border
+from simulation import sim_intercating_squirmers, sim_vid_interact_sq, sim_sq_border
 
 def main(simulation, filename):
     # Define parameters
@@ -55,9 +55,9 @@ def main(simulation, filename):
     if simulation == 'interact_sq':
         sim_intercating_squirmers(x1, y1, x2, y2, orient1, orient2, a, beta0, betainf, betasup, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, file, dir='graphs')
     elif simulation == 'vid_interact_sq':
-        sim_vid_interact_squir(x1, y1, x2, y2, orient1, orient2[0], a, betas[0], v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, filename, dir='videos')
+        sim_vid_interact_sq(x1, y1, x2, y2, orient1, orient2[0], a, betas[0], v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, filename, dir='videos')
     elif simulation == 'sq_border':
-        sim_squirmer_border(xs, ys, orients, a, betas, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, filename, dir='graphs')
+        sim_sq_border(xs, ys, orients, a, betas, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, filename, dir='graphs')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run squirmer simulations.")

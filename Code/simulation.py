@@ -27,7 +27,7 @@ def sim_intercating_squirmers(x1, y1, x2, y2, orient1, orient2, a, beta0, betain
 
         plot_sim_6squirmers(R, historyb0, historybinf, historybsup, f"sq2.{pi}", dir=dir)
 
-def sim_squirmer_border(x_positions, y_positions, orientations, a, betas, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, filename, dir='graphs'):
+def sim_sq_border(x_positions, y_positions, orientations, a, betas, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, filename, dir='graphs'):
     #Compute simulation for 4 squirmers close to a border
     histories = []
     for beta in betas:
@@ -37,7 +37,7 @@ def sim_squirmer_border(x_positions, y_positions, orientations, a, betas, v0, R,
 
     plot_sim_squirmer_border(R, histories, filename, dir=dir)
 
-def sim_vid_interact_squir(x1, y1, x2, y2, orient1, orient2, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, filename, dir='videos'):
+def sim_vid_interact_sq(x1, y1, x2, y2, orient1, orient2, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, filename, dir='videos'):
     #Create a video of two squirmers interacting
     squirmer1 = Squirmer(x1, y1, orient1, a, beta, v0)
     squirmer2 = Squirmer(x2, y2, orient2, a, beta, v0)
