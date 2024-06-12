@@ -420,6 +420,9 @@ This file contains two functions:
    \item \texttt{plot\_sim\_squirmer\_border(R, histories, filename, dir='graphs')} takes \texttt{histories = [[historyb01, historyb02], [historybinf1, historybinf2], [historybsup1, historybsup2]]}
    with each \texttt{history} the list of \texttt{loop\_time}, this function is used to plot the simulations of squirmers
    interacting with the borders.
+   \item \texttt{create\_video\_from\_history(history, R, filename, dir, fps)} takes \texttt{history}
+   the list of \texttt{loop\_time}, this function is used to create a video from the simulation of two squirmers interacting. The video is stored
+    in the directory \texttt{dir}.
 \end{itemize}
 
 \subsection{interactingsquirmers}
@@ -458,15 +461,36 @@ This class has many functions:
    and \texttt{plot\_dist\_sq(history, filename\_dist, dir)}.
 \end{itemize}
 
+\subsection{simulation}
+\begin{itemize}
+   \item \texttt{sim\_interacting\_sq(x1, y1, x2, y2, orient1, orient2, a, beta0, betainf, betasup, v0,  R, dt, dt\_out, T, Es, ds, mu, Eo, lnEps\_cr, file, dir)}
+   initializes two squirmers for each orientation in \texttt{orient2} and computes their 
+   interactions with \texttt{loop\_time}, then it uses \texttt{plot\_sim\_6squirmers} to plot each simulation, the resulting
+    graphs are stored in the \texttt{dir} directory.
+   \item \texttt{sim\_squirmer\_border(x\_positions, y\_positions, orientations, a, betas, v0, R, dt, dt\_out, T, Es, ds, mu, Eo, lnEps\_cr, filename, dir)}
+   takes \texttt{x\_positions}, \texttt{y\_positions} and \texttt{orientations} that are lists of the position and orientation of each squirmers,
+    it then compute the interactions between each pair of squirmers and uses \texttt{plot\_sim\_squirmer\_border} to plot the
+    simulations, it stores the graphs in the \texttt{dir} directory.
+   \item \texttt{sim\_vid\_interact\_sq(x1, y1, x2, y2, orient1, orient2, a, beta, v0, R, dt, dt\_out, T, Es, ds, mu, Eo, lnEps\_cr, filename, dir)}
+   initializes two squirmers and computes their interactions with \texttt{loop\_time}, it then uses \texttt{create\_video\_from\_history}
+    to create a video from the simulation and stores it in the \texttt{dir} directory.
+\end{itemize}
+
 \subsection{Reproducibility-\texttt{run.py}}
 The file \texttt{run.py} is utilized to simulate the squirmers' behaviors, their parameters are defined
  and eight simulations are conducted.\\
  To execute the simulations, run the following command:
  \begin{verbatim}
-   python Code/run.py
+   python Code/run.py sim_choice filename
 \end{verbatim} 
- The resulting graphs are stored in the 
- \texttt{graphs} directory.
+\texttt{sim\_choice} can be:
+\begin{itemize}
+   \item \texttt{interact\_sq} which runs \texttt{sim\_interacting\_sq}
+   \item \texttt{vid\_interact\_sq} which runs \texttt{sim\_vid\_interact\_sq}
+   \item \texttt{sq\_border} which runs \texttt{sim\_sq\_border}
+\end{itemize}
+ The resulting graphs and videos are stored in the 
+ \texttt{graphs} and \texttt{videos} directory.
 
 \section{Numerical experiments}
 \subsection{Simulation of two squirmers interacting}
@@ -497,7 +521,8 @@ We then compare our results with those from previous studies.
    \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.pi.2.png}
    \caption{\footnotesize Simulation parameters: $a=0.15$, $v_0=1$, $\beta_1=0, \beta_2=7.5, \beta_3=-7.5$\\
    position and orientation of squirmer1: $(x1,y1)=(\frac{-a}{1.1},0)$, $\theta_1=\frac{\pi}{2}$\\
-   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=\frac{\pi}{2}$}
+   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=\frac{\pi}{2}$\\
+   The arrows shows when the orientations of the squirmers are affected}
 \end{figure}
 We show the trajectories of the two squirmers as well as their initial orientation.
 One can observe that their orientation changes due to the lubrification and steric forces which are applied on them. 
@@ -514,7 +539,8 @@ Each squirmer gradually distances itself from the other,
    \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.-pi.2.png}
    \caption{\footnotesize Simulation parameters: $a=0.15$, $v_0=1$, $\beta_1=0, \beta_2=7.5, \beta_3=-7.5$\\
    position and orientation of squirmer1: $(x1,y1)=(\frac{-a}{1.1},0)$, $\theta_1=\frac{\pi}{2}$\\
-   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=\frac{-\pi}{2}$}
+   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=\frac{-\pi}{2}$\\
+   The arrows shows when the orientations of the squirmers are affected}
 \end{figure}
 Our results align with the previous study when both squirmers have a $\beta \le 0$.\\
 However for $\beta > 0$, our results diverge, one can see the steric forces pushing each squirmer apart 
@@ -527,7 +553,8 @@ as expected, but their orientation do not align with those in the study.\\
    \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.3pi.4.png}
    \caption{\footnotesize Simulation parameters: $a=0.15$, $v_0=1$, $\beta_1=0, \beta_2=7.5, \beta_3=-7.5$\\
    position and orientation of squirmer1: $(x1,y1)=(\frac{-a}{1.1},0)$, $\theta_1=\frac{\pi}{2}$\\
-   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=\frac{3\pi}{4}$}
+   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=\frac{3\pi}{4}$\\
+   The arrows shows when the orientations of the squirmers are affected}
 \end{figure}
 Our results are consistent with the previous study for $\beta \ge 0$.\\
 When $\beta < 0$, one can observe that the right squirmer moves closer to the left one, which moves away,
@@ -540,7 +567,8 @@ the right one ends up behind the left one. This behavior does not match the resu
    \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.-3pi.4.png}
    \caption{\footnotesize Simulation parameters: $a=0.15$, $v_0=1$, $\beta_1=0, \beta_2=7.5, \beta_3=-7.5$\\
    position and orientation of squirmer1: $(x1,y1)=(\frac{-a}{1.1},0)$, $\theta_1=\frac{\pi}{2}$\\
-   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=\frac{-3\pi}{4}$}
+   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=\frac{-3\pi}{4}$\\
+   The arrows shows when the orientations of the squirmers are affected}
 \end{figure}
 
 Our simulation results align with the previous study when $\beta = 0$.\\
@@ -555,7 +583,8 @@ For $\beta < 0$, the right squirmer moves towards the left squirmer and ends up 
    \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.pi.4.png}
    \caption{\footnotesize Simulation parameters: $a=0.15$, $v_0=1$, $\beta_1=0, \beta_2=7.5, \beta_3=-7.5$\\
    position and orientation of squirmer1: $(x1,y1)=(\frac{-a}{1.1},0)$, $\theta_1=\frac{\pi}{2}$\\
-   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=\frac{\pi}{4}$}
+   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=\frac{\pi}{4}$\\
+   The arrows shows when the orientations of the squirmers are affected}
 \end{figure}
 Our results are consistent with the previous study for $\beta = 0$.\\
 The directional rotation due to interaction is weaker for the left squirmer than for the right one.
@@ -569,7 +598,8 @@ The directional rotation due to interaction is weaker for the left squirmer than
    \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.-pi.4.png}
    \caption{\footnotesize Simulation parameters: $a=0.15$, $v_0=1$, $\beta_1=0, \beta_2=7.5, \beta_3=-7.5$\\
    position and orientation of squirmer1: $(x1,y1)=(\frac{-a}{1.1},0)$, $\theta_1=\frac{\pi}{2}$\\
-   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=\frac{-\pi}{4}$}
+   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=\frac{-\pi}{4}$\\
+   The arrows shows when the orientations of the squirmers are affected}
 \end{figure}
 Our results are consistent with the previous study when $\beta = 0$.\\
 For $\beta > 0$, there is a discrepancy between the squirmers' directional vector and the expected
@@ -584,7 +614,8 @@ as shown in the previous study, but our simulation does not reflect this.
    \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.pi.png}
    \caption{\footnotesize Simulation parameters: $a=0.15$, $v_0=1$, $\beta_1=0, \beta_2=7.5, \beta_3=-7.5$\\
    position and orientation of squirmer1: $(x1,y1)=(\frac{-a}{1.1},0)$, $\theta_1=\frac{\pi}{2}$\\
-   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=\pi$}
+   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=\pi$\\
+   The arrows shows when the orientations of the squirmers are affected}
 \end{figure}
 There is a discrepancy between our simulation and the expected behavior from the previous study for all $\beta$ values.\\
 The right squirmer's trajectory is altered by the steric and lubrication forces in every scenario, 
@@ -597,7 +628,8 @@ contrary to the previous study's results.
    \includegraphics[width=1\textwidth]{graphs/simulations/twosquirmerinter/sq2.2pi.png}
    \caption{\footnotesize Simulation parameters: $a=0.15$, $v_0=1$, $\beta_1=0, \beta_2=7.5, \beta_3=-7.5$\\
    position and orientation of squirmer1: $(x1,y1)=(\frac{-a}{1.1},0)$, $\theta_1=\frac{\pi}{2}$\\
-   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=2\pi$}
+   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=2\pi$\\
+   The arrows shows when the orientations of the squirmers are affected}
 \end{figure}
 The previous study shows that the right squirmer's directional vector should not be altered. 
 Our simulation diverges from this result, showing small modifications to the right squirmer's 
@@ -611,22 +643,15 @@ In this section we run two simulations with the same parameters and we extend th
 \subsubsection{$\theta_2 = \frac{\pi}{2}$}
 \begin{figure}[h]
    \centering
-   \includegraphics[width=1\textwidth]{graphs/simulations/bordersquirmer/border_sq2.pi.2.png}
+   \includegraphics[width=1\textwidth]{graphs/simulations/bordersquirmer/bordersimtest.png}
    \caption{\footnotesize Simulation parameters: $a=0.15$, $v_0=1$, $\beta_1=0, \beta_2=7.5, \beta_3=-7.5$\\
-   position and orientation of squirmer1: $(x1,y1)=(\frac{-a}{1.1},0)$, $\theta_1=\frac{\pi}{2}$\\
-   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=\frac{\pi}{2}$}
+   initial position and orientation of squirmer1: $(x1,y1)=(-0.6,-0.2)$, $\theta_1=\frac{3\pi}{4}$\\
+   initial position and orientation of squirmer2: $(x2,y2)=(0.6,-0.2)$, $\theta_2=\frac{\pi}{4}$\\
+   initial position and orientation of squirmer3: $(x3,y3)=(0.2,0.6)$, $\theta_3=\frac{3\pi}{4}$\\
+   initial position and orientation of squirmer4: $(x4,y4)=(-0.2,-0.6)$, $\theta_4=\frac{-\pi}{4}$\\
+   The arrows shows when the orientations of the squirmers are affected}
 \end{figure}
 One can see that the squirmers' orientations are altered by the borders forces and torques.
-
-\newpage
-\subsubsection{$\theta_2 = \frac{\pi}{4}$}
-\begin{figure}[h]
-   \centering
-   \includegraphics[width=1\textwidth]{graphs/simulations/bordersquirmer/sq2.pi.4.png}
-   \caption{\footnotesize Simulation parameters: $a=0.15$, $v_0=1$, $\beta_1=0, \beta_2=7.5, \beta_3=-7.5$\\
-   position and orientation of squirmer1: $(x1,y1)=(\frac{-a}{1.1},0)$, $\theta_1=\frac{\pi}{2}$\\
-   position and orientation of squirmer2: $(x2,y2)=(\frac{a}{1.1},0)$, $\theta_2=\frac{\pi}{4}$}
-\end{figure}
 
 \newpage
 \section{Conclusion and perspective}
