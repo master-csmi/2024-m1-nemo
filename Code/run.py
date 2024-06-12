@@ -14,9 +14,9 @@ def main(simulation, filename):
     #half of the length of the square
     R = L/2
     #squirmers' radius
-    a = 0.15
+    a = 0.1
     #coordinates
-    x1, y1 = -2*a, 0
+    x1, y1 = -3*a, 0
     x2, y2 = a/1.1, 0
     #orientations
     orient1 = np.pi/2
