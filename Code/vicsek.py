@@ -18,6 +18,7 @@ class Vicsek_continous:
         self.size = L/R
         self.density = (N*R**2)/(L**2)
         self.ratio = v0/R
+        self.Fs_x, self.Fs_y, self.Fl_x, self.Fl_y, self.Fs_pwx, self.Fs_pwy = np.zeros(N), np.zeros(N), np.zeros(N), np.zeros(N), np.zeros(N), np.zeros(N)
 
         orientations = []
         xs = []
@@ -33,6 +34,7 @@ class Vicsek_continous:
         while len(xs) < N:
             x = np.random.uniform(-(L-2*radius)/2, (L-2*radius)/2)
             y = np.random.uniform(-(L-2*radius)/2, (L-2*radius)/2)
+            #Each particle must have a unique initial position
             if not any(np.isclose(x, xs, atol=1.5*radius)) and not any(np.isclose(y, ys, atol=1.5*radius)):
                 xs.append(x)
                 ys.append(y)
@@ -41,15 +43,33 @@ class Vicsek_continous:
         for i in range(len(xs)):
             self.particles.append(Squirmer(xs[i], ys[i], orientations[i], radius, beta, v0))
 
+    def dist_particles(self, particle):
+        #Compute the distance between the particle in argument and the other ones
+        dist = [self.distance(particle, p) for p in self.particles]
+        return dist
+
     def is_light_color(self, hex_color):
+        #Define what a color too bright is
         rgb = matplotlib.colors.hex2color(hex_color)
         luminance = 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]
         return luminance > 0.7
 
     def polar_order_parameter(self):
+        #Returns the polar order parameter
         summ = abs(sum(v0*(np.cos(particle.orientation) + np.sin(particle.orientation)) for particle in self.particles))
         polar_order = 1/(self.N*self.v0)*summ
         return polar_order
+    
+    def forcesSteric(self, particle1, particle2):
+        a = self.particles[0].radius
+        Dx = self.vector_x(particle1, particle2)
+        Dy = self.vector_y(particle1, particle2)
+        dist = self.distance(particle1, particle2)
+        #we set self.Es = 1 => Es/a = 1/a
+        tmp = -3*(1/a)*(2*(2*a/dist)**13-(2*a/dist)**7)/np.sqrt(dist)
+        Fs_x = tmp * Dx
+        Fs_y = tmp * Dy
+        return Fs_x, Fs_y
 
     def ref_border_x(self, particle, boundary):
         #reflective border x
@@ -78,8 +98,11 @@ class Vicsek_continous:
         #Compute the distance between two particles
         return np.sqrt((p1.x-p2.x)**2 + (p1.y-p2.y)**2)
     
-    def compute_forces(self):
-        return 0
+    def vector_x(self, p1, p2):
+        return p2.x - p1.x
+    
+    def vector_y(self, p1, p2):
+        return p2.y - p1.y
     
     def average_orient(self, particle):
         #Compute the average particle's orientation near each particle
@@ -95,11 +118,24 @@ class Vicsek_continous:
             new_orient = np.arctan2(np.sin(avrg_orient), np.cos(avrg_orient)) + noise
             particle.orientation = new_orient
 
+    def compute_forces(self):
+        #Compute the steric forces of every particle
+        for i, particle in enumerate(self.particles):
+            dist = self.dist_particles(particle)
+            for j in range(len(dist)):
+                if dist[j] != 0 and dist[j]<=self.R:
+                    tmp_x, tmp_y = self.forcesSteric(particle, self.particles[j])
+                    self.Fs_x[i] += tmp_x
+                    self.Fs_y[i] += tmp_y
+                    self.Fs_x[j] -= tmp_x
+                    self.Fs_y[j] -= tmp_y           
+
     def update_position(self):
         #Update position of each particle
-        for particle in self.particles:
-            particle.x += self.v0*self.dt*np.cos(particle.orientation)
-            particle.y += self.v0*self.dt*np.sin(particle.orientation)
+        for i, particle in enumerate(self.particles):
+            self.compute_forces()
+            particle.x += self.v0*self.dt*(np.cos(particle.orientation) + self.Fs_x[i])
+            particle.y += self.v0*self.dt*(np.sin(particle.orientation) + self.Fs_y[i])
 
             if particle.x >= (self.L/2 - 2*self.particles[0].radius):
                 particle.x, particle.orientation = self.ref_border_x(particle, 1)
@@ -111,6 +147,7 @@ class Vicsek_continous:
                 particle.y, particle.orientation = self.ref_border_y(particle, 2)
 
     def loop_time(self):
+        #Compute the motion of the particles
         for _ in np.arange(self.dt, self.T, self.dt):
             self.update_orient()
             self.update_position()
@@ -125,7 +162,7 @@ class Vicsek_continous:
         ax.set_aspect('equal')
 
 N = 10
-R = 1.0
+R = 0.25
 L = 10.0
 v0 = 1.0
 beta = 0.5
@@ -142,6 +179,11 @@ vicsek_model.plot(ax)
 plt.title("Initial Positions")
 plt.savefig("vicsek_initial_positions.png")
 plt.close()
+w = 0
+for particle in vicsek_model.particles:
+    print(f"x{w} = {particle.x}")
+    print(f"y{w} = {particle.y}")
+    w+=1
 polar = vicsek_model.polar_order_parameter()
 print(f"polar parameter = {polar}")
 
@@ -153,6 +195,11 @@ for step in range(num_steps):
     end_time = time.time()
     sim_time = end_time - start_time
     print(f"Simulation {step + 1} took {sim_time:.2f} seconds")
+    w = 0
+    for particle in vicsek_model.particles:
+        print(f"x{w} = {particle.x}")
+        print(f"y{w} = {particle.y}")
+        w+=1
 
     polar = vicsek_model.polar_order_parameter()
     print(f"polar parameter = {polar}")
