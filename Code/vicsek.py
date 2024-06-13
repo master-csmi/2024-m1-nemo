@@ -22,6 +22,9 @@ class Vicsek_continous:
         orientations = []
         xs = []
         ys = []
+        colors = list(matplotlib.colors.CSS4_COLORS.keys())
+        np.random.shuffle(colors)
+        self.colors = colors[:N]
 
         while len(orientations) < N:
             orientation = np.random.uniform(0, 2*np.pi)
@@ -39,20 +42,20 @@ class Vicsek_continous:
 
     def ref_border_x(self, particle, boundary):
         #reflective border x
-        diff = self.L/2 - abs(particle.x)
+        diff = abs(self.L/2 - particle.x)
         particle.orientation = np.pi - particle.orientation
         if boundary == 1:
             #1 for the right border
             particle.x = self.L/2 - diff
         else:
-            particle.x = self.L/2 + diff
+            particle.x = -self.L/2 + diff
 
         return particle.x, particle.orientation
     
     def ref_border_y(self, particle, boundary):
         #reflective border y
         particle.orientation = -particle.orientation
-        diff = self.L/2 - abs(particle.y)
+        diff = abs(self.L/2 - particle.y)
         if boundary == 1:
             #1 for the up boundary
             particle.y = self.L/2 - diff
@@ -103,7 +106,7 @@ class Vicsek_continous:
             self.update_position()
 
     def plot(self, ax):
-        ax.scatter([p.x for p in self.particles], [p.y for p in self.particles])
+        ax.scatter([p.x for p in self.particles], [p.y for p in self.particles], color=[color for color in self.colors])
         ax.set_xlim(-self.L / 2, self.L / 2)
         ax.set_ylim(-self.L / 2, self.L / 2)
         ax.set_aspect('equal')
