@@ -100,14 +100,21 @@ def plot_sim_6squirmers(R, historyb0, historybinf, historybsup, filename, dir='g
 
         last_orient1 = squirmer1_orient[0]
         last_orient2 = squirmer2_orient[0]
+        plot_circle1, plot_circle2 = False, False
 
         for i in range(len(squirmer1_orient)):
             if squirmer1_orient[i] != last_orient1:
                 plt.quiver(squirmer1_x[i], squirmer1_y[i], np.cos(squirmer1_orient[i]), np.sin(squirmer1_orient[i]), color=color1, scale=25, width=0.005)
                 last_orient1 = squirmer1_orient[i]
+                plot_circle1 = not plot_circle1
+                if plot_circle1 == True:
+                    plt.scatter(squirmer1_x[i], squirmer1_y[i], color=color1)
             if squirmer2_orient[i] != last_orient2:
                 plt.quiver(squirmer2_x[i], squirmer2_y[i], np.cos(squirmer2_orient[i]), np.sin(squirmer2_orient[i]), color=color2, scale=25, width=0.005)
                 last_orient2 = squirmer2_orient[i]
+                plot_circle2 = not plot_circle2
+                if plot_circle2 == True:
+                    plt.scatter(squirmer2_x[i], squirmer2_y[i], color=color2)
 
     #Plot initial orientations
     plt.quiver(squirmer2_x[0], squirmer2_y[0], np.cos(squirmer2_orient[0]), np.sin(squirmer2_orient[0]), color='black', scale=25, width=0.002)
