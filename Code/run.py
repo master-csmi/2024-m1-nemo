@@ -40,18 +40,18 @@ def main(simulation, filename):
     T = 0.7
     #periodicity of outputs
     dt_out = 0.05
-    #amplitude of orientational interactions
-    Eo = ((3./10.)*v0/a)
-    #distance of steric interactions
-    ds = 2**(7./6)*a
     #viscovity parameter
     mu = 0.01
+    #amplitude of orientational interactions
+    Eo = (3./10.)*v0/a
+    #distance of steric interactions
+    ds = 2**(7./6)*a
     squirmer1 = Squirmer(x1, y1, orient1, a, beta0, v0)
     squirmer2 = Squirmer(x2, y2, orient2[6], a, beta0, v0)
     intera = InteractingSquirmers(squirmer1, squirmer2, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr)
     history = intera.loop_time()
 
-    plot_squirmers_positions(R, history, 'check')
+    plot_squirmers_positions(R, history, 'check11')
     if simulation == 'interact_sq':
         sim_intercating_squirmers(x1, y1, x2, y2, orient1, orient2, a, beta0, betainf, betasup, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, file, dir='graphs')
     elif simulation == 'vid_interact_sq':
