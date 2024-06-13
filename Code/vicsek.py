@@ -23,6 +23,7 @@ class Vicsek_continous:
         xs = []
         ys = []
         colors = list(matplotlib.colors.CSS4_COLORS.keys())
+        colors = [color for color in colors if not self.is_light_color(matplotlib.colors.CSS4_COLORS[color])]
         np.random.shuffle(colors)
         self.colors = colors[:N]
 
@@ -39,6 +40,16 @@ class Vicsek_continous:
         self.particles = []
         for i in range(len(xs)):
             self.particles.append(Squirmer(xs[i], ys[i], orientations[i], radius, beta, v0))
+
+    def is_light_color(self, hex_color):
+        rgb = matplotlib.colors.hex2color(hex_color)
+        luminance = 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]
+        return luminance > 0.7
+
+    def polar_order_parameter(self):
+        summ = abs(sum(v0*(np.cos(particle.orientation) + np.sin(particle.orientation)) for particle in self.particles))
+        polar_order = 1/(self.N*self.v0)*summ
+        return polar_order
 
     def ref_border_x(self, particle, boundary):
         #reflective border x
@@ -89,15 +100,14 @@ class Vicsek_continous:
         for particle in self.particles:
             particle.x += self.v0*self.dt*np.cos(particle.orientation)
             particle.y += self.v0*self.dt*np.sin(particle.orientation)
-            print(particle.x)
 
-            if particle.x >= self.L/2:
+            if particle.x >= (self.L/2 - 2*self.particles[0].radius):
                 particle.x, particle.orientation = self.ref_border_x(particle, 1)
-            if particle.x <= -self.L/2:
+            if particle.x <= (-self.L/2 + 2*self.particles[0].radius):
                 particle.x, particle.orientation = self.ref_border_x(particle, 2)
-            if particle.y >= self.L/2:
+            if particle.y >= (self.L/2 - 2*self.particles[0].radius):
                 particle.y, particle.orientation = self.ref_border_y(particle, 1)
-            if particle.y <= -self.L/2:
+            if particle.y <= (-self.L/2 + self.particles[0].radius):
                 particle.y, particle.orientation = self.ref_border_y(particle, 2)
 
     def loop_time(self):
@@ -112,7 +122,7 @@ class Vicsek_continous:
         ax.set_aspect('equal')
 
 # Exemple d'utilisation
-N = 10
+N = 9
 R = 1.0
 L = 10.0
 v0 = 1.0
@@ -124,14 +134,19 @@ noise = 0.1
 
 vicsek_model = Vicsek_continous(N, R, L, v0, beta, radius, T, dt, noise)
 
-# Plot initial positions and save the figure
+#Plot initial positions and save the figure
 fig, ax = plt.subplots(figsize=(8, 8))
 vicsek_model.plot(ax)
 plt.title("Initial Positions")
 plt.savefig("vicsek_initial_positions.png")
 plt.close()
+f = 0
+for particle in vicsek_model.particles:
+    print(f"x{f} = {particle.x}")
+    print(f"y{f} = {particle.y}")
+    f+=1
 
-# Run the simulation and plot at intervals
+#Run the simulation and plot at intervals
 num_steps = 2
 for step in range(num_steps):
     start_time = time.time()
@@ -139,6 +154,10 @@ for step in range(num_steps):
     end_time = time.time()
     sim_time = end_time - start_time
     print(f"Simulation {step + 1} took {sim_time:.2f} seconds")
+
+    polar = vicsek_model.polar_order_parameter()
+    print(f"polar parameter = {polar}")
+
     fig, ax = plt.subplots(figsize=(8, 8))
     vicsek_model.plot(ax)
     plt.title(f"Positions at Step {step + 1}")
