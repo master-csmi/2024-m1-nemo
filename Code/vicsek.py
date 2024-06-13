@@ -117,12 +117,14 @@ class Vicsek_continous:
 
     def plot(self, ax):
         ax.scatter([p.x for p in self.particles], [p.y for p in self.particles], color=[color for color in self.colors])
+        ax.quiver([p.x for p in self.particles], [p.y for p in self.particles], 
+                  [np.cos(p.orientation) for p in self.particles], [np.sin(p.orientation) for p in self.particles],
+                  color=[color for color in self.colors])
         ax.set_xlim(-self.L / 2, self.L / 2)
         ax.set_ylim(-self.L / 2, self.L / 2)
         ax.set_aspect('equal')
 
-# Exemple d'utilisation
-N = 9
+N = 10
 R = 1.0
 L = 10.0
 v0 = 1.0
@@ -134,19 +136,16 @@ noise = 0.1
 
 vicsek_model = Vicsek_continous(N, R, L, v0, beta, radius, T, dt, noise)
 
-#Plot initial positions and save the figure
+#Plots initial positions and save the figure
 fig, ax = plt.subplots(figsize=(8, 8))
 vicsek_model.plot(ax)
 plt.title("Initial Positions")
 plt.savefig("vicsek_initial_positions.png")
 plt.close()
-f = 0
-for particle in vicsek_model.particles:
-    print(f"x{f} = {particle.x}")
-    print(f"y{f} = {particle.y}")
-    f+=1
+polar = vicsek_model.polar_order_parameter()
+print(f"polar parameter = {polar}")
 
-#Run the simulation and plot at intervals
+#Runs the simulation and plot at intervals
 num_steps = 2
 for step in range(num_steps):
     start_time = time.time()
