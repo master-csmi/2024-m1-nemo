@@ -1,3 +1,4 @@
+from Code.squirmer import Squirmer
 from Code.vicsek import Vicsek_continous
 import numpy as np
 
