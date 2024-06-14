@@ -1,3 +1,8 @@
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -49,6 +54,16 @@ class Vicsek_continous:
         #Compute the distance between the particle in argument and the other ones
         dist = [self.distance(particle, p) for p in self.particles]
         return dist
+    
+    def how_many_in_square(self):
+        #Print and returns the percentage of particle inside the square
+        n = 0
+        for particle in self.particles:
+            if abs(particle.x) <= self.L/2 and abs(particle.y) <=self.L/2:
+                n+=1
+        percentage = (n/self.N)*100
+        print(f"percentage of particles in the square : {percentage}%")
+        return percentage
 
     def is_light_color(self, hex_color):
         #Define what a color too bright is
@@ -145,13 +160,13 @@ class Vicsek_continous:
             particle.x += self.v0*self.dt*(np.cos(particle.orientation) + self.Fs_x[i])
             particle.y += self.v0*self.dt*(np.sin(particle.orientation) + self.Fs_y[i])
 
-            if self.L/2 < particle.x + self.radius:
+            if self.L/2 <= particle.x + self.radius:
                 particle.x, particle.orientation = self.ref_border_x(particle, 1)
-            if -self.L/2 > particle.x - self.radius:
+            if -self.L/2 >= particle.x - self.radius:
                 particle.x, particle.orientation = self.ref_border_x(particle, 2)
-            if self.L/2 < particle.y + self.radius:
+            if self.L/2 <= particle.y + self.radius:
                 particle.y, particle.orientation = self.ref_border_y(particle, 1)
-            if -self.L/2 > particle.y - self.radius:
+            if -self.L/2 >= particle.y - self.radius:
                 particle.y, particle.orientation = self.ref_border_y(particle, 2)
 
     def loop_time(self):
@@ -204,6 +219,7 @@ for step in range(num_steps):
     end_time = time.time()
     sim_time = end_time - start_time
     print(f"Simulation {step + 1} took {sim_time:.2f} seconds")
+    vicsek_model.how_many_in_square()
     # w = 0
     # for particle in vicsek_model.particles:
     #     print(f"x{w} = {particle.x}")
