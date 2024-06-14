@@ -247,18 +247,18 @@ class Vicsek_continous:
 
                 #Force between a squirmer and a border
                 Fs_pw = [0,0]
-                if ((self.R-abs(self.squirmer1.x)) < 2**(1/6)*self.squirmer1.radius):
+                if ((self.L/2-abs(particle.x)) < 2**(1/6)*self.radius):
                     Fs_pw[0] = self.compute_force_squirmer_border_x(particle)
-                if ((self.R-abs(self.squirmer1.y)) < 2**(1/6)*self.squirmer1.radius):
+                if ((self.L/2-abs(particle.y)) < 2**(1/6)*self.radius):
                     Fs_pw[1] = self.compute_force_squirmer_border_y(particle)
                 particle.x += Fs_pw[0]
                 particle.y += Fs_pw[1]
 
                 #Compute torque exerted on squirmer by the wall
                 gamma_w = 0
-                if ((self.R - abs(particle.x)) < 2**(1/6) * self.radius):
+                if ((self.L/2 - abs(particle.x)) < 2**(1/6) * self.radius):
                     gamma_w += self.compute_torque_squirmer_border(particle)
-                if ((self.R - abs(particle.y)) < 2**(1/6) * self.radius):
+                if ((self.L/2 - abs(particle.y)) < 2**(1/6) * self.radius):
                     gamma_w += self.compute_torque_squirmer_border(particle)
                 particle.orientation += self.dt*gamma_w
 
