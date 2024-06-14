@@ -1,5 +1,9 @@
-from Code.squirmer import Squirmer
-from Code.vicsek import Vicsek_continous
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'Code')))
+
+from vicsek import Vicsek_continous
 import numpy as np
 
 def test_vicsek():
