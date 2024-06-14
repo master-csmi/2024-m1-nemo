@@ -150,7 +150,8 @@ class Vicsek_continous:
         tmp = 6*((self.Es*(self.L/2 - y))/(self.radius*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
         return tmp*particle.y
     
-    def compute_torque_squirmer_border(self, particle, dist_center):
+    def compute_torque_squirmer_border(self, particle):
+        dist_center = np.sqrt(particle.x**2 + particle.y**2)
         ex = particle.x / dist_center
         ey = particle.y / dist_center
 
@@ -243,6 +244,23 @@ class Vicsek_continous:
                     # print(f"val2 = {val2}\n")
                     particle.orientation += self.dt*(val1 + 0.25*val2)
                     self.particles[j].orientation += self.dt*(val2 + 0.25*val1)
+
+                #Force between a squirmer and a border
+                Fs_pw = [0,0]
+                if ((self.R-abs(self.squirmer1.x)) < 2**(1/6)*self.squirmer1.radius):
+                    Fs_pw[0] = self.compute_force_squirmer_border_x(particle)
+                if ((self.R-abs(self.squirmer1.y)) < 2**(1/6)*self.squirmer1.radius):
+                    Fs_pw[1] = self.compute_force_squirmer_border_y(particle)
+                particle.x += Fs_pw[0]
+                particle.y += Fs_pw[1]
+
+                #Compute torque exerted on squirmer by the wall
+                gamma_w = 0
+                if ((self.R - abs(particle.x)) < 2**(1/6) * self.radius):
+                    gamma_w += self.compute_torque_squirmer_border(particle)
+                if ((self.R - abs(particle.y)) < 2**(1/6) * self.radius):
+                    gamma_w += self.compute_torque_squirmer_border(particle)
+                particle.orientation += self.dt*gamma_w
 
     def update_position(self):
         #Update position of each particle
