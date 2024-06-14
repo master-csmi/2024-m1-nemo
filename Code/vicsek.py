@@ -129,8 +129,8 @@ class Vicsek_continous:
             for j in range(len(dist)):
                 if dist[j] != 0 and dist[j]<=self.R:
                     Fs_x, Fs_y = self.forcesSteric(particle, self.particles[j])
-                    particle.x -= self.dt*Fs_x
-                    particle.y -= self.dt*Fs_y
+                    particle.x += self.dt*Fs_x
+                    particle.y += self.dt*Fs_y
                     self.particles[j].x += self.dt*Fs_x
                     self.particles[j].y += self.dt*Fs_y        
 
