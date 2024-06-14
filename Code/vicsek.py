@@ -119,6 +119,7 @@ class Vicsek_continous:
         return F_x, F_y
     
     def torquesLubrification(self, particle1, particle2):
+        #Computes the lubrification torques between two particles
         Dx = self.vector_x(particle1, particle2)
         Dy = self.vector_y(particle1, particle2)
         dist = self.distance(particle1, particle2)
@@ -184,7 +185,7 @@ class Vicsek_continous:
             new_orient = np.arctan2(np.sin(avrg_orient), np.cos(avrg_orient)) + noise
             particle.orientation = new_orient
 
-    def compute_forces(self):
+    def compute_forces_torques(self):
         #Compute the steric forces of every particle
         for i, particle in enumerate(self.particles):
             dist = self.dist_particles(particle)
@@ -193,10 +194,10 @@ class Vicsek_continous:
                 #Steric forces
                 if dist[j] != 0 and dist[j] <= self.ds:
                     Fs_x, Fs_y = self.forcesSteric(particle, self.particles[j])
-                    particle.x += self.dt*Fs_x
-                    particle.y += self.dt*Fs_y
-                    self.particles[j].x += self.dt*Fs_x
-                    self.particles[j].y += self.dt*Fs_y
+                    particle.x -= self.dt*Fs_x
+                    particle.y -= self.dt*Fs_y
+                    self.particles[j].x -= self.dt*Fs_x
+                    self.particles[j].y -= self.dt*Fs_y
                     # print(f"Fs_x = {Fs_x}")
                     # print(f"Fs_y = {Fs_y}")
 
@@ -221,7 +222,7 @@ class Vicsek_continous:
 
     def update_position(self):
         #Update position of each particle
-        self.compute_forces()
+        self.compute_forces_torques()
         for i, particle in enumerate(self.particles):
             particle.x += self.v0*self.dt*(np.cos(particle.orientation))
             particle.y += self.v0*self.dt*(np.sin(particle.orientation))
@@ -230,10 +231,20 @@ class Vicsek_continous:
                 particle.x, particle.orientation = self.ref_border_x(particle, 1)
             if -self.L/2 >= particle.x - self.radius:
                 particle.x, particle.orientation = self.ref_border_x(particle, 2)
+
             if self.L/2 <= particle.y + self.radius:
                 particle.y, particle.orientation = self.ref_border_y(particle, 1)
             if -self.L/2 >= particle.y - self.radius:
                 particle.y, particle.orientation = self.ref_border_y(particle, 2)
+
+            #Ensure particle remains within the boundary
+            particle.x = min(max(particle.x, -self.L/2 + self.radius), self.L/2 - self.radius)
+            particle.y = min(max(particle.y, -self.L/2 + self.radius), self.L/2 - self.radius)
+
+            if abs(particle.x) > L/2:
+                print(f"x = {particle.x}")
+            if abs(particle.y) > L/2:
+                print(f"y = {particle.y}")
 
     def loop_time(self):
         #Compute the motion of the particles
@@ -280,16 +291,20 @@ plt.close()
 #     w+=1
 polar = vicsek_model.polar_order_parameter()
 print(f"polar parameter = {polar}")
+prct = 100
+i = 0
 
 #Runs the simulation and plot at intervals
-num_steps = 3
-for step in range(num_steps):
+# num_steps = 10
+# for step in range(num_steps):
+
+while prct == 100:
     start_time = time.time()
     vicsek_model.loop_time()
     end_time = time.time()
     sim_time = end_time - start_time
-    print(f"Simulation {step + 1} took {sim_time:.2f} seconds")
-    vicsek_model.how_many_in_square()
+    print(f"Simulation {i + 1} took {sim_time:.2f} seconds")
+    prct = vicsek_model.how_many_in_square()
     # w = 0
     # for particle in vicsek_model.particles:
     #     print(f"x{w} = {particle.x}")
@@ -299,8 +314,8 @@ for step in range(num_steps):
     polar = vicsek_model.polar_order_parameter()
     print(f"polar parameter = {polar}")
 
-    fig, ax = plt.subplots(figsize=(8, 8))
-    vicsek_model.plot(ax)
-    plt.title(f"Positions at Step {step + 1}")
-    plt.savefig(f"vicsek_positions_step_{step + 1}.png")
-    plt.close()
+    # fig, ax = plt.subplots(figsize=(8, 8))
+    # vicsek_model.plot(ax)
+    # plt.title(f"Positions at Step {i + 1}")
+    # plt.savefig(f"vicsek_positions_step_{step + 1}.png")
+    # plt.close()
