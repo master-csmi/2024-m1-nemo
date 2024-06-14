@@ -15,6 +15,7 @@ class Vicsek_continous:
         self.T = T
         self.dt = dt
         self.noise = noise
+        self.radius = radius
         self.size = L/R
         self.density = (N*R**2)/(L**2)
         self.ratio = v0/R
@@ -61,19 +62,20 @@ class Vicsek_continous:
         return polar_order
     
     def forcesSteric(self, particle1, particle2):
-        a = self.particles[0].radius
+        a = self.radius
         Dx = self.vector_x(particle1, particle2)
         Dy = self.vector_y(particle1, particle2)
         dist = self.distance(particle1, particle2)
         #we set self.Es = 1 => Es/a = 1/a
         tmp = -3*(1/a)*(2*(2*a/dist)**13-(2*a/dist)**7)/np.sqrt(dist)
+        print(tmp)
         Fs_x = tmp * Dx
         Fs_y = tmp * Dy
         return Fs_x, Fs_y
 
     def ref_border_x(self, particle, boundary):
         #reflective border x
-        diff = abs(self.L/2 - particle.x)
+        diff = abs(self.L/2 - abs(particle.x))
         particle.orientation = np.pi - particle.orientation
         if boundary == 1:
             #1 for the right border
@@ -86,13 +88,14 @@ class Vicsek_continous:
     def ref_border_y(self, particle, boundary):
         #reflective border y
         particle.orientation = -particle.orientation
-        diff = abs(self.L/2 - particle.y)
+        diff = abs(self.L/2 - abs(particle.y))
         if boundary == 1:
             #1 for the up boundary
             particle.y = self.L/2 - diff
         else:
             particle.y = -self.L/2 + diff
-        return particle.x, particle.orientation
+
+        return particle.y, particle.orientation
 
     def distance(self, p1, p2):
         #Compute the distance between two particles
@@ -132,18 +135,22 @@ class Vicsek_continous:
 
     def update_position(self):
         #Update position of each particle
+        self.compute_forces()
         for i, particle in enumerate(self.particles):
-            self.compute_forces()
+            if self.Fs_x[i] != 0:
+                print(f"Fs_x{i} = {self.Fs_x[i]}")
+            if self.Fs_y[i] != 0:
+                print(f"Fs_y{i} = {self.Fs_y[i]}")
             particle.x += self.v0*self.dt*(np.cos(particle.orientation) + self.Fs_x[i])
             particle.y += self.v0*self.dt*(np.sin(particle.orientation) + self.Fs_y[i])
 
-            if particle.x >= (self.L/2 - 2*self.particles[0].radius):
+            if self.L/2 < particle.x + self.radius:
                 particle.x, particle.orientation = self.ref_border_x(particle, 1)
-            if particle.x <= (-self.L/2 + 2*self.particles[0].radius):
+            if -self.L/2 > particle.x - self.radius:
                 particle.x, particle.orientation = self.ref_border_x(particle, 2)
-            if particle.y >= (self.L/2 - 2*self.particles[0].radius):
+            if self.L/2 < particle.y + self.radius:
                 particle.y, particle.orientation = self.ref_border_y(particle, 1)
-            if particle.y <= (-self.L/2 + self.particles[0].radius):
+            if -self.L/2 > particle.y - self.radius:
                 particle.y, particle.orientation = self.ref_border_y(particle, 2)
 
     def loop_time(self):
@@ -188,7 +195,7 @@ polar = vicsek_model.polar_order_parameter()
 print(f"polar parameter = {polar}")
 
 #Runs the simulation and plot at intervals
-num_steps = 2
+num_steps = 3
 for step in range(num_steps):
     start_time = time.time()
     vicsek_model.loop_time()
