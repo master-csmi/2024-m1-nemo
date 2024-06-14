@@ -7,18 +7,22 @@ from vicsek import Vicsek_continous
 import numpy as np
 
 def test_vicsek():
-    N = 20
+    N = 40
     R = 0.25
     L = 10.0
     v0 = 1.0
     beta = 0.5
     radius = 0.1
-    T = 1
+    T = 2.5
     dt = 0.1
     noise = 0.1
     Es = 1
+    ds = 2**(7./6)*radius
+    Eo = ((3./10.)*v0/radius)
+    mu = 0.01
+    lnEps_cr = np.exp(-5)
 
-    vicsek_model = Vicsek_continous(N, R, L, v0, beta, radius, Es, T, dt, noise)
+    vicsek_model = Vicsek_continous(N, R, L, v0, beta, radius, Es, ds, mu, Eo, lnEps_cr, T, dt, noise)
     #Runs the simulation and plot at intervals
     num_steps = 3
     for _ in range(num_steps):
