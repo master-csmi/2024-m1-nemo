@@ -3,7 +3,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import time
-from squirmer import Squirmer
+from Code.squirmer import Squirmer
 
 class Vicsek_continous:
 
