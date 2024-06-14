@@ -12,7 +12,7 @@ from squirmer import Squirmer
 
 class Vicsek_continous:
 
-    def __init__(self, N, R, L, v0, beta, radius, Es, T, dt, noise):
+    def __init__(self, N, R, L, v0, beta, radius, Es, ds, mu, Eo, lnEps_cr, T, dt, noise):
         self.N = N
         self.R = R
         self.L = L
@@ -22,10 +22,13 @@ class Vicsek_continous:
         self.noise = noise
         self.radius = radius
         self.Es = Es
+        self.ds = ds
+        self.mu = mu
+        self.Eo = Eo
+        self.lnEps_cr = lnEps_cr
         self.size = L/R
         self.density = (N*R**2)/(L**2)
         self.ratio = v0/R
-        self.Fs_x, self.Fs_y, self.Fl_x, self.Fl_y, self.Fs_pwx, self.Fs_pwy = np.zeros(N), np.zeros(N), np.zeros(N), np.zeros(N), np.zeros(N), np.zeros(N)
 
         orientations = []
         xs = []
@@ -78,16 +81,60 @@ class Vicsek_continous:
         return polar_order
     
     def forcesSteric(self, particle1, particle2):
+        #Compute the steric forces between two particles
         a = self.radius
         Dx = self.vector_x(particle1, particle2)
         Dy = self.vector_y(particle1, particle2)
         dist = self.distance(particle1, particle2)
 
         tmp = -3*(self.Es/a)*(2*(2*a/dist)**13-(2*a/dist)**7)/np.sqrt(dist)
-        print(f"tmp = {tmp}")
-        Fs_x =  Dx
-        Fs_y = Dy
+        Fs_x =  tmp*Dx
+        Fs_y = tmp*Dy
         return Fs_x, Fs_y
+    
+    def forcesLubrification(self, particle1, particle2):
+        #Computes the lubrification forces between two particles
+        Dx = self.vector_x(particle1, particle2)
+        Dy = self.vector_y(particle1, particle2)
+        dist = self.distance(particle1, particle2)
+
+        theta = particle1.orientation
+        B1 = particle1.B1
+        B2 = particle1.B2
+        a = self.radius
+
+        eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
+        cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
+
+        sinalpha = np.sqrt(1 - cosalpha * cosalpha)
+        somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
+        sommeFz = B1 * sinalpha * cosalpha - (1/2)*B1 * cosalpha * eieijt**2 + B2 * sinalpha * cosalpha**2 - (1/2)*B2 * (2*cosalpha**2-1) * eieijt**2
+
+        lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)))
+        
+        #lambda=1
+        F_x = np.pi * self.mu * a * eieijt * somme * lnEps * Dx
+        F_y = -9* self.mu * np.pi*a*(1/4)*sommeFz* lnEps * Dy
+
+        return F_x, F_y
+    
+    def torquesLubrification(self, particle1, particle2):
+        Dx = self.vector_x(particle1, particle2)
+        Dy = self.vector_y(particle1, particle2)
+        dist = self.distance(particle1, particle2)
+        
+        theta = particle1.orientation
+        beta = particle1.beta
+        a = self.radius
+        
+        ex = Dx/dist
+        ey = Dy/dist
+
+        lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)))
+                
+        val = self.Eo*(1 + beta*(np.cos(theta)*ex + np.sin(theta)*ey))*lnEps*(ex*np.sin(theta) - ey*np.cos(theta))
+        
+        return val
 
     def ref_border_x(self, particle, boundary):
         #reflective border x
@@ -142,23 +189,42 @@ class Vicsek_continous:
         for i, particle in enumerate(self.particles):
             dist = self.dist_particles(particle)
             for j in range(len(dist)):
-                if dist[j] != 0 and dist[j]<=self.R:
+
+                #Steric forces
+                if dist[j] != 0 and dist[j] <= self.ds:
                     Fs_x, Fs_y = self.forcesSteric(particle, self.particles[j])
                     particle.x += self.dt*Fs_x
                     particle.y += self.dt*Fs_y
                     self.particles[j].x += self.dt*Fs_x
-                    self.particles[j].y += self.dt*Fs_y        
+                    self.particles[j].y += self.dt*Fs_y
+                    # print(f"Fs_x = {Fs_x}")
+                    # print(f"Fs_y = {Fs_y}")
+
+                #Lubrification forces and torques
+                if dist[j] != 0 and dist[j] <= 3*self.radius:
+                    #Forces
+                    Fl_x, Fl_y = self.forcesLubrification(particle, self.particles[j])
+                    particle.x += self.dt*Fl_x
+                    particle.y += self.dt*Fl_y
+                    self.particles[j].x += self.dt*Fl_x
+                    self.particles[j].y += self.dt*Fl_y
+                    # print(f"Fl_x = {Fl_x}")
+                    # print(f"Fl_y = {Fl_y}")
+
+                    #Torques
+                    val1 = self.torquesLubrification(particle, self.particles[j])
+                    val2 = self.torquesLubrification(self.particles[j], particle)
+                    # print(f"val1 = {val1}")
+                    # print(f"val2 = {val2}\n")
+                    particle.orientation += self.dt*(val1 + 0.25*val2)
+                    self.particles[j].orientation += self.dt*(val2 + 0.25*val1)
 
     def update_position(self):
         #Update position of each particle
         self.compute_forces()
         for i, particle in enumerate(self.particles):
-            # if self.Fs_x[i] != 0:
-            #     print(f"Fs_x{i} = {self.Fs_x[i]}")
-            # if self.Fs_y[i] != 0:
-            #     print(f"Fs_y{i} = {self.Fs_y[i]}")
-            particle.x += self.v0*self.dt*(np.cos(particle.orientation) + self.Fs_x[i])
-            particle.y += self.v0*self.dt*(np.sin(particle.orientation) + self.Fs_y[i])
+            particle.x += self.v0*self.dt*(np.cos(particle.orientation))
+            particle.y += self.v0*self.dt*(np.sin(particle.orientation))
 
             if self.L/2 <= particle.x + self.radius:
                 particle.x, particle.orientation = self.ref_border_x(particle, 1)
@@ -184,18 +250,22 @@ class Vicsek_continous:
         ax.set_ylim(-self.L / 2, self.L / 2)
         ax.set_aspect('equal')
 
-N = 20
+N = 40
 R = 0.25
 L = 10.0
 v0 = 1.0
 beta = 0.5
 radius = 0.1
-T = 1
+T = 2.5
 dt = 0.1
 noise = 0.1
 Es = 1
+ds = 2**(7./6)*radius
+Eo = ((3./10.)*v0/radius)
+mu = 0.01
+lnEps_cr = np.exp(-5)
 
-vicsek_model = Vicsek_continous(N, R, L, v0, beta, radius, Es, T, dt, noise)
+vicsek_model = Vicsek_continous(N, R, L, v0, beta, radius, Es, ds, mu, Eo, lnEps_cr, T, dt, noise)
 
 #Plots initial positions and save the figure
 fig, ax = plt.subplots(figsize=(8, 8))
