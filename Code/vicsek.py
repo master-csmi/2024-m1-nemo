@@ -49,6 +49,16 @@ class Vicsek_continous:
         #Compute the distance between the particle in argument and the other ones
         dist = [self.distance(particle, p) for p in self.particles]
         return dist
+    
+    def how_many_in_square(self):
+        #Print and returns the percentage of particle inside the square
+        n = 0
+        for particle in self.particles:
+            if abs(particle.x) <= self.L/2 and abs(particle.y) <=self.L/2:
+                n+=1
+        percentage = (n/self.N)*100
+        print(f"percentage of particles in the square : {percentage}%")
+        return percentage
 
     def is_light_color(self, hex_color):
         #Define what a color too bright is
