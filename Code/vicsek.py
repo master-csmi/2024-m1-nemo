@@ -135,6 +135,31 @@ class Vicsek_continous:
         val = self.Eo*(1 + beta*(np.cos(theta)*ex + np.sin(theta)*ey))*lnEps*(ex*np.sin(theta) - ey*np.cos(theta))
         
         return val
+    
+    def compute_force_squirmer_border_x(self, particle):
+        x = particle.x
+        y = particle.y
+        RRi = np.sqrt((x - self.L/2)**2 + (y - self.L/2)**2)
+        tmp = 6*((self.Es*(self.L/2 - x))/(self.radius*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
+        return tmp*particle.x
+    
+    def compute_force_squirmer_border_y(self, particle):
+        y = particle.y
+        x = particle.x
+        RRi = np.sqrt((x - self.L/2)**2 + (y - self.L/2)**2)
+        tmp = 6*((self.Es*(self.L/2 - y))/(self.radius*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
+        return tmp*particle.y
+    
+    def compute_torque_squirmer_border(self, particle, dist_center):
+        ex = particle.x / dist_center
+        ey = particle.y / dist_center
+
+        lnEps = -np.log(max(self.lnEps_cr, (self.L/2 - dist_center)/particle.radius - 1))
+
+        gamma_w = 2*self.Eo*(1 + particle.beta*(np.cos(particle.orientation)*ex + np.sin(particle.orientation)*ey)) * \
+                lnEps*(np.sin(particle.orientation)*ex - np.cos(particle.orientation)*ey)
+        
+        return gamma_w
 
     def ref_border_x(self, particle, boundary):
         #reflective border x
