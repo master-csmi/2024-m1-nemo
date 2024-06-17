@@ -119,6 +119,7 @@ class Vicsek_continous:
         return F_x, F_y
     
     def torquesLubrification(self, particle1, particle2):
+        #Computes the lubrification torques produced by two interacting squirmers
         Dx = self.vector_x(particle1, particle2)
         Dy = self.vector_y(particle1, particle2)
         dist = self.distance(particle1, particle2)
@@ -137,6 +138,7 @@ class Vicsek_continous:
         return val
     
     def compute_force_squirmer_border_x(self, particle):
+        #Computes the force produced by a border in the x-axis
         x = particle.x
         y = particle.y
         RRi = np.sqrt((x - self.L/2)**2 + (y - self.L/2)**2)
@@ -144,6 +146,7 @@ class Vicsek_continous:
         return tmp*particle.x
     
     def compute_force_squirmer_border_y(self, particle):
+        #Computes the force produced by a border in the y-axis
         y = particle.y
         x = particle.x
         RRi = np.sqrt((x - self.L/2)**2 + (y - self.L/2)**2)
@@ -151,6 +154,7 @@ class Vicsek_continous:
         return tmp*particle.y
     
     def compute_torque_squirmer_border(self, particle):
+        #Computes the torque produced by a border
         dist_center = np.sqrt(particle.x**2 + particle.y**2)
         ex = particle.x / dist_center
         ey = particle.y / dist_center
@@ -166,6 +170,8 @@ class Vicsek_continous:
         #reflective border x
         diff = abs(self.L/2 - abs(particle.x))
         particle.orientation = np.pi - particle.orientation
+        #Keeps orientation between [0, 2pi]
+        particle.orientation = particle.orientation % (2 * np.pi)
         if boundary == 1:
             #1 for the right border
             particle.x = self.L/2 - diff
@@ -177,6 +183,8 @@ class Vicsek_continous:
     def ref_border_y(self, particle, boundary):
         #reflective border y
         particle.orientation = -particle.orientation
+        #Keeps orientation between [0, 2pi]
+        particle.orientation = particle.orientation % (2 * np.pi)
         diff = abs(self.L/2 - abs(particle.y))
         if boundary == 1:
             #1 for the up boundary
@@ -293,7 +301,7 @@ class Vicsek_continous:
         ax.set_ylim(-self.L / 2, self.L / 2)
         ax.set_aspect('equal')
 
-N = 40
+N = 20
 R = 0.25
 L = 10.0
 v0 = 1.0
