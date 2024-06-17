@@ -1,6 +1,6 @@
 import sys
 import os
-
+import copy
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import matplotlib
@@ -201,14 +201,14 @@ class Vicsek_continous:
             for j in range(len(dist)):
 
                 #Steric forces
-                # if (dist[j] != 0) and (dist[j] <= self.ds):
-                #     Fs_x, Fs_y = self.forcesSteric(particle, self.particles[j])
-                #     self.Fs_x[i] -= Fs_x
-                #     self.Fs_y[i] -= Fs_y
-                #     self.Fs_x[j] -= Fs_x
-                #     self.Fs_y[j] -= Fs_y
-                #     print(f"Fs_x = {Fs_x}")
-                #     print(f"Fs_y = {Fs_y}")
+                if (dist[j] != 0) and (dist[j] <= self.ds):
+                    Fs_x, Fs_y = self.forcesSteric(particle, self.particles[j])
+                    self.Fs_x[i] -= Fs_x
+                    self.Fs_y[i] -= Fs_y
+                    self.Fs_x[j] -= Fs_x
+                    self.Fs_y[j] -= Fs_y
+                    # print(f"Fs_x = {Fs_x}")
+                    # print(f"Fs_y = {Fs_y}")
 
                 #Lubrification forces and torques
                 if dist[j] != 0 and dist[j] <= 3*self.radius:
@@ -288,9 +288,9 @@ L = 10.0
 v0 = 1.0
 beta = 0.5
 radius = 0.1
-T = 1.5
+T = 1
 dt = 0.1
-noise = 0.1
+noise = 1e-4
 Es = 1
 ds = 2**(7./6)*radius
 Eo = ((3./10.)*v0/radius)
@@ -314,31 +314,36 @@ polar = vicsek_model.polar_order_parameter()
 print(f"polar parameter = {polar}")
 prct = 100
 i = 0
-
+compare = 0
 #Runs the simulation and plot at intervals
-# num_steps = 10
+num_steps = 10
 # for step in range(num_steps):
-# while prct == 100:
-#     start_time = time.time()
-#     vicsek_model.loop_time()
-#     end_time = time.time()
-#     sim_time = end_time - start_time
-#     print(f"Simulation {i + 1} took {sim_time:.2f} seconds")
-#     prct = vicsek_model.how_many_in_square()
-#     if prct != 100:
-#         break
-#     i+=1
-#     # w = 0
-#     # for particle in vicsek_model.particles:
-#     #     print(f"x{w} = {particle.x}")
-#     #     print(f"y{w} = {particle.y}")
-#     #     w+=1
+while prct == 100:
+    compare = copy.deepcopy(vicsek_model.particles)
+    start_time = time.time()
+    vicsek_model.loop_time()
+    end_time = time.time()
+    sim_time = end_time - start_time
+    print(f"Simulation {i + 1} took {sim_time:.2f} seconds")
+    prct = vicsek_model.how_many_in_square()
+    i+=1
+    # w = 0
+    # for particle in vicsek_model.particles:
+    #     print(f"x{w} = {particle.x}")
+    #     print(f"y{w} = {particle.y}")
+    #     w+=1
 
-#     polar = vicsek_model.polar_order_parameter()
-#     print(f"polar parameter = {polar}")
+    polar = vicsek_model.polar_order_parameter()
+    print(f"polar parameter = {polar}")
 
-#     fig, ax = plt.subplots(figsize=(8, 8))
-#     vicsek_model.plot(ax)
-#     plt.title(f"Positions at Step {i + 1}")
-#     plt.savefig(f"vicsek_positions_step_{i + 1}.png")
-#     plt.close()
+    # fig, ax = plt.subplots(figsize=(8, 8))
+    # vicsek_model.plot(ax)
+    # plt.title(f"Positions at Step {i + 1}")
+    # plt.savefig(f"vicsek_positions_step_{i + 1}.png")
+    # plt.close()
+for i, particle in enumerate(vicsek_model.particles):
+    if (abs(particle.x) >= L/2) or (abs(particle.y) >= L/2):
+        print(f"x{i} = {particle.x}")
+        print(f"y{i} = {particle.y}")
+        print(f"diff x{i} = {compare[i].x - particle.x}")
+        print(f"diff y{i} = {compare[i].y - particle.y}")
