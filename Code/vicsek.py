@@ -318,27 +318,27 @@ i = 0
 #Runs the simulation and plot at intervals
 # num_steps = 10
 # for step in range(num_steps):
-while prct == 100:
-    start_time = time.time()
-    vicsek_model.loop_time()
-    end_time = time.time()
-    sim_time = end_time - start_time
-    print(f"Simulation {i + 1} took {sim_time:.2f} seconds")
-    prct = vicsek_model.how_many_in_square()
-    if prct != 100:
-        break
-    i+=1
-    # w = 0
-    # for particle in vicsek_model.particles:
-    #     print(f"x{w} = {particle.x}")
-    #     print(f"y{w} = {particle.y}")
-    #     w+=1
+# while prct == 100:
+#     start_time = time.time()
+#     vicsek_model.loop_time()
+#     end_time = time.time()
+#     sim_time = end_time - start_time
+#     print(f"Simulation {i + 1} took {sim_time:.2f} seconds")
+#     prct = vicsek_model.how_many_in_square()
+#     if prct != 100:
+#         break
+#     i+=1
+#     # w = 0
+#     # for particle in vicsek_model.particles:
+#     #     print(f"x{w} = {particle.x}")
+#     #     print(f"y{w} = {particle.y}")
+#     #     w+=1
 
-    polar = vicsek_model.polar_order_parameter()
-    print(f"polar parameter = {polar}")
+#     polar = vicsek_model.polar_order_parameter()
+#     print(f"polar parameter = {polar}")
 
-    fig, ax = plt.subplots(figsize=(8, 8))
-    vicsek_model.plot(ax)
-    plt.title(f"Positions at Step {i + 1}")
-    plt.savefig(f"vicsek_positions_step_{i + 1}.png")
-    plt.close()
+#     fig, ax = plt.subplots(figsize=(8, 8))
+#     vicsek_model.plot(ax)
+#     plt.title(f"Positions at Step {i + 1}")
+#     plt.savefig(f"vicsek_positions_step_{i + 1}.png")
+#     plt.close()
