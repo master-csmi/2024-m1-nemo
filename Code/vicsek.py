@@ -1,6 +1,6 @@
 import sys
 import os
-
+import copy
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import matplotlib
@@ -29,29 +29,33 @@ class Vicsek_continous:
         self.size = L/R
         self.density = (N*R**2)/(L**2)
         self.ratio = v0/R
+        self.Fs_x, self.Fs_y, self.Fl_x, self.Fl_y, self.val, self.gamma_w = np.zeros(N), np.zeros(N), np.zeros(N), np.zeros(N), np.zeros(N), np.zeros(N)
+        self.Fs_pw = np.zeros((2,N), dtype=float) 
 
-        orientations = []
-        xs = []
-        ys = []
+        self.orientations = np.zeros(N)
+        self.xs = np.zeros(N)
+        self.ys = np.zeros(N)
         colors = list(matplotlib.colors.CSS4_COLORS.keys())
         colors = [color for color in colors if not self.is_light_color(matplotlib.colors.CSS4_COLORS[color])]
         np.random.shuffle(colors)
         self.colors = colors[:N]
 
-        while len(orientations) < N:
+        for j in range(N):
             orientation = np.random.uniform(0, 2*np.pi)
-            orientations.append(orientation)
-        while len(xs) < N:
+            self.orientations[j] = orientation
+        k = 0
+        while k < N:
             x = np.random.uniform(-(L-2*radius)/2, (L-2*radius)/2)
             y = np.random.uniform(-(L-2*radius)/2, (L-2*radius)/2)
             #Each particle must have a unique initial position
-            if not any(np.isclose(x, xs, atol=1.5*radius)) and not any(np.isclose(y, ys, atol=1.5*radius)):
-                xs.append(x)
-                ys.append(y)
+            if not any(np.isclose(x, self.xs, atol=1.5*radius)) and not any(np.isclose(y, self.ys, atol=1.5*radius)):
+                self.xs[k] = x
+                self.ys[k] = y
+                k += 1
 
         self.particles = []
-        for i in range(len(xs)):
-            self.particles.append(Squirmer(xs[i], ys[i], orientations[i], radius, beta, v0))
+        for i in range(len(self.xs)):
+            self.particles.append(Squirmer(self.xs[i], self.ys[i], self.orientations[i], radius, beta, v0))
 
     def dist_particles(self, particle):
         #Compute the distance between the particle in argument and the other ones
@@ -119,6 +123,7 @@ class Vicsek_continous:
         return F_x, F_y
     
     def torquesLubrification(self, particle1, particle2):
+        #Computes the lubrification torques between two particles
         Dx = self.vector_x(particle1, particle2)
         Dy = self.vector_y(particle1, particle2)
         dist = self.distance(particle1, particle2)
@@ -178,25 +183,30 @@ class Vicsek_continous:
     
     def update_orient(self):
         #Update orientation of each particle
-        for particle in self.particles:
+        self.orientations += self.dt*(self.val + self.gamma_w)
+        for i, particle in enumerate(self.particles):
+            particle.orientation = self.orientations[i]
+
+        for i, particle in enumerate(self.particles):
             avrg_orient = self.average_orient(particle)
             noise = np.random.uniform(-self.noise/2, self.noise/2)
             new_orient = np.arctan2(np.sin(avrg_orient), np.cos(avrg_orient)) + noise
             particle.orientation = new_orient
+            self.orientations[i] = new_orient
 
-    def compute_forces(self):
+    def compute_forces_torques(self):
         #Compute the steric forces of every particle
         for i, particle in enumerate(self.particles):
             dist = self.dist_particles(particle)
             for j in range(len(dist)):
 
                 #Steric forces
-                if dist[j] != 0 and dist[j] <= self.ds:
+                if (dist[j] != 0) and (dist[j] <= self.ds):
                     Fs_x, Fs_y = self.forcesSteric(particle, self.particles[j])
-                    particle.x += self.dt*Fs_x
-                    particle.y += self.dt*Fs_y
-                    self.particles[j].x += self.dt*Fs_x
-                    self.particles[j].y += self.dt*Fs_y
+                    self.Fs_x[i] -= Fs_x
+                    self.Fs_y[i] -= Fs_y
+                    self.Fs_x[j] -= Fs_x
+                    self.Fs_y[j] -= Fs_y
                     # print(f"Fs_x = {Fs_x}")
                     # print(f"Fs_y = {Fs_y}")
 
@@ -204,10 +214,10 @@ class Vicsek_continous:
                 if dist[j] != 0 and dist[j] <= 3*self.radius:
                     #Forces
                     Fl_x, Fl_y = self.forcesLubrification(particle, self.particles[j])
-                    particle.x += self.dt*Fl_x
-                    particle.y += self.dt*Fl_y
-                    self.particles[j].x += self.dt*Fl_x
-                    self.particles[j].y += self.dt*Fl_y
+                    self.Fl_x[i] += Fl_x
+                    self.Fl_y[i] += Fl_y
+                    self.Fl_x[j] += Fl_x
+                    self.Fl_y[j] += Fl_y
                     # print(f"Fl_x = {Fl_x}")
                     # print(f"Fl_y = {Fl_y}")
 
@@ -216,28 +226,50 @@ class Vicsek_continous:
                     val2 = self.torquesLubrification(self.particles[j], particle)
                     # print(f"val1 = {val1}")
                     # print(f"val2 = {val2}\n")
-                    particle.orientation += self.dt*(val1 + 0.25*val2)
-                    self.particles[j].orientation += self.dt*(val2 + 0.25*val1)
+                    self.val[i] += val1 + 0.25*val2
+                    self.val[j] += val2 + 0.25*val1
 
     def update_position(self):
         #Update position of each particle
-        self.compute_forces()
+        self.xs += self.v0*self.dt*(np.cos(self.orientations) + self.Fs_x + self.Fl_x)
+        self.ys += self.v0*self.dt*(np.sin(self.orientations) + self.Fs_y + self.Fl_y)
         for i, particle in enumerate(self.particles):
-            particle.x += self.v0*self.dt*(np.cos(particle.orientation))
-            particle.y += self.v0*self.dt*(np.sin(particle.orientation))
+            particle.x = self.xs[i]
+            particle.y = self.ys[i]
 
             if self.L/2 <= particle.x + self.radius:
-                particle.x, particle.orientation = self.ref_border_x(particle, 1)
+                tmpx, tmporientation = self.ref_border_x(particle, 1)
+                self.xs[i], particle.x = tmpx, tmpx
+                self.orientations[i], particle.orientation = tmporientation, tmporientation
             if -self.L/2 >= particle.x - self.radius:
-                particle.x, particle.orientation = self.ref_border_x(particle, 2)
+                tmpx, tmporientation = self.ref_border_x(particle, 2)
+                self.xs[i], particle.x = tmpx, tmpx
+                self.orientations[i], particle.orientation = tmporientation, tmporientation
+
             if self.L/2 <= particle.y + self.radius:
-                particle.y, particle.orientation = self.ref_border_y(particle, 1)
+                tmpy, tmporientation = self.ref_border_y(particle, 1)
+                self.ys[i], particle.y = tmpy, tmpy
+                self.orientations[i], particle.orientation = tmporientation, tmporientation
             if -self.L/2 >= particle.y - self.radius:
-                particle.y, particle.orientation = self.ref_border_y(particle, 2)
+                tmpy, tmporientation = self.ref_border_y(particle, 2)
+                self.ys[i], particle.y = tmpy, tmpy
+                self.orientations[i], particle.orientation = tmporientation, tmporientation
+
+            #Ensure particle remains within the boundary
+            # tmpx = min(max(particle.x, -self.L/2 + self.radius), self.L/2 - self.radius)
+            # tmpy = min(max(particle.y, -self.L/2 + self.radius), self.L/2 - self.radius)
+            # self.xs[i], particle.x = tmpx, tmpx
+            # self.ys[i], particle.y = tmpy, tmpy
+
+            # if abs(particle.x) > L/2:
+            #     print(f"x = {particle.x}")
+            # if abs(particle.y) > L/2:
+            #     print(f"y = {particle.y}")
 
     def loop_time(self):
         #Compute the motion of the particles
         for _ in np.arange(self.dt, self.T, self.dt):
+            self.compute_forces_torques()
             self.update_orient()
             self.update_position()
 
@@ -256,9 +288,9 @@ L = 10.0
 v0 = 1.0
 beta = 0.5
 radius = 0.1
-T = 2.5
+T = 1
 dt = 0.1
-noise = 0.1
+noise = 1e-4
 Es = 1
 ds = 2**(7./6)*radius
 Eo = ((3./10.)*v0/radius)
@@ -280,16 +312,21 @@ plt.close()
 #     w+=1
 polar = vicsek_model.polar_order_parameter()
 print(f"polar parameter = {polar}")
-
+prct = 100
+i = 0
+compare = 0
 #Runs the simulation and plot at intervals
-num_steps = 3
-for step in range(num_steps):
+num_steps = 10
+# for step in range(num_steps):
+while prct == 100:
+    compare = copy.deepcopy(vicsek_model.particles)
     start_time = time.time()
     vicsek_model.loop_time()
     end_time = time.time()
     sim_time = end_time - start_time
-    print(f"Simulation {step + 1} took {sim_time:.2f} seconds")
-    vicsek_model.how_many_in_square()
+    print(f"Simulation {i + 1} took {sim_time:.2f} seconds")
+    prct = vicsek_model.how_many_in_square()
+    i+=1
     # w = 0
     # for particle in vicsek_model.particles:
     #     print(f"x{w} = {particle.x}")
@@ -299,8 +336,14 @@ for step in range(num_steps):
     polar = vicsek_model.polar_order_parameter()
     print(f"polar parameter = {polar}")
 
-    fig, ax = plt.subplots(figsize=(8, 8))
-    vicsek_model.plot(ax)
-    plt.title(f"Positions at Step {step + 1}")
-    plt.savefig(f"vicsek_positions_step_{step + 1}.png")
-    plt.close()
+    # fig, ax = plt.subplots(figsize=(8, 8))
+    # vicsek_model.plot(ax)
+    # plt.title(f"Positions at Step {i + 1}")
+    # plt.savefig(f"vicsek_positions_step_{i + 1}.png")
+    # plt.close()
+for i, particle in enumerate(vicsek_model.particles):
+    if (abs(particle.x) >= L/2) or (abs(particle.y) >= L/2):
+        print(f"x{i} = {particle.x}")
+        print(f"y{i} = {particle.y}")
+        print(f"diff x{i} = {compare[i].x - particle.x}")
+        print(f"diff y{i} = {compare[i].y - particle.y}")
