@@ -123,6 +123,7 @@ class Vicsek_continous:
         return F_x, F_y
     
     def torquesLubrification(self, particle1, particle2):
+        #Computes the lubrification torques produced by two interacting squirmers
         #Computes the lubrification torques between two particles
         Dx = self.vector_x(particle1, particle2)
         Dy = self.vector_y(particle1, particle2)
@@ -140,11 +141,42 @@ class Vicsek_continous:
         val = self.Eo*(1 + beta*(np.cos(theta)*ex + np.sin(theta)*ey))*lnEps*(ex*np.sin(theta) - ey*np.cos(theta))
         
         return val
+    
+    def compute_force_squirmer_border_x(self, particle):
+        #Computes the force produced by a border in the x-axis
+        x = particle.x
+        y = particle.y
+        RRi = np.sqrt((x - self.L/2)**2 + (y - self.L/2)**2)
+        tmp = 6*((self.Es*(self.L/2 - x))/(self.radius*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
+        return tmp*particle.x
+    
+    def compute_force_squirmer_border_y(self, particle):
+        #Computes the force produced by a border in the y-axis
+        y = particle.y
+        x = particle.x
+        RRi = np.sqrt((x - self.L/2)**2 + (y - self.L/2)**2)
+        tmp = 6*((self.Es*(self.L/2 - y))/(self.radius*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
+        return tmp*particle.y
+    
+    def compute_torque_squirmer_border(self, particle):
+        #Computes the torque produced by a border
+        dist_center = np.sqrt(particle.x**2 + particle.y**2)
+        ex = particle.x / dist_center
+        ey = particle.y / dist_center
+
+        lnEps = -np.log(max(self.lnEps_cr, (self.L/2 - dist_center)/particle.radius - 1))
+
+        gamma_w = 2*self.Eo*(1 + particle.beta*(np.cos(particle.orientation)*ex + np.sin(particle.orientation)*ey)) * \
+                lnEps*(np.sin(particle.orientation)*ex - np.cos(particle.orientation)*ey)
+        
+        return gamma_w
 
     def ref_border_x(self, particle, boundary):
         #reflective border x
         diff = abs(self.L/2 - abs(particle.x))
         particle.orientation = np.pi - particle.orientation
+        #Keeps orientation between [0, 2pi]
+        particle.orientation = particle.orientation % (2 * np.pi)
         if boundary == 1:
             #1 for the right border
             particle.x = self.L/2 - diff
@@ -156,6 +188,8 @@ class Vicsek_continous:
     def ref_border_y(self, particle, boundary):
         #reflective border y
         particle.orientation = -particle.orientation
+        #Keeps orientation between [0, 2pi]
+        particle.orientation = particle.orientation % (2 * np.pi)
         diff = abs(self.L/2 - abs(particle.y))
         if boundary == 1:
             #1 for the up boundary
@@ -229,10 +263,22 @@ class Vicsek_continous:
                     self.val[i] += val1 + 0.25*val2
                     self.val[j] += val2 + 0.25*val1
 
+                #Force between a squirmer and a border
+                if ((self.L/2-abs(particle.x)) < 2**(1/6)*self.radius):
+                    self.Fs_pw[0, i] = self.compute_force_squirmer_border_x(particle)
+                if ((self.L/2-abs(particle.y)) < 2**(1/6)*self.radius):
+                    self.Fs_pw[1, i] = self.compute_force_squirmer_border_y(particle)
+
+                #Compute torque exerted on squirmer by the wall
+                if ((self.L/2 - abs(particle.x)) < 2**(1/6) * self.radius):
+                    self.gamma_w[i] += self.compute_torque_squirmer_border(particle)
+                if ((self.L/2 - abs(particle.y)) < 2**(1/6) * self.radius):
+                    self.gamma_w[i] += self.compute_torque_squirmer_border(particle)
+
     def update_position(self):
         #Update position of each particle
-        self.xs += self.v0*self.dt*(np.cos(self.orientations) + self.Fs_x + self.Fl_x)
-        self.ys += self.v0*self.dt*(np.sin(self.orientations) + self.Fs_y + self.Fl_y)
+        self.xs += self.v0*self.dt*(np.cos(self.orientations) + self.Fs_x + self.Fl_x + self.Fs_pw[0])
+        self.ys += self.v0*self.dt*(np.sin(self.orientations) + self.Fs_y + self.Fl_y + self.Fs_pw[1])
         for i, particle in enumerate(self.particles):
             particle.x = self.xs[i]
             particle.y = self.ys[i]
@@ -282,7 +328,7 @@ class Vicsek_continous:
         ax.set_ylim(-self.L / 2, self.L / 2)
         ax.set_aspect('equal')
 
-N = 40
+N = 20
 R = 0.25
 L = 10.0
 v0 = 1.0
