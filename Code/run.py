@@ -31,7 +31,7 @@ def main(simulation, filename):
     #amplitude of steric interactions
     Es = 1
     #simulation time
-    T = 0.7
+    T = 2.5
     #periodicity of outputs
     dt_out = 0.05
     #amplitude of orientational interactions

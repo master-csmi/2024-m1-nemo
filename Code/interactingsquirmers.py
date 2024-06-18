@@ -180,12 +180,11 @@ class InteractingSquirmers:
         return squirmer.y, squirmer.orientation
 
     def perio_border_x(self, squirmer, boundary):
-        diff = abs(self.R - abs(squirmer.x))
         if boundary == 1:
             #1 for right boundary
-            squirmer.x = -self.R + diff
+            squirmer.x -= 2*self.R
         else:
-            squirmer.x = self.R - diff
+            squirmer.x += 2*self.R
         return squirmer.x
 
     def loop_time(self):
@@ -233,13 +232,13 @@ class InteractingSquirmers:
                         self.val[j] += val2 + 0.25*val1
 
                 #Force between a squirmer and a border
-                if ((self.R-abs(s.x)) < 2**(1/6)*a):
+                if ((self.R-abs(s.x)) < 2**(1/6)*a) and (self.border == True):
                     self.Fs_pw[0][i] += self.compute_force_squirmer_border_x(s)
                 if ((self.R-abs(s.y)) < 2**(1/6)*a):
                     self.Fs_pw[1][i] += self.compute_force_squirmer_border_y(s)
 
                 #Torque exerted on squirmer by the wall
-                if ((self.R - abs(s.x)) < 2**(1/6) * a):
+                if ((self.R - abs(s.x)) < 2**(1/6) * a) and (self.border == True):
                     self.gamma_w[i] += self.compute_torque_squirmer_border(s)
                 if ((self.R - abs(s.y)) < 2**(1/6) * a):
                     self.gamma_w[i] += self.compute_torque_squirmer_border(s)
@@ -282,10 +281,6 @@ class InteractingSquirmers:
                         self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist()]
                 history.append(data)
                 tout += self.dt_out
-                print(f"x0 = {self.squirmers[0].x}")
-                print(f"y0 = {self.squirmers[0].y}")
-                print(f"x1 = {self.squirmers[1].x}")
-                print(f"y1 = {self.squirmers[1].y}")
 
         return history
     
