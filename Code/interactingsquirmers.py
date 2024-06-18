@@ -1,12 +1,21 @@
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 from csv_file import export_data_csv, read_csv_file
+from squirmer import Squirmer
 from plot import plot_dist_sq, plot_squirmers_positions
 
 class InteractingSquirmers:
 
-    def __init__(self, squirmer1, squirmer2, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr):
-        self.squirmer1 = squirmer1
-        self.squirmer2 = squirmer2
+    def __init__(self, N, xs, ys, orientations, radius, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr):
+        self.N = N
+        self.xs = np.array(xs, dtype=float)
+        self.ys = np.array(ys, dtype=float)
+        self.orientations = np.array(orientations, dtype=float)
+        self.radius = radius
+        self.beta = beta
+        self.v0 = v0
         self.R = R
         self.dt = dt
         self.dt_out = dt_out
@@ -16,10 +25,27 @@ class InteractingSquirmers:
         self.ds = ds
         self.T = T
         self.lnEps_cr = lnEps_cr
+        self.Fs_x, self.Fs_y, self.Fl_x, self.Fl_y, self.val, self.gamma_w = np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float)
+        self.Fs_pw = np.zeros((2,N), dtype=float)
+
+        colors = list(matplotlib.colors.CSS4_COLORS.keys())
+        colors = [color for color in colors if not self.is_light_color(matplotlib.colors.CSS4_COLORS[color])]
+        np.random.shuffle(colors)
+        self.colors = colors[:N]
+        
+        self.squirmers = []
+        for i in range(N):
+            self.squirmers.append(Squirmer(self.xs[i], self.ys[i], self.orientations[i], radius, beta, v0))
+
+    def is_light_color(self, hex_color):
+        #Define what a color too bright is
+        rgb = matplotlib.colors.hex2color(hex_color)
+        luminance = 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]
+        return luminance > 0.7
     
     def is_in_square(self):
         #return True if the squirmers are in the square
-        return (abs(self.squirmer1.x) < (self.R-self.squirmer1.radius)) and (abs(self.squirmer1.y) < (self.R-self.squirmer1.radius)) and (abs(self.squirmer2.x) < (self.R-self.squirmer2.radius)) and (abs(self.squirmer2.y) < (self.R-self.squirmer2.radius))
+        return np.all(abs(self.xs) <= (self.R - self.radius)) & np.all(abs(self.ys) <= (self.R - self.radius))
 
     def check_squirmers_square(self):
         #return True if the squirmers have been successfully initialized
@@ -27,38 +53,43 @@ class InteractingSquirmers:
             raise ValueError("Squirmers must be inside the square")
         return True
     
-    def distance_sq(self):
+    def distance_sq(self, squirmer1, squirmer2):
         #return distance between the two squirmers
-        Dx = self.squirmer2.x - self.squirmer1.x
-        Dy = self.squirmer2.y - self.squirmer1.y
+        Dx = squirmer2.x - squirmer1.x
+        Dy = squirmer2.y - squirmer1.y
         return Dx, Dy, np.sqrt(Dx**2 + Dy**2)
     
-    def distance_center(self):
+    def distance_all(self, squirmer):
+        Dxs, Dys, dists = [], [], []
+        for s in self.squirmers:
+            Dx, Dy, dist = self.distance_sq(squirmer, s)
+            Dxs.append(Dx)
+            Dys.append(Dy)
+            dists.append(dist)
+        return Dxs, Dys, dists
+    
+    def distance_center(self, squirmer):
         #Compute the distance between the squirmers and the center (0,0)
-        dist_sq1 = np.sqrt(self.squirmer1.x**2 + self.squirmer1.y**2)
-        dist_sq2 = np.sqrt(self.squirmer2.x**2 + self.squirmer2.y**2)
-        return dist_sq1, dist_sq2
+        dist = np.sqrt(squirmer.x**2 + squirmer.y**2)
+        return dist
 
-    def forcesSteric(self, Dx, Dy, dist):
-        a = self.squirmer1.radius
+    def forcesSteric(self, squirmer1, squirmer2):
+        #Compute the steric forces between two particles
+        a = self.radius
+        Dx, Dy, dist = self.distance_sq(squirmer1, squirmer2)
+
         tmp = -3*(self.Es/a)*(2*(2*a/dist)**13-(2*a/dist)**7)/np.sqrt(dist)
-        Fs_x = tmp * Dx
-        Fs_y = tmp * Dy
+        Fs_x =  tmp*Dx
+        Fs_y = tmp*Dy
         return Fs_x, Fs_y
     
-    def torquesLubrification(self,choice):
-        Dx, Dy, dist = self.distance_sq()
+    def torquesLubrification(self, squirmer1, squirmer2):
+        #Computes the lubrification torques produced by two interacting squirmers
+        Dx, Dy, dist = self.distance_sq(squirmer1, squirmer2)
         
-        if (choice == 1):
-            squirmer = self.squirmer1
-        else:
-            squirmer = self.squirmer2
-            Dx = -Dx
-            Dy = -Dy
-
-        theta = squirmer.orientation
-        beta = squirmer.beta
-        a = squirmer.radius
+        theta = squirmer1.orientation
+        beta = squirmer1.beta
+        a = self.radius
         
         ex = Dx/dist
         ey = Dy/dist
@@ -69,19 +100,14 @@ class InteractingSquirmers:
         
         return val
         
-    def forcesLubrification(self, choice):
-        Dx, Dy, dist = self.distance_sq()
-        if (choice == 1):
-            squirmer = self.squirmer1
-        else:
-            squirmer = self.squirmer2
-            Dx = -Dx
-            Dy = -Dy
+    def forcesLubrification(self, squirmer1, squirmer2):
+        #Computes the lubrification forces between two particles
+        Dx, Dy, dist = self.distance_sq(squirmer1, squirmer2)
 
-        theta = squirmer.orientation
-        B1 = squirmer.B1
-        B2 = squirmer.B2
-        a = squirmer.radius
+        theta = squirmer1.orientation
+        B1 = squirmer1.B1
+        B2 = squirmer1.B2
+        a = self.radius
 
         eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
         cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
@@ -98,33 +124,22 @@ class InteractingSquirmers:
 
         return F_x, F_y
     
-    def compute_force_squirmer_border_x(self, choice):
-        if (choice == 1):
-            squirmer = self.squirmer1
-        else:
-            squirmer = self.squirmer2
+    def compute_force_squirmer_border_x(self, squirmer):
         x = squirmer.x
         y = squirmer.y
         RRi = np.sqrt((x - self.R)**2 + (y - self.R)**2)
-        tmp = 6*((self.Es*(self.R - x))/(squirmer.radius*RRi))*(2*(squirmer.radius/RRi)**13-(squirmer.radius/RRi)**7)
+        tmp = -6*((self.Es*(self.R - x))/(squirmer.radius*RRi))*(2*(squirmer.radius/RRi)**13-(squirmer.radius/RRi)**7)
         return tmp*squirmer.x
     
-    def compute_force_squirmer_border_y(self, choice):
-        if (choice == 1):
-            squirmer = self.squirmer1
-        else:
-            squirmer = self.squirmer2
+    def compute_force_squirmer_border_y(self, squirmer):
         y = squirmer.y
         x = squirmer.x
         RRi = np.sqrt((x - self.R)**2 + (y - self.R)**2)
-        tmp = 6*((self.Es*(self.R - y))/(squirmer.radius*RRi))*(2*(squirmer.radius/RRi)**13-(squirmer.radius/RRi)**7)
+        tmp = -6*((self.Es*(self.R - y))/(squirmer.radius*RRi))*(2*(squirmer.radius/RRi)**13-(squirmer.radius/RRi)**7)
         return tmp*squirmer.y
 
-    def compute_torque_squirmer_border(self, choice, dist_center):
-        if (choice == 1):
-            squirmer = self.squirmer1
-        else:
-            squirmer = self.squirmer2
+    def compute_torque_squirmer_border(self, squirmer):
+        dist_center = np.sqrt(squirmer.x**2 + squirmer.y**2)
         ex = squirmer.x / dist_center
         ey = squirmer.y / dist_center
 
@@ -136,138 +151,117 @@ class InteractingSquirmers:
         return gamma_w
     
     #Reflective boundary condition
-    def ref_bound_x(self, choice, boundary):
-        if (choice == 1):
-            squirmer = self.squirmer1
-        else:
-            squirmer = self.squirmer2
-        x = squirmer.x
-        orient_new = np.pi - squirmer.orientation
-        diff = self.R - abs(x)
+    def ref_border_x(self, squirmer, boundary):
+        diff = abs(self.R - abs(squirmer.x))
+        squirmer.orientation = np.pi - squirmer.orientation
+        #Keeps orientation between [0, 2pi]
+        squirmer.orientation = squirmer.orientation % (2 * np.pi)
         if boundary == 1:
             #1 for the right border
-            x = self.R - diff
+            squirmer.x = self.R - diff
         else:
-            x = -self.R + diff
-        return x, orient_new
+            squirmer.x = -self.R + diff
+
+        return squirmer.x, squirmer.orientation
     
-    def ref_bound_y(self, choice, boundary):
-        if (choice == 1):
-            squirmer = self.squirmer1
-        else:
-            squirmer = self.squirmer2
-        y = squirmer.y
-        orient_new = -squirmer.orientation
-        diff = self.R - abs(y)
+    def ref_border_y(self, squirmer, boundary):
+        #reflective border y
+        squirmer.orientation = -squirmer.orientation
+        #Keeps orientation between [0, 2pi]
+        squirmer.orientation = squirmer.orientation % (2 * np.pi)
+        diff = abs(self.R - abs(squirmer.y))
         if boundary == 1:
             #1 for the up boundary
-            y = self.R - diff
+            squirmer.y = self.R - diff
         else:
-            y = -self.R + diff
-        return y, orient_new
+            squirmer.y = -self.R + diff
+
+        return squirmer.y, squirmer.orientation
     
     def loop_time(self):
         tout = self.dt_out
-        a = self.squirmer1.radius
+        a = self.radius
         #List that contains data to export
         history = []
-        data = [self.squirmer1.x, self.squirmer1.y, 
-                        self.squirmer2.x, self.squirmer2.y, 
-                        self.squirmer1.orientation, self.squirmer2.orientation,
-                        0, 0, 
-                        0, 0, 
-                        0, 0]
+        data = [self.xs.tolist(), self.ys.tolist(), self.orientations.tolist(),
+                self.Fs_x.tolist(), self.Fs_y.tolist(), self.Fl_x.tolist(), self.Fl_y.tolist(),
+                self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist()]
         history.append(data)
 
         for t in np.arange(0, self.T, self.dt):
-            Fs_x = 0
-            Fs_y = 0
-            Dx, Dy, dist = self.distance_sq()
+            # Reset forces and torques
+            self.Fs_x.fill(0)
+            self.Fs_y.fill(0)
+            self.Fl_x.fill(0)
+            self.Fl_y.fill(0)
+            self.val.fill(0)
+            self.gamma_w.fill(0)
+            self.Fs_pw.fill(0)
+            for i,s in enumerate(self.squirmers):
+                Dx, Dy, dist = self.distance_all(s)
 
-            #Force between squirmers
-            if dist < self.ds:
-                Fs_x, Fs_y = self.forcesSteric(Dx, Dy, dist)
-            
-            #Compute torques exerted on squirmer by other squirmer
-            val1 = 0
-            val2 = 0
-            
-            if (dist < 3*a):
-                val1 = self.torquesLubrification(1)
-                val2 = self.torquesLubrification(2)
+                for j in range(len(dist)):
+                    #Force between squirmers
+                    if (dist[j] != 0) and (dist[j] < self.ds):
+                        Fs_x, Fs_y = self.forcesSteric(s, self.squirmers[j])
+                        self.Fs_x[i] += Fs_x
+                        self.Fs_y[i] += Fs_y
                     
-            #Lubrification forces
-            Fl_x1 = 0.0
-            Fl_y1 = 0.0
-            Fl_x2 = 0.0
-            Fl_y2 = 0.0
-            
-            if dist < 3*a:
-                Fl_x1, Fl_y1 = self.forcesLubrification(1)
-                Fl_x2, Fl_y2 = self.forcesLubrification(2)
+                    #Lubrification forces and torques
+                    if (dist[j] != 0) and (dist[j] <= 3*a):
+                        #Forces
+                        Fl_x, Fl_y = self.forcesLubrification(s, self.squirmers[j])
+                        self.Fl_x[i] += Fl_x
+                        self.Fl_y[i] += Fl_y
+                        self.Fl_x[j] -= Fl_x
+                        self.Fl_y[j] -= Fl_y
 
-            #Force between a squirmer and a border
-            Fs_pw1 = [0,0]
-            Fs_pw2 = [0,0]
-            if ((self.R-abs(self.squirmer1.x)) < 2**(1/6)*self.squirmer1.radius):
-                Fs_pw1[0] = self.compute_force_squirmer_border_x(1)
-            if ((self.R-abs(self.squirmer1.y)) < 2**(1/6)*self.squirmer1.radius):
-                Fs_pw1[1] = self.compute_force_squirmer_border_y(1)
-            if ((self.R-abs(self.squirmer2.x)) < 2**(1/6)*self.squirmer1.radius):
-                Fs_pw2[0] = self.compute_force_squirmer_border_x(2)
-            if ((self.R-abs(self.squirmer2.y)) < 2**(1/6)*self.squirmer1.radius):
-                Fs_pw2[1] = self.compute_force_squirmer_border_y(2)
+                        #Torques
+                        val1 = self.torquesLubrification(s, self.squirmers[j])
+                        val2 = self.torquesLubrification(self.squirmers[j], s)
+                        self.val[i] += val1 + 0.25*val2
+                        self.val[j] += val2 + 0.25*val1
 
-            #Compute torque exerted on squirmer by the wall
-            gamma_w1 = 0
-            gamma_w2 = 0
-            dist_sq1, dist_sq2 = self.distance_center()
-            if ((self.R - abs(self.squirmer1.x)) < 2**(1/6) * self.squirmer1.radius):
-                gamma_w1 += self.compute_torque_squirmer_border(1, dist_sq1)
-            if ((self.R - abs(self.squirmer1.y)) < 2**(1/6) * self.squirmer1.radius):
-                gamma_w1 += self.compute_torque_squirmer_border(1, dist_sq1)
-            if ((self.R - abs(self.squirmer2.x)) < 2**(1/6) * self.squirmer2.radius):
-                gamma_w2 += self.compute_torque_squirmer_border(2, dist_sq2)
-            if ((self.R - abs(self.squirmer2.y)) < 2**(1/6) * self.squirmer2.radius):
-                gamma_w2 += self.compute_torque_squirmer_border(2, dist_sq2)
+                #Force between a squirmer and a border
+                if ((self.R-abs(s.x)) < 2**(1/6)*a):
+                    self.Fs_pw[0][i] += self.compute_force_squirmer_border_x(s)
+                if ((self.R-abs(s.y)) < 2**(1/6)*a):
+                    self.Fs_pw[1][i] += self.compute_force_squirmer_border_y(s)
+
+                #Torque exerted on squirmer by the wall
+                if ((self.R - abs(s.x)) < 2**(1/6) * a):
+                    self.gamma_w[i] += self.compute_torque_squirmer_border(s)
+                if ((self.R - abs(s.y)) < 2**(1/6) * a):
+                    self.gamma_w[i] += self.compute_torque_squirmer_border(s)
         
             #Evolution of position
-            self.squirmer1.orientation += self.dt*(val1 + 0.25*val2 + gamma_w1)
-            self.squirmer1.x += self.dt*(self.squirmer1.velocity * np.cos(self.squirmer1.orientation) + Fs_x + Fl_x1 + Fs_pw1[0])
-            self.squirmer1.y += self.dt*(self.squirmer1.velocity * np.sin(self.squirmer1.orientation) + Fs_y + Fl_y1 + Fs_pw1[1])
-            
-            self.squirmer2.orientation += self.dt*(val2 + 0.25*val1 + gamma_w2)
-            self.squirmer2.x += self.dt*(self.squirmer2.velocity * np.cos(self.squirmer2.orientation) - Fs_x + Fl_x2 + Fs_pw2[0])
-            self.squirmer2.y += self.dt*(self.squirmer2.velocity * np.sin(self.squirmer2.orientation) - Fs_y + Fl_y2 + Fs_pw2[1])
+            self.orientations += self.dt*(self.val + self.gamma_w)
+            self.xs += self.dt*(self.v0 * np.cos(self.orientations) - self.Fs_x - self.Fs_pw[0] + self.Fl_x)
+            self.ys += self.dt*(self.v0 * np.sin(self.orientations) - self.Fs_y - self.Fs_pw[1] + self.Fl_y)
+            for i, s in enumerate(self.squirmers):
+                s.x = self.xs[i]
+                s.y = self.ys[i]
+                s.orientation = self.orientations[i]
 
-            #Reflective Boundary
-            a = self.squirmer1.radius
-            if ((self.R-self.squirmer1.x) < a):
-                self.squirmer1.x, self.squirmer1.orientation = self.ref_bound_x(1,1)
-            if ((self.R+self.squirmer1.x) < a):
-                self.squirmer1.x, self.squirmer1.orientation = self.ref_bound_x(1,2)
-            if ((self.R-self.squirmer1.y) < a):
-                self.squirmer1.y, self.squirmer1.orientation = self.ref_bound_y(1,1)
-            if ((self.R+self.squirmer1.y) < a):
-                self.squirmer1.y, self.squirmer1.orientation = self.ref_bound_y(1,2)
-
-            if ((self.R-self.squirmer2.x) < a):
-                self.squirmer2.x, self.squirmer2.orientation = self.ref_bound_x(2,1)
-            if ((self.R+self.squirmer2.x) < a):
-                self.squirmer2.x, self.squirmer2.orientation = self.ref_bound_x(2,2)
-            if ((self.R-self.squirmer2.y) < a):
-                self.squirmer2.y, self.squirmer2.orientation = self.ref_bound_y(2,1)
-            if ((self.R+self.squirmer2.y) < a):
-                self.squirmer2.y, self.squirmer2.orientation = self.ref_bound_y(2,2)
+                #Reflective Boundary
+                if (self.R - s.x) < a:
+                    s.x, s.orientation = self.ref_border_x(s, 1)
+                    self.xs[i], self.orientations[i] = s.x, s.orientation
+                if (self.R + s.x) < a:
+                    s.x, s.orientation = self.ref_border_x(s, 2)
+                    self.xs[i], self.orientations[i] = s.x, s.orientation
+                if (self.R - s.y) < a:
+                    s.y, s.orientation = self.ref_border_y(s, 1)
+                    self.ys[i], self.orientations[i] = s.y, s.orientation
+                if (self.R + s.y) < a:
+                    s.y, s.orientation = self.ref_border_y(s, 2)
+                    self.ys[i], self.orientations[i] = s.y, s.orientation
             
             #Update the data to export
             if t >= tout:
-                data = [self.squirmer1.x, self.squirmer1.y, 
-                        self.squirmer2.x, self.squirmer2.y, 
-                        self.squirmer1.orientation, self.squirmer2.orientation,
-                        Fl_x1, Fl_y1, 
-                        Fl_x2, Fl_y2, 
-                        dist, tout]
+                data = [self.xs.tolist(), self.ys.tolist(), self.orientations.tolist(),
+                        self.Fs_x.tolist(), self.Fs_y.tolist(), self.Fl_x.tolist(), self.Fl_y.tolist(),
+                        self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist()]
                 history.append(data)
                 tout += self.dt_out
 

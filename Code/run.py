@@ -46,18 +46,26 @@ def main(simulation, filename):
     ds = 2**(7./6)*a
     #viscovity parameter
     mu = 0.01
+
+    N = 2
+    xs2 = [x1, x2]
+    ys2 = [y1, y2]
+    orients2 = [orient1, orient2[2]]
+
+    inter = InteractingSquirmers(N, xs2, ys2, orients2, a, beta0, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr)
+    inter.loop_time()
     # squirmer1 = Squirmer(x1, y1, orient1, a, beta0, v0)
     # squirmer2 = Squirmer(x2, y2, orient2[6], a, beta0, v0)
     # intera = InteractingSquirmers(squirmer1, squirmer2, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr)
     # history = intera.loop_time()
 
     # plot_squirmers_positions(R, history, 'check')
-    if simulation == 'interact_sq':
-        sim_intercating_squirmers(x1, y1, x2, y2, orient1, orient2, a, beta0, betainf, betasup, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, file, dir='graphs')
-    elif simulation == 'vid_interact_sq':
-        sim_vid_interact_sq(x1, y1, x2, y2, orient1, orient2[0], a, betas[0], v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, filename, dir='videos')
-    elif simulation == 'sq_border':
-        sim_sq_border(xs, ys, orients, a, betas, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, filename, dir='graphs')
+    # if simulation == 'interact_sq':
+    #     sim_intercating_squirmers(x1, y1, x2, y2, orient1, orient2, a, beta0, betainf, betasup, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, file, dir='graphs')
+    # elif simulation == 'vid_interact_sq':
+    #     sim_vid_interact_sq(x1, y1, x2, y2, orient1, orient2[0], a, betas[0], v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, filename, dir='videos')
+    # elif simulation == 'sq_border':
+    #     sim_sq_border(xs, ys, orients, a, betas, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, filename, dir='graphs')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run squirmer simulations.")
