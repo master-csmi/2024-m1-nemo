@@ -164,17 +164,6 @@ class Vicsek_continous:
                 self.ys[i], particle.y = tmpy, tmpy
                 self.orientations[i], particle.orientation = tmporientation, tmporientation
 
-            #Ensure particle remains within the boundary
-            # tmpx = min(max(particle.x, -self.L/2 + self.radius), self.L/2 - self.radius)
-            # tmpy = min(max(particle.y, -self.L/2 + self.radius), self.L/2 - self.radius)
-            # self.xs[i], particle.x = tmpx, tmpx
-            # self.ys[i], particle.y = tmpy, tmpy
-
-            # if abs(particle.x) > L/2:
-            #     print(f"x = {particle.x}")
-            # if abs(particle.y) > L/2:
-            #     print(f"y = {particle.y}")
-
     def loop_time(self):
         #Compute the motion of the particles
         for _ in np.arange(self.dt, self.T, self.dt):

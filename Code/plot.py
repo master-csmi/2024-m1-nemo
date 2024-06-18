@@ -3,7 +3,13 @@ import numpy as np
 import os
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation, PillowWriter
+from matplotlib.animation import FuncAnimation
+
+def is_light_color(hex_color):
+    #Define what a color too bright is
+    rgb = matplotlib.colors.hex2color(hex_color)
+    luminance = 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]
+    return luminance > 0.7
 
 def plot_squirmers_positions(R, history, filename, dir='graphs'):
     #Plot the position of each squirmers
@@ -204,7 +210,7 @@ def plot_sim_squirmer_border(R, histories, filename, dir='graphs'):
     plt.savefig(save_path)
     plt.close()
 
-def create_video_from_history(history, R, filename='squirmers_simulation.mp4', dir='videos', fps=30):
+def create_video_from_history(history, R, N, filename='squirmers_simulation.mp4', dir='videos', fps=30):
     if not os.path.exists(dir):
         os.makedirs(dir)
     filename = filename if filename.endswith('.mp4') else filename + '.mp4'
@@ -213,27 +219,36 @@ def create_video_from_history(history, R, filename='squirmers_simulation.mp4', d
     fig, ax = plt.subplots()
     ax.set_xlim(-R, R)
     ax.set_ylim(-R, R)
-    line1, = ax.plot([], [], 'bo', markersize=8, label='Squirmer 1')
-    line2, = ax.plot([], [], 'ro', markersize=8, label='Squirmer 2')
-    orientation1, = ax.plot([], [], 'b-', lw=1)
-    orientation2, = ax.plot([], [], 'r-', lw=1)
+    
+    lines = []
+    orientations = []
+    colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
+    for i in range(N):
+        color = colors[i % len(colors)]
+        line, = ax.plot([], [], color + 'o', markersize=8, label=f'Squirmer {i + 1}')
+        orientation, = ax.plot([], [], color + '-', lw=1)
+        lines.append(line)
+        orientations.append(orientation)
+    
     ax.legend()
 
     def init():
-        line1.set_data([], [])
-        line2.set_data([], [])
-        orientation1.set_data([], [])
-        orientation2.set_data([], [])
-        return line1, line2, orientation1, orientation2
+        for line in lines:
+            line.set_data([], [])
+        for orientation in orientations:
+            orientation.set_data([], [])
+        return lines + orientations
 
     def update(frame):
-        x1, y1, x2, y2, theta1, theta2, *_ = history[frame]
-        line1.set_data(x1, y1)
-        line2.set_data(x2, y2)
-        orientation1.set_data([x1, x1 + 0.1 * np.cos(theta1)], [y1, y1 + 0.1 * np.sin(theta1)])
-        orientation2.set_data([x2, x2 + 0.1 * np.cos(theta2)], [y2, y2 + 0.1 * np.sin(theta2)])
-        return line1, line2, orientation1, orientation2
+        xs, ys, thetas = history[frame][:3]
+        for i in range(N):
+            lines[i].set_data(xs[i], ys[i])
+            orientations[i].set_data(
+                [xs[i], xs[i] + 0.1 * np.cos(thetas[i])], 
+                [ys[i], ys[i] + 0.1 * np.sin(thetas[i])]
+            )
+        return lines + orientations
 
     ani = FuncAnimation(fig, update, frames=len(history), init_func=init, blit=True)
-    #Save animation as video
+    # Save animation as video
     ani.save(save_path, writer='ffmpeg', fps=fps)
