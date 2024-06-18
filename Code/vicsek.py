@@ -124,7 +124,6 @@ class Vicsek_continous:
     
     def torquesLubrification(self, particle1, particle2):
         #Computes the lubrification torques produced by two interacting squirmers
-        #Computes the lubrification torques between two particles
         Dx = self.vector_x(particle1, particle2)
         Dy = self.vector_y(particle1, particle2)
         dist = self.distance(particle1, particle2)
