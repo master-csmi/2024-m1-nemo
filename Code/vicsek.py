@@ -29,8 +29,6 @@ class Vicsek_continous:
         self.size = L/R
         self.density = (N*R**2)/(L**2)
         self.ratio = v0/R
-        self.Fs_x, self.Fs_y, self.Fl_x, self.Fl_y, self.val, self.gamma_w = np.zeros(N), np.zeros(N), np.zeros(N), np.zeros(N), np.zeros(N), np.zeros(N)
-        self.Fs_pw = np.zeros((2,N), dtype=float) 
 
         self.orientations = np.zeros(N)
         self.xs = np.zeros(N)
@@ -83,92 +81,6 @@ class Vicsek_continous:
         summ = abs(sum(v0*(np.cos(particle.orientation) + np.sin(particle.orientation)) for particle in self.particles))
         polar_order = 1/(self.N*self.v0)*summ
         return polar_order
-    
-    def forcesSteric(self, particle1, particle2):
-        #Compute the steric forces between two particles
-        a = self.radius
-        Dx = self.vector_x(particle1, particle2)
-        Dy = self.vector_y(particle1, particle2)
-        dist = self.distance(particle1, particle2)
-
-        tmp = -3*(self.Es/a)*(2*(2*a/dist)**13-(2*a/dist)**7)/np.sqrt(dist)
-        Fs_x =  tmp*Dx
-        Fs_y = tmp*Dy
-        return Fs_x, Fs_y
-    
-    def forcesLubrification(self, particle1, particle2):
-        #Computes the lubrification forces between two particles
-        Dx = self.vector_x(particle1, particle2)
-        Dy = self.vector_y(particle1, particle2)
-        dist = self.distance(particle1, particle2)
-
-        theta = particle1.orientation
-        B1 = particle1.B1
-        B2 = particle1.B2
-        a = self.radius
-
-        eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
-        cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
-
-        sinalpha = np.sqrt(1 - cosalpha * cosalpha)
-        somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
-        sommeFz = B1 * sinalpha * cosalpha - (1/2)*B1 * cosalpha * eieijt**2 + B2 * sinalpha * cosalpha**2 - (1/2)*B2 * (2*cosalpha**2-1) * eieijt**2
-
-        lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)))
-        
-        #lambda=1
-        F_x = np.pi * self.mu * a * eieijt * somme * lnEps * Dx
-        F_y = -9* self.mu * np.pi*a*(1/4)*sommeFz* lnEps * Dy
-
-        return F_x, F_y
-    
-    def torquesLubrification(self, particle1, particle2):
-        #Computes the lubrification torques produced by two interacting squirmers
-        Dx = self.vector_x(particle1, particle2)
-        Dy = self.vector_y(particle1, particle2)
-        dist = self.distance(particle1, particle2)
-        
-        theta = particle1.orientation
-        beta = particle1.beta
-        a = self.radius
-        
-        ex = Dx/dist
-        ey = Dy/dist
-
-        lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)))
-                
-        val = self.Eo*(1 + beta*(np.cos(theta)*ex + np.sin(theta)*ey))*lnEps*(ex*np.sin(theta) - ey*np.cos(theta))
-        
-        return val
-    
-    def compute_force_squirmer_border_x(self, particle):
-        #Computes the force produced by a border in the x-axis
-        x = particle.x
-        y = particle.y
-        RRi = np.sqrt((x - self.L/2)**2 + (y - self.L/2)**2)
-        tmp = 6*((self.Es*(self.L/2 - x))/(self.radius*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
-        return tmp*particle.x
-    
-    def compute_force_squirmer_border_y(self, particle):
-        #Computes the force produced by a border in the y-axis
-        y = particle.y
-        x = particle.x
-        RRi = np.sqrt((x - self.L/2)**2 + (y - self.L/2)**2)
-        tmp = 6*((self.Es*(self.L/2 - y))/(self.radius*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
-        return tmp*particle.y
-    
-    def compute_torque_squirmer_border(self, particle):
-        #Computes the torque produced by a border
-        dist_center = np.sqrt(particle.x**2 + particle.y**2)
-        ex = particle.x / dist_center
-        ey = particle.y / dist_center
-
-        lnEps = -np.log(max(self.lnEps_cr, (self.L/2 - dist_center)/particle.radius - 1))
-
-        gamma_w = 2*self.Eo*(1 + particle.beta*(np.cos(particle.orientation)*ex + np.sin(particle.orientation)*ey)) * \
-                lnEps*(np.sin(particle.orientation)*ex - np.cos(particle.orientation)*ey)
-        
-        return gamma_w
 
     def ref_border_x(self, particle, boundary):
         #reflective border x
@@ -216,7 +128,6 @@ class Vicsek_continous:
     
     def update_orient(self):
         #Update orientation of each particle
-        self.orientations += self.dt*(self.val + self.gamma_w)
         for i, particle in enumerate(self.particles):
             particle.orientation = self.orientations[i]
 
@@ -227,57 +138,10 @@ class Vicsek_continous:
             particle.orientation = new_orient
             self.orientations[i] = new_orient
 
-    def compute_forces_torques(self):
-        #Compute the steric forces of every particle
-        for i, particle in enumerate(self.particles):
-            dist = self.dist_particles(particle)
-            for j in range(len(dist)):
-
-                #Steric forces
-                if (dist[j] != 0) and (dist[j] <= self.ds):
-                    Fs_x, Fs_y = self.forcesSteric(particle, self.particles[j])
-                    self.Fs_x[i] -= Fs_x
-                    self.Fs_y[i] -= Fs_y
-                    self.Fs_x[j] -= Fs_x
-                    self.Fs_y[j] -= Fs_y
-                    # print(f"Fs_x = {Fs_x}")
-                    # print(f"Fs_y = {Fs_y}")
-
-                #Lubrification forces and torques
-                if dist[j] != 0 and dist[j] <= 3*self.radius:
-                    #Forces
-                    Fl_x, Fl_y = self.forcesLubrification(particle, self.particles[j])
-                    self.Fl_x[i] += Fl_x
-                    self.Fl_y[i] += Fl_y
-                    self.Fl_x[j] += Fl_x
-                    self.Fl_y[j] += Fl_y
-                    # print(f"Fl_x = {Fl_x}")
-                    # print(f"Fl_y = {Fl_y}")
-
-                    #Torques
-                    val1 = self.torquesLubrification(particle, self.particles[j])
-                    val2 = self.torquesLubrification(self.particles[j], particle)
-                    # print(f"val1 = {val1}")
-                    # print(f"val2 = {val2}\n")
-                    self.val[i] += val1 + 0.25*val2
-                    self.val[j] += val2 + 0.25*val1
-
-                #Force between a squirmer and a border
-                if ((self.L/2-abs(particle.x)) < 2**(1/6)*self.radius):
-                    self.Fs_pw[0, i] = self.compute_force_squirmer_border_x(particle)
-                if ((self.L/2-abs(particle.y)) < 2**(1/6)*self.radius):
-                    self.Fs_pw[1, i] = self.compute_force_squirmer_border_y(particle)
-
-                #Compute torque exerted on squirmer by the wall
-                if ((self.L/2 - abs(particle.x)) < 2**(1/6) * self.radius):
-                    self.gamma_w[i] += self.compute_torque_squirmer_border(particle)
-                if ((self.L/2 - abs(particle.y)) < 2**(1/6) * self.radius):
-                    self.gamma_w[i] += self.compute_torque_squirmer_border(particle)
-
     def update_position(self):
         #Update position of each particle
-        self.xs += self.v0*self.dt*(np.cos(self.orientations) + self.Fs_x + self.Fl_x + self.Fs_pw[0])
-        self.ys += self.v0*self.dt*(np.sin(self.orientations) + self.Fs_y + self.Fl_y + self.Fs_pw[1])
+        self.xs += self.v0*self.dt*(np.cos(self.orientations))
+        self.ys += self.v0*self.dt*(np.sin(self.orientations))
         for i, particle in enumerate(self.particles):
             particle.x = self.xs[i]
             particle.y = self.ys[i]
@@ -314,7 +178,6 @@ class Vicsek_continous:
     def loop_time(self):
         #Compute the motion of the particles
         for _ in np.arange(self.dt, self.T, self.dt):
-            self.compute_forces_torques()
             self.update_orient()
             self.update_position()
 
@@ -362,8 +225,8 @@ i = 0
 compare = 0
 #Runs the simulation and plot at intervals
 num_steps = 10
-# for step in range(num_steps):
-while prct == 100:
+for step in range(num_steps):
+# while prct == 100:
     compare = copy.deepcopy(vicsek_model.particles)
     start_time = time.time()
     vicsek_model.loop_time()
@@ -381,14 +244,8 @@ while prct == 100:
     polar = vicsek_model.polar_order_parameter()
     print(f"polar parameter = {polar}")
 
-    # fig, ax = plt.subplots(figsize=(8, 8))
-    # vicsek_model.plot(ax)
-    # plt.title(f"Positions at Step {i + 1}")
-    # plt.savefig(f"vicsek_positions_step_{i + 1}.png")
-    # plt.close()
-for i, particle in enumerate(vicsek_model.particles):
-    if (abs(particle.x) >= L/2) or (abs(particle.y) >= L/2):
-        print(f"x{i} = {particle.x}")
-        print(f"y{i} = {particle.y}")
-        print(f"diff x{i} = {compare[i].x - particle.x}")
-        print(f"diff y{i} = {compare[i].y - particle.y}")
+    fig, ax = plt.subplots(figsize=(8, 8))
+    vicsek_model.plot(ax)
+    plt.title(f"Positions at Step {i + 1}")
+    plt.savefig(f"vicsek_positions_step_{i + 1}.png")
+    plt.close()
