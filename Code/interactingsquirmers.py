@@ -8,7 +8,7 @@ from plot import plot_dist_sq, plot_squirmers_positions
 
 class InteractingSquirmers:
 
-    def __init__(self, N, xs, ys, orientations, radius, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr):
+    def __init__(self, N, xs, ys, orientations, radius, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border=True):
         self.N = N
         self.xs = np.array(xs, dtype=float)
         self.ys = np.array(ys, dtype=float)
@@ -27,6 +27,8 @@ class InteractingSquirmers:
         self.lnEps_cr = lnEps_cr
         self.Fs_x, self.Fs_y, self.Fl_x, self.Fl_y, self.val, self.gamma_w = np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float)
         self.Fs_pw = np.zeros((2,N), dtype=float)
+        #border = true || false, true for reflective, false for periodic 
+        self.border = border
 
         colors = list(matplotlib.colors.CSS4_COLORS.keys())
         colors = [color for color in colors if not self.is_light_color(matplotlib.colors.CSS4_COLORS[color])]
@@ -165,7 +167,6 @@ class InteractingSquirmers:
         return squirmer.x, squirmer.orientation
     
     def ref_border_y(self, squirmer, boundary):
-        #reflective border y
         squirmer.orientation = -squirmer.orientation
         #Keeps orientation between [0, 2pi]
         squirmer.orientation = squirmer.orientation % (2 * np.pi)
@@ -177,7 +178,16 @@ class InteractingSquirmers:
             squirmer.y = -self.R + diff
 
         return squirmer.y, squirmer.orientation
-    
+
+    def perio_border_x(self, squirmer, boundary):
+        diff = abs(self.R - abs(squirmer.x))
+        if boundary == 1:
+            #1 for right boundary
+            squirmer.x = -self.R + diff
+        else:
+            squirmer.x = self.R - diff
+        return squirmer.x
+
     def loop_time(self):
         tout = self.dt_out
         a = self.radius
@@ -245,11 +255,19 @@ class InteractingSquirmers:
 
                 #Reflective Boundary
                 if (self.R - s.x) < a:
-                    s.x, s.orientation = self.ref_border_x(s, 1)
+                    if self.border == True:
+                        s.x, s.orientation = self.ref_border_x(s, 1)
+                    else:
+                        s.x = self.perio_border_x(s, 1)
                     self.xs[i], self.orientations[i] = s.x, s.orientation
+
                 if (self.R + s.x) < a:
-                    s.x, s.orientation = self.ref_border_x(s, 2)
+                    if self.border == True:
+                        s.x, s.orientation = self.ref_border_x(s, 2)
+                    else:
+                        s.x = self.perio_border_x(s, 2)
                     self.xs[i], self.orientations[i] = s.x, s.orientation
+                    
                 if (self.R - s.y) < a:
                     s.y, s.orientation = self.ref_border_y(s, 1)
                     self.ys[i], self.orientations[i] = s.y, s.orientation
@@ -264,6 +282,10 @@ class InteractingSquirmers:
                         self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist()]
                 history.append(data)
                 tout += self.dt_out
+                print(f"x0 = {self.squirmers[0].x}")
+                print(f"y0 = {self.squirmers[0].y}")
+                print(f"x1 = {self.squirmers[1].x}")
+                print(f"y1 = {self.squirmers[1].y}")
 
         return history
     

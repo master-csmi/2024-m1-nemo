@@ -16,10 +16,10 @@ def main(simulation, filename):
     #squirmers' radius
     a = 0.15
     #coordinates
-    x1, y1 = -2*a, 0
+    x1, y1 = -2*a, 0.6
     x2, y2 = a/1.1, 0
     #orientations
-    orient1 = np.pi/2
+    orient1 = np.pi
     orient2 = [-np.pi/4, np.pi/4, np.pi/2, -np.pi/2, 3*np.pi/4, -3*np.pi/4, np.pi, 2*np.pi]
     #border simulation
     xs = [-0.6, 0.6, 0.2, -0.2]
@@ -37,7 +37,7 @@ def main(simulation, filename):
     #amplitude of steric interactions
     Es = 1
     #simulation time
-    T = 1
+    T = 0.7
     #periodicity of outputs
     dt_out = 0.05
     #amplitude of orientational interactions
@@ -50,9 +50,10 @@ def main(simulation, filename):
     N = 2
     xs2 = [x1, x2]
     ys2 = [y1, y2]
-    orients2 = [orient1, orient2[2]]
+    orients2 = [orient1, orient2[-1]]
+    border = False
 
-    inter = InteractingSquirmers(N, xs2, ys2, orients2, a, beta0, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr)
+    inter = InteractingSquirmers(N, xs2, ys2, orients2, a, beta0, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border)
     inter.loop_time()
     # squirmer1 = Squirmer(x1, y1, orient1, a, beta0, v0)
     # squirmer2 = Squirmer(x2, y2, orient2[6], a, beta0, v0)
