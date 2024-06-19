@@ -37,9 +37,8 @@ jobs:
 
     - name: Check code
       run: |
-        python Code/run.py vid_interact_sq test
-        python Code/run.py interact_sq test
-        python Code/run.py sq_border test
+        python Code/run.py video 2 test
+        python Code/run.py plot 2 test
 
     - name: Print working directory
       run: |
