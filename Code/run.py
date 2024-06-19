@@ -46,9 +46,9 @@ def main(simulation, N, filename):
     #         xs[k] = x
     #         ys[k] = y
     #         k += 1
-    xs = [-a, 2*a/1.5]
+    xs = [-2*a, 2*a]
     ys = [0, 0]
-    orients = [np.pi/2, np.pi/2]
+    orients = [np.pi/2, 3*np.pi/4]
     border = False
     border_plot = False
 
