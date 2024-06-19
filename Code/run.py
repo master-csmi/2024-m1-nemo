@@ -1,7 +1,5 @@
 import argparse
 import numpy as np
-from interactingsquirmers import InteractingSquirmers
-from plot import plot_squirmers_positions
 from simulation import sim_interacting_squirmers, sim_vid_interact_sq, sim_sq_border
 
 def main(simulation, N, filename):
@@ -13,7 +11,7 @@ def main(simulation, N, filename):
     #half of the length of the square
     R = L/2
     #squirmers' radius
-    a = 0.1
+    a = 0.05
     #betas
     betas = [0, -7.5, 7.5]
     beta = -7.5
@@ -27,12 +25,12 @@ def main(simulation, N, filename):
     T = 0.7
     #periodicity of outputs
     dt_out = 0.05
-    #amplitude of orientational interactions
-    Eo = ((3./10.)*v0/a)
-    #distance of steric interactions
-    ds = 2**(7./6)*a
     #viscovity parameter
     mu = 0.01
+    #amplitude of orientational interactions
+    Eo = [((3./10.)*v0/a), (16/10)*mu*np.pi*a**2, (-3./2.)*(v0/a)]
+    #distance of steric interactions
+    ds = 2**(7./6)*a
 
     #coordinates and orientations
     # xs, ys, orients = np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float)
@@ -48,19 +46,20 @@ def main(simulation, N, filename):
     #         xs[k] = x
     #         ys[k] = y
     #         k += 1
-    xs = [-0.4]
-    ys = [-0.7]
-    orients = [-np.pi/4]
+    xs = [-a, 2*a/1.5]
+    ys = [0, 0]
+    orients = [np.pi/2, np.pi/2]
     border = False
+    border_plot = False
 
     # inter = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border)
     # sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border, filename)
     # inter.loop_time()
 
     if simulation == 'video':
-        sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border, filename, dir='videos')
+        sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo[0], lnEps_cr, border, filename, dir='videos')
     elif simulation == 'plot':
-        sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border, filename, dir='graphs')
+        sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo[0], lnEps_cr, border, filename, border_plot, dir='graphs')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run squirmer simulations.")

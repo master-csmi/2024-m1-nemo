@@ -57,12 +57,15 @@ def plot_squirmers_positions(R, history, filename, dir='graphs'):
     save_path = os.path.join(dir, filename + '.png')
     plt.savefig(save_path)
 
-def plot_sim_nsquirmers(histories, R, N, filename, dir='graphs'):
-    plt.figure(figsize=(8, 8))
-    plt.plot([-R, R], [-R, -R], 'k-', linewidth=2)
-    plt.plot([-R, R], [R, R], 'k-', linewidth=2)
-    plt.plot([-R, -R], [-R, R], 'k-', linewidth=2)
-    plt.plot([R, R], [-R, R], 'k-', linewidth=2)
+def plot_sim_nsquirmers(histories, R, N, a, border, filename, dir='graphs'):
+    #a : radius of the squirmer
+    fig = plt.figure(figsize=(8, 8))
+
+    if border == True:
+        plt.plot([-R, R], [-R, -R], 'k-', linewidth=2)
+        plt.plot([-R, R], [R, R], 'k-', linewidth=2)
+        plt.plot([-R, -R], [-R, R], 'k-', linewidth=2)
+        plt.plot([R, R], [-R, R], 'k-', linewidth=2)
 
     colors = ['blue', 'cyan', 'orange', 'gold', 'green', 'lime', 'red', 'pink', 'purple', 'violet']
 
@@ -80,6 +83,11 @@ def plot_sim_nsquirmers(histories, R, N, filename, dir='graphs'):
         squirmer_ys.append(y)
         squirmer_orients.append(orient)
 
+    nb_pixl_fig = fig.get_size_inches()[0]*fig.dpi
+    radius_scatter = nb_pixl_fig/(2*R/a)
+    s = radius_scatter**2
+    scale_arrow = 30
+
     for i in range(N):
         plt.plot(squirmer_xs[i], squirmer_ys[i], color=colors[i])
         last_orient = squirmer_orients[i][0]
@@ -87,10 +95,10 @@ def plot_sim_nsquirmers(histories, R, N, filename, dir='graphs'):
         for j in range(len(squirmer_orients[i])):
             new_orient = squirmer_orients[i][j]
             if new_orient != last_orient:
-                plt.quiver(squirmer_xs[i][j], squirmer_ys[i][j], np.cos(new_orient), np.sin(new_orient), color=colors[i], scale=25, width=0.005)
+                plt.quiver(squirmer_xs[i][j], squirmer_ys[i][j], np.cos(new_orient), np.sin(new_orient), color=colors[i], scale=scale_arrow, width=0.005)
                 last_orient = new_orient
                 if plot_circle == True:
-                    plt.scatter(squirmer_xs[i][j], squirmer_ys[i][j], color=colors[i])
+                    plt.scatter(squirmer_xs[i][j], squirmer_ys[i][j], color=colors[i], s=s)
                 plot_circle = not plot_circle
 
     #Plot initial orientations
@@ -98,8 +106,10 @@ def plot_sim_nsquirmers(histories, R, N, filename, dir='graphs'):
     ys = histories[0][1]
     orientations = histories[0][2]
     for i in range(N):
-        plt.scatter(xs[i], ys[i], color=colors[i])
-        plt.quiver(xs[i], ys[i], np.cos(orientations[i]), np.sin(orientations[i]), color='black', scale=25, width=0.005)
+        plt.scatter(xs[i], ys[i], color=colors[i], s=s)
+        plt.quiver(xs[i], ys[i], np.cos(orientations[i]), np.sin(orientations[i]), color='black', scale=scale_arrow, width=0.005)
+
+    plt.scatter([-R, R], [-R, R], color='white', alpha=0)
 
     plt.axis('equal')
     plt.xlabel('X')
