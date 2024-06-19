@@ -81,7 +81,6 @@ class InteractingSquirmers:
         Dx, Dy, dist = self.distance_sq(squirmer1, squirmer2)
 
         tmp = -3*(self.Es/a)*(2*(2*a/dist)**13-(2*a/dist)**7)/np.sqrt(dist)
-        print(tmp)
         Fs_x =  tmp*Dx
         Fs_y = tmp*Dy
         return Fs_x, Fs_y
