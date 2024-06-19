@@ -81,6 +81,7 @@ class InteractingSquirmers:
         Dx, Dy, dist = self.distance_sq(squirmer1, squirmer2)
 
         tmp = -3*(self.Es/a)*(2*(2*a/dist)**13-(2*a/dist)**7)/np.sqrt(dist)
+        print(tmp)
         Fs_x =  tmp*Dx
         Fs_y = tmp*Dy
         return Fs_x, Fs_y
@@ -213,8 +214,8 @@ class InteractingSquirmers:
                     #Force between squirmers
                     if (dist[j] != 0) and (dist[j] < self.ds):
                         Fs_x, Fs_y = self.forcesSteric(s, self.squirmers[j])
-                        self.Fs_x[i] += Fs_x
-                        self.Fs_y[i] += Fs_y
+                        self.Fs_x[i] -= Fs_x
+                        self.Fs_y[i] -= Fs_y
                     
                     #Lubrification forces and torques
                     if (dist[j] != 0) and (dist[j] <= 3*a):

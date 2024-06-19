@@ -35,20 +35,23 @@ def main(simulation, N, filename):
     mu = 0.01
 
     #coordinates and orientations
-    xs, ys, orients = np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float)
-    for j in range(N):
-        orientation = np.random.uniform(0, 2*np.pi)
-        orients[j] = orientation
-    k = 0
-    while k < N:
-        x = np.random.uniform(-(R-2*a), (R-2*a))
-        y = np.random.uniform(-(R-2*a), (R-2*a))
-        #Each particle must have a unique initial position
-        if not any(np.isclose(x, xs, atol=1.1*a)) and not any(np.isclose(y, ys, atol=1.1*a)):
-            xs[k] = x
-            ys[k] = y
-            k += 1
-    border = True
+    # xs, ys, orients = np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float)
+    # for j in range(N):
+    #     orientation = np.random.uniform(0, 2*np.pi)
+    #     orients[j] = orientation
+    # k = 0
+    # while k < N:
+    #     x = np.random.uniform(-(R-2*a), (R-2*a))
+    #     y = np.random.uniform(-(R-2*a), (R-2*a))
+    #     #Each particle must have a unique initial position
+    #     if not any(np.isclose(x, xs, atol=1.1*a)) and not any(np.isclose(y, ys, atol=1.1*a)):
+    #         xs[k] = x
+    #         ys[k] = y
+    #         k += 1
+    xs = [-a/1.1, a/1.1]
+    ys = [0.1, -0.1]
+    orients = [np.pi/2, np.pi]
+    border = False
 
     # inter = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border)
     # sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border, filename)
