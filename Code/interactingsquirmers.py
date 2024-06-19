@@ -4,7 +4,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from csv_file import export_data_csv, read_csv_file
 from squirmer import Squirmer
-from plot import plot_dist_sq, plot_squirmers_positions
+from plot import plot_squirmers_positions
 
 class InteractingSquirmers:
 
@@ -289,4 +289,3 @@ class InteractingSquirmers:
         history = self.loop_time()
         export_data_csv(file_name_csv, history)
         plot_squirmers_positions(self.R, history, filename_pos)
-        plot_dist_sq(history, filename_dist)
