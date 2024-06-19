@@ -28,6 +28,7 @@ def main(simulation, N, filename):
     #viscovity parameter
     mu = 0.01
     #amplitude of orientational interactions
+    #Eo[0] = Eoinitial, E[1] = Eobrumley, E[2] = Eolauga
     Eo = [((3./10.)*v0/a), (16/10)*mu*np.pi*a**2, (-3./2.)*(v0/a)]
     #distance of steric interactions
     ds = 2**(7./6)*a
@@ -46,9 +47,9 @@ def main(simulation, N, filename):
     #         xs[k] = x
     #         ys[k] = y
     #         k += 1
-    xs = [-2*a, 2*a]
+    xs = [-a, 2*a/1.5]
     ys = [0, 0]
-    orients = [np.pi/2, 3*np.pi/4]
+    orients = [np.pi/2, -np.pi/2]
     border = False
     border_plot = False
 
