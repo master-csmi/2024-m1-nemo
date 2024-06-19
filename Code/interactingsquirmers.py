@@ -222,14 +222,11 @@ class InteractingSquirmers:
                         Fl_x, Fl_y = self.forcesLubrification(s, self.squirmers[j])
                         self.Fl_x[i] += Fl_x
                         self.Fl_y[i] += Fl_y
-                        self.Fl_x[j] -= Fl_x
-                        self.Fl_y[j] -= Fl_y
 
                         #Torques
                         val1 = self.torquesLubrification(s, self.squirmers[j])
                         val2 = self.torquesLubrification(self.squirmers[j], s)
                         self.val[i] += val1 + 0.25*val2
-                        self.val[j] += val2 + 0.25*val1
 
                 #Force between a squirmer and a border
                 if ((self.R-abs(s.x)) < 2**(1/6)*a) and (self.border == True):
@@ -252,7 +249,7 @@ class InteractingSquirmers:
                 s.y = self.ys[i]
                 s.orientation = self.orientations[i]
 
-                #Reflective Boundary
+                #Reflective or Periodic Boundary
                 if (self.R - s.x) < a:
                     if self.border == True:
                         s.x, s.orientation = self.ref_border_x(s, 1)

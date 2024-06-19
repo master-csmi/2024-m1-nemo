@@ -98,7 +98,8 @@ def plot_sim_nsquirmers(histories, R, N, filename, dir='graphs'):
     ys = histories[0][1]
     orientations = histories[0][2]
     for i in range(N):
-        plt.quiver(xs[i], ys[i], np.cos(orientations[i]), np.sin(orientations[i]), color='black')
+        plt.scatter(xs[i], ys[i], color=colors[i])
+        plt.quiver(xs[i], ys[i], np.cos(orientations[i]), np.sin(orientations[i]), color='black', scale=25, width=0.005)
 
     plt.axis('equal')
     plt.xlabel('X')

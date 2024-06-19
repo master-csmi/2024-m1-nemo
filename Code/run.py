@@ -16,7 +16,7 @@ def main(simulation, N, filename):
     a = 0.1
     #betas
     betas = [0, -7.5, 7.5]
-    beta = 0
+    beta = -7.5
     #time-step
     dt = 1e-4
     #cut-off for -log
@@ -24,7 +24,7 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 1
     #simulation time
-    T = 2.5
+    T = 0.7
     #periodicity of outputs
     dt_out = 0.05
     #amplitude of orientational interactions
@@ -48,9 +48,9 @@ def main(simulation, N, filename):
     #         xs[k] = x
     #         ys[k] = y
     #         k += 1
-    xs = [-a/1.1, a/1.1]
-    ys = [0.1, -0.1]
-    orients = [np.pi/2, np.pi]
+    xs = [-0.4]
+    ys = [-0.7]
+    orients = [-np.pi/4]
     border = False
 
     # inter = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border)
