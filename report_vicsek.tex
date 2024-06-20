@@ -36,9 +36,33 @@ The main goal is to model the dynamics of a schoal of squirmers within confined 
 \subsection{Model}
 \begin{center}
     \begin{tikzpicture}
-        \draw[color=black, very thick](0,0) circle (2);
-        \node at (-0.1,-0.1) {{$r_i$}};
-        \filldraw[color=blue, fill=blue, very thick](0,0) circle(0.1);
+        \draw[color=green, very thick](0,0) circle (2);
+        \node at (-0.2,-0.2) {{$r_i$}};
+        \filldraw[color=black, fill=black, very thick](0,0) circle(0.1);
+        \filldraw[color=black, fill=black, very thick](-1.5,0.2) circle(0.1);
+        \filldraw[color=black, fill=black, very thick](0.5,2.3) circle(0.1);
+        \filldraw[color=black, fill=black, very thick](2.6,0) circle(0.1);
+        \filldraw[color=black, fill=black, very thick](-0.2,-1.8) circle(0.1);
+        \filldraw[color=black, fill=black, very thick](0.6,-0.3) circle(0.1);
+        \filldraw[color=black, fill=black, very thick](-1.2,-0.4) circle(0.1);
+        \filldraw[color=black, fill=black, very thick](-2.8,1.5) circle(0.1);
+        \filldraw[color=black, fill=black, very thick](0.3,-2.2) circle(0.1);
+        \filldraw[color=black, fill=black, very thick](0.1,2.8) circle(0.1);
+        \draw[thick, -, color=black!60] (0,0) -- (2,0);
+        \node at (1,-0.2) {{$R$}};
+        % Length of the arrow
+        \pgfmathsetmacro{\len}{sqrt(1.28)}
+
+        % Draw arrows with random directions
+        \foreach \x/\y in {-1.5/0.2, 0.5/2.3, 2.6/0, -0.2/-1.8, -1.2/-0.4, -2.8/1.5, 0.3/-2.2, 0.1/2.8} {
+            \pgfmathsetmacro{\angle}{random()*360}
+            \draw[thick, ->, color=green] (\x,\y) -- ++({\len*cos(\angle)},{\len*sin(\angle)});
+        }
+        \draw[thick, ->, color=green] (0,0) -- (0.8,0.8);
+        \draw[thick, ->, color=green] (0.6, -0.3) -- ++ ({\len*cos(0.78)},{\len*sin(-0.78)});
+        \node [color=black] at (0.2,0.5) {{$\vec{v}_i$}};
+        \draw[thick, ->, color=black] (0.8, 0) arc (0:45:0.8);
+        \node at (1, 0.3) {{$\theta_i$}};
     \end{tikzpicture}
 \end{center}
 The Vicsek model consists of $N$ particles with $r_i(t)$ and $\theta_i(t)$ 
