@@ -65,7 +65,7 @@ def main(simulation, N, filename):
                 break
             else:
                 print("Invalid input. Please enter 'plot' or 'video'.")
-        xseo = [-a, 2*a/1.5]
+        xseo = [-a, 2*a]
         yseo = [0, 0]
         orient1 = np.pi/2
         orient2 = [(np.pi/2, "pi_2_"), (-np.pi/2, "mpi_2_"), (3*np.pi/4, "3pi_4_"), (-3*np.pi/4, "m3pi_4_"), (np.pi, "pi_"), (2*np.pi, "2pi_"), (np.pi/4, "pi_4"), (-np.pi/4, "mpi_4")]
