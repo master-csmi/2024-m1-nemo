@@ -3,7 +3,13 @@ import numpy as np
 import os
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation, PillowWriter
+from matplotlib.animation import FuncAnimation
+
+def is_light_color(hex_color):
+    #Define what a color too bright is
+    rgb = matplotlib.colors.hex2color(hex_color)
+    luminance = 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]
+    return luminance > 0.7
 
 def plot_squirmers_positions(R, history, filename, dir='graphs'):
     #Plot the position of each squirmers
@@ -51,73 +57,54 @@ def plot_squirmers_positions(R, history, filename, dir='graphs'):
     save_path = os.path.join(dir, filename + '.png')
     plt.savefig(save_path)
 
-def plot_dist_sq(history, filename, dir='graphs'):
-    #Plot the distance between two squirmer over time
-    plt.figure(figsize=(8, 6))
-    dist_list = []
-    time_list = []
-    for step in history:
-        dist_list.append(step[10])
-        time_list.append(step[11])
-
-    plt.plot(time_list, dist_list, label="Distance")
-    
-    plt.xlabel('Time')
-    plt.ylabel('Distance between squirmers')
-    plt.title('Distance between squirmers over time')
-    plt.grid(True)
-
-    if not os.path.exists(dir):
-        os.makedirs(dir)
-    save_path = os.path.join(dir, filename + '.png')
-    plt.savefig(save_path)
-
-def plot_sim_6squirmers(R, historyb0, historybinf, historybsup, filename, dir='graphs'):
-    #Plot 2 squirmers with the same initial orientation but with different beta
+def plot_sim_nsquirmers(histories, R, N, filename, dir='graphs'):
     plt.figure(figsize=(8, 8))
     plt.plot([-R, R], [-R, -R], 'k-', linewidth=2)
     plt.plot([-R, R], [R, R], 'k-', linewidth=2)
     plt.plot([-R, -R], [-R, R], 'k-', linewidth=2)
     plt.plot([R, R], [-R, R], 'k-', linewidth=2)
 
-    histories = [(historyb0, 'beta=0'), (historybinf, 'beta<0'), (historybsup, 'beta>0')]
-    colors = [('blue','cyan'), ('orange','gold'), ('green','lime')]
+    colors = ['blue', 'cyan', 'orange', 'gold', 'green', 'lime', 'red', 'pink', 'purple', 'violet']
 
-    for history, (color1,color2) in zip(histories, colors):
-        squirmer1_x, squirmer1_y, squirmer1_orient = [], [], []
-        squirmer2_x, squirmer2_y, squirmer2_orient = [], [], []
+    xs = [history[0] for history in histories]
+    ys = [history[1] for history in histories]
+    orientations = [history[2] for history in histories]
+    squirmer_xs = []
+    squirmer_ys = []
+    squirmer_orients = []
+    for i in range(N):
+        x = [step[i] for step in xs]
+        y = [step[i] for step in ys]
+        orient = [step[i] for step in orientations]
+        squirmer_xs.append(x)
+        squirmer_ys.append(y)
+        squirmer_orients.append(orient)
 
-        for step in history[0]:
-            squirmer1_x.append(step[0])
-            squirmer1_y.append(step[1])
-            squirmer1_orient.append(step[4])
-            squirmer2_x.append(step[2])
-            squirmer2_y.append(step[3])
-            squirmer2_orient.append(step[5])
-        
-        plt.plot(squirmer1_x, squirmer1_y, label=f'Squirmer1 {history[1]}', color=color1)
-        plt.plot(squirmer2_x, squirmer2_y, label=f'Squirmer2 {history[1]}', color=color2)
-
-        last_orient1 = squirmer1_orient[0]
-        last_orient2 = squirmer2_orient[0]
-
-        for i in range(len(squirmer1_orient)):
-            if squirmer1_orient[i] != last_orient1:
-                plt.quiver(squirmer1_x[i], squirmer1_y[i], np.cos(squirmer1_orient[i]), np.sin(squirmer1_orient[i]), color=color1, scale=25, width=0.005)
-                last_orient1 = squirmer1_orient[i]
-            if squirmer2_orient[i] != last_orient2:
-                plt.quiver(squirmer2_x[i], squirmer2_y[i], np.cos(squirmer2_orient[i]), np.sin(squirmer2_orient[i]), color=color2, scale=25, width=0.005)
-                last_orient2 = squirmer2_orient[i]
+    for i in range(N):
+        plt.plot(squirmer_xs[i], squirmer_ys[i], color=colors[i])
+        last_orient = squirmer_orients[i][0]
+        plot_circle = False
+        for j in range(len(squirmer_orients[i])):
+            new_orient = squirmer_orients[i][j]
+            if new_orient != last_orient:
+                plt.quiver(squirmer_xs[i][j], squirmer_ys[i][j], np.cos(new_orient), np.sin(new_orient), color=colors[i], scale=25, width=0.005)
+                last_orient = new_orient
+                if plot_circle == True:
+                    plt.scatter(squirmer_xs[i][j], squirmer_ys[i][j], color=colors[i])
+                plot_circle = not plot_circle
 
     #Plot initial orientations
-    plt.quiver(squirmer2_x[0], squirmer2_y[0], np.cos(squirmer2_orient[0]), np.sin(squirmer2_orient[0]), color='black', scale=25, width=0.002)
-    plt.quiver(squirmer1_x[0], squirmer1_y[0], np.cos(squirmer1_orient[0]), np.sin(squirmer1_orient[0]), color='black', scale=25, width=0.002)
+    xs = histories[0][0]
+    ys = histories[0][1]
+    orientations = histories[0][2]
+    for i in range(N):
+        plt.scatter(xs[i], ys[i], color=colors[i])
+        plt.quiver(xs[i], ys[i], np.cos(orientations[i]), np.sin(orientations[i]), color='black', scale=25, width=0.005)
 
     plt.axis('equal')
     plt.xlabel('X')
     plt.ylabel('Y')
     plt.title('Positions and Orientations of Squirmers')
-    plt.legend()
     plt.grid(True)
 
     if not os.path.exists(dir):
@@ -173,6 +160,7 @@ def plot_sim_squirmer_border(R, histories, filename, dir='graphs'):
         for i in range(len(squirmer1_orient)):
             if squirmer1_orient[i] != last_orient1:
                 plt.quiver(squirmer1_x[i], squirmer1_y[i], np.cos(squirmer1_orient[i]), np.sin(squirmer1_orient[i]), color=color1, scale=25, width=0.005)
+                plt.scatter(squirmer1_x[i], squirmer1_y[i], color=color1)
                 last_orient1 = squirmer1_orient[i]
             if squirmer2_orient[i] != last_orient2:
                 plt.quiver(squirmer2_x[i], squirmer2_y[i], np.cos(squirmer2_orient[i]), np.sin(squirmer2_orient[i]), color=color2, scale=25, width=0.005)
@@ -204,7 +192,7 @@ def plot_sim_squirmer_border(R, histories, filename, dir='graphs'):
     plt.savefig(save_path)
     plt.close()
 
-def create_video_from_history(history, R, filename='squirmers_simulation.mp4', dir='videos', fps=30):
+def create_video_from_history(history, R, N, filename='squirmers_simulation.mp4', dir='videos', fps=30):
     if not os.path.exists(dir):
         os.makedirs(dir)
     filename = filename if filename.endswith('.mp4') else filename + '.mp4'
@@ -213,27 +201,36 @@ def create_video_from_history(history, R, filename='squirmers_simulation.mp4', d
     fig, ax = plt.subplots()
     ax.set_xlim(-R, R)
     ax.set_ylim(-R, R)
-    line1, = ax.plot([], [], 'bo', markersize=8, label='Squirmer 1')
-    line2, = ax.plot([], [], 'ro', markersize=8, label='Squirmer 2')
-    orientation1, = ax.plot([], [], 'b-', lw=1)
-    orientation2, = ax.plot([], [], 'r-', lw=1)
+    
+    lines = []
+    orientations = []
+    colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
+    for i in range(N):
+        color = colors[i % len(colors)]
+        line, = ax.plot([], [], color + 'o', markersize=8, label=f'Squirmer {i + 1}')
+        orientation, = ax.plot([], [], color + '-', lw=1)
+        lines.append(line)
+        orientations.append(orientation)
+    
     ax.legend()
 
     def init():
-        line1.set_data([], [])
-        line2.set_data([], [])
-        orientation1.set_data([], [])
-        orientation2.set_data([], [])
-        return line1, line2, orientation1, orientation2
+        for line in lines:
+            line.set_data([], [])
+        for orientation in orientations:
+            orientation.set_data([], [])
+        return lines + orientations
 
     def update(frame):
-        x1, y1, x2, y2, theta1, theta2, *_ = history[frame]
-        line1.set_data(x1, y1)
-        line2.set_data(x2, y2)
-        orientation1.set_data([x1, x1 + 0.1 * np.cos(theta1)], [y1, y1 + 0.1 * np.sin(theta1)])
-        orientation2.set_data([x2, x2 + 0.1 * np.cos(theta2)], [y2, y2 + 0.1 * np.sin(theta2)])
-        return line1, line2, orientation1, orientation2
+        xs, ys, thetas = history[frame][:3]
+        for i in range(N):
+            lines[i].set_data(xs[i], ys[i])
+            orientations[i].set_data(
+                [xs[i], xs[i] + 0.1 * np.cos(thetas[i])], 
+                [ys[i], ys[i] + 0.1 * np.sin(thetas[i])]
+            )
+        return lines + orientations
 
     ani = FuncAnimation(fig, update, frames=len(history), init_func=init, blit=True)
-    #Save animation as video
+    # Save animation as video
     ani.save(save_path, writer='ffmpeg', fps=fps)
