@@ -33,12 +33,16 @@ steric forces, and a full model using the finite element library Feel++.
 The main goal is to model the dynamics of a schoal of squirmers within confined environments, 
 
 \section{Vicsek Model}
-The basic Vicsek model consists on $N$ particles with $x_i(t)$ the position, $\vec{v}_i(t)$ the velocity and
-$\theta_i(t)$ the orientation.\\
-All particles have the same velocity $v0$. The velocity $\vec{v}_i(t)$ is then  expressed by
-$$\vec{v}_i(t) = v0 \begin{pmatrix}
-    cos(\theta_i(t))\\
-    sin(\theta_i(t))
-\end{pmatrix}$$
-
+The Vicsek model consists of $N$ particles with $r_i(t)$ and $\theta_i(t)$ 
+their position, velocity and orientation.\\
+All particles have the same velocity $v0$.
+The evolution of the orientation $\theta_i(t)$ at each time step $\nabla$ is:
+$$\theta_i(t + \nabla t) = \langle\theta_j(t)\rangle_{|r_i(t) - r_j(t)| < R} + \epsilon_i(t)$$
+with
+$$\langle\theta_j(t)\rangle = \arctan\left(\frac{\sin(\theta_j(t))}{\cos(\theta_j(t))}\right)$$
+R the range of interaction, $\langle\theta_j(t)\rangle_{|r_i(t) - r_j(t)| < R}$ the average orientation of the particles near the particle $i$-th
+particle at the time t(including itself) and $\epsilon_i(t)$ represents the noise, it's a random number taken from a uniform probability distribution
+over $\left(-\frac{\eta}{2}, \frac{\eta}{2}\right)$.\\
+The parameter $\eta$ is the main tool that counteracts the alignment of the particles.\\
+The evolution of the 
 \end{document}
