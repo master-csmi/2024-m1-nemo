@@ -86,7 +86,7 @@ def plot_sim_nsquirmers(histories, R, N, a, border, filename, dir='graphs'):
     nb_pixl_fig = fig.get_size_inches()[0]*fig.dpi
     radius_scatter = nb_pixl_fig/(2*R/a)
     s = radius_scatter**2
-    scale_arrow = 10
+    scale_arrow = 15
     w = 0.007
 
     for i in range(N):
@@ -245,3 +245,4 @@ def create_video_from_history(history, R, N, filename='squirmers_simulation.mp4'
     ani = FuncAnimation(fig, update, frames=len(history), init_func=init, blit=True)
     # Save animation as video
     ani.save(save_path, writer='ffmpeg', fps=fps)
+    plt.close()
