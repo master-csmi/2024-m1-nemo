@@ -65,9 +65,10 @@ The main goal is to model the dynamics of a schoal of squirmers within confined 
         \node at (1, 0.3) {{$\theta_i$}};
     \end{tikzpicture}
 \end{center}
+
 The Vicsek model consists of $N$ particles with $r_i(t)$ and $\theta_i(t)$ 
 their position, velocity and orientation.\\
-All particles have the same velocity $v_0$.
+All particles have the same velocity $v_0$ and radius.
 The evolution of the orientation $\theta_i(t)$ at each time step $\nabla t$ is:
 $$\theta_i(t + \nabla t) = \langle\theta_j(t)\rangle_{|r_i(t) - r_j(t)| < R} + \epsilon_i(t)$$
 with
@@ -93,4 +94,37 @@ The behavior of the particles are quantified by the polar order parameter $v_a$ 
 $$v_a = \frac{1}{Nv_0}\left|\sum^{N}_{i=1}\vec{v}_i\right|$$
 
 \subsection{Implementation}
+The Vicsek model is implemented in the file \texttt{Code/vicsek.py} as a class 
+for a square system with repulsive borders
+\subsubsection*{Parameters}
+\begin{itemize}
+    \item $N$ the number of particles in the system
+    \item $R$ the range of interaction of the particles
+    \item $L$ the length of the system
+    \item $v0$ the constant velocity of the particles
+    \item $radius$ the radius of the particles
+    \item $T$ the time of simulation
+    \item $dt$ the time step between each iteration
+    \item $noise$ the $\eta$ parameter, used to counteract the alignment of the particles
+    \item $beta$, $Es$, $ds$, $mu$, $Eo$, $lnEps_cr$ are parameters which initialize Squirmers but
+    are not used
+\end{itemize}
+When called, the class initializes $N$ particles with random position and orientation within the square.
+\subsubsection*{Methods}
+\begin{itemize}
+    \item \texttt{distance(p1, p2)} returns the distance between the two particles in argument
+    \item \texttt{dist\_particles(particle)} returns a list of the distance between the particle in argument and all of the other ones
+    \item \texttt{how\_many\_in\_square()} prints and returns the percentage of particles inside the square. It is
+    used to test if the code contains errors.
+    \item \texttt{ploar\_order\_parameter()} computes and returns $v_a$ the polar order parameter
+    \item \texttt{ref\_border\_x(particle, boundary)} and \texttt{ref\_border\_y(particle, boundary)}
+    simulates the reflective borders
+    \item \texttt{vector\_x(p1, p2)} and \texttt{vector\_y(p1, p2)} returns respectively the vector in the x and y axis of the
+    two particles in argument
+    \item \texttt{average\_orient(particle)} returns the average orientation of the particles in a range $R$ of the particle in argument (including itself)
+    \item \texttt{update\_orient()} computes the orientation $\theta_i(t + \nabla t)$ by using \texttt{average\_orient}
+    \item \texttt{update\_position()} computes the position $r_i(t + \nabla t)$ and uses the reflective borders if necessary
+    \item \texttt{loop\_time()} uses \texttt{update\_orientation()} and \texttt{update\_position()} for each time step $dt$
+    \item \texttt{plot(ax)} plots the square and the particles in the ax
+\end{itemize}
 \end{document}
