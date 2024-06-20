@@ -16,10 +16,15 @@ Supervisors: Van Landeghem Céline, Giraldi Laetitia,\\ Agathe Chouippe}
 
 \tableofcontents
 
+\section{Introduction}
+This internship is the continuation of a project realised during the year. The main goal of the project was
+to develop numerical methods for driving micro-robots composed of magnetic heads and flexible tails imitating spermatozoa, reffered to as squirmers.\\
+A python code has been implemented during the project, it simulates the behaviors of two interacting squirmers by computing 
+the forces and torques present.\\
 \section{Context}
 The collective behavior of active particles is well studied in the literature. 
 The Vicsek model is frequently used to model these active particles. 
-The aim of this internship is to perform a similar study considering active rigid swimmers, known as squirmers, 
+The aim of this internship is to perform a similar study considering squirmers, 
 in various confined domains and to compare the collective motion of the squirmers with that of the active particles using the Vicsek model. 
 The motion of the squirmers is simulated using two different models: a continuous model that approximates hydrodynamic and 
 steric forces, and a full model using the finite element library Feel++.
@@ -27,5 +32,13 @@ steric forces, and a full model using the finite element library Feel++.
 \section{Objectives}
 The main goal is to model the dynamics of a schoal of squirmers within confined environments, 
 
+\section{Vicsek Model}
+The basic Vicsek model consists on $N$ particles with $x_i(t)$ the position, $\vec{v}_i(t)$ the velocity and
+$\theta_i(t)$ the orientation.\\
+All particles have the same velocity $v0$. The velocity $\vec{v}_i(t)$ is then  expressed by
+$$\vec{v}_i(t) = v0 \begin{pmatrix}
+    cos(\theta_i(t))\\
+    sin(\theta_i(t))
+\end{pmatrix}$$
 
 \end{document}
