@@ -71,17 +71,20 @@ def main(simulation, N, filename):
         yseo = [0, 0]
         orient1 = np.pi/2
         orient2 = [(np.pi/2, "pi_2_"), (-np.pi/2, "mpi_2_"), (3*np.pi/4, "3pi_4_"), (-3*np.pi/4, "m3pi_4_"), (np.pi, "pi_"), (2*np.pi, "2pi_"), (np.pi/4, "pi_4_"), (-np.pi/4, "mpi_4_")]
-        for (betaeo, labelbeta) in betas:
-            for (Eos, labeleo) in Eo:
-                for (pi, labelpi) in orient2:
-                    filenameeo = labelpi + labeleo
-                    orientseo = [orient1, pi]
-                    if output_type == 'plot':
-                        direo = 'graphs/Eo_analysis/' + labelbeta + '/' + labelpi
-                        sim_interacting_squirmers(2, xseo, yseo, orientseo, a, betaeo, v0, R, dt, dt_out, T, Es, ds, mu, Eos, lnEps_cr, border, filenameeo, border_plot, dir=direo)
-                    else:
-                        direo = 'videos/Eo_analysis/' + labelbeta + '/' + labelpi
-                        sim_vid_interact_sq(2, xseo, yseo, orientseo, a, betaeo, v0, R, dt, dt_out, T, Es, ds, mu, Eos, lnEps_cr, border, filenameeo, dir=direo)
+        # for (betaeo, labelbeta) in betas:
+        for (Eos, labeleo) in Eo:
+            # for (pi, labelpi) in orient2:
+            #     filenameeo = labelpi + labeleo
+            #     orientseo = [orient1, pi]
+            filenameeo = orient2[2][1] + labeleo
+            print(filenameeo, Eos)
+            orienteo = [orient1, orient2[2][0]]
+            if output_type == 'plot':
+                direo = 'graphs/Eo_analysis/' + betas[0][1] + '/' + orient2[2][1]
+                sim_interacting_squirmers(2, xseo, yseo, orienteo, a, betas[0][0], v0, 0.8, dt, dt_out, T, Es, ds, mu, Eos, lnEps_cr, border, filenameeo, border_plot, dir=direo)
+            else:
+                direo = 'videos/Eo_analysis/' + betas[0][1] + '/' + orient2[2][1]
+                sim_vid_interact_sq(2, xseo, yseo, orienteo, a, betas[0][0], v0, 0.8, dt, dt_out, T, Es, ds, mu, Eos, lnEps_cr, border, filenameeo, dir=direo)
 
 
 if __name__ == "__main__":
