@@ -28,7 +28,9 @@ def main(simulation, N, filename):
     mu = 1
     #amplitude of orientational interactions
     #Eo[0] = Eoinitial, E[1] = Eobrumley, E[2] = Eolauga
-    Eo = [(((3./10.)*v0/a), "Eo_init"), ((16/10)*mu*np.pi*a**2, "Eo_brumley"), ((-3./2.)*(v0/a), "Eo_lauga")]
+    Eo = [(((3./10.)*v0/a), "Eo_init"), ((16/10)*mu*np.pi*a**2, "Eo_brumley"), ((-3./2.)*(v0/a), "Eo_lauga"),
+          (((-3./10.)*v0/a), "mEo_init"), (-5, "m5"), (0.005, "m0_005"), (-2, "m2"), (-0.5, "m0_5"),
+          (0.5, "0_5")]
     #distance of steric interactions
     ds = 2**(7./6)*a
 
@@ -65,10 +67,10 @@ def main(simulation, N, filename):
                 break
             else:
                 print("Invalid input. Please enter 'plot' or 'video'.")
-        xseo = [-a, 2*a]
+        xseo = [-a, 2*a/1.5]
         yseo = [0, 0]
         orient1 = np.pi/2
-        orient2 = [(np.pi/2, "pi_2_"), (-np.pi/2, "mpi_2_"), (3*np.pi/4, "3pi_4_"), (-3*np.pi/4, "m3pi_4_"), (np.pi, "pi_"), (2*np.pi, "2pi_"), (np.pi/4, "pi_4"), (-np.pi/4, "mpi_4")]
+        orient2 = [(np.pi/2, "pi_2_"), (-np.pi/2, "mpi_2_"), (3*np.pi/4, "3pi_4_"), (-3*np.pi/4, "m3pi_4_"), (np.pi, "pi_"), (2*np.pi, "2pi_"), (np.pi/4, "pi_4_"), (-np.pi/4, "mpi_4_")]
         for (betaeo, labelbeta) in betas:
             for (Eos, labeleo) in Eo:
                 for (pi, labelpi) in orient2:
