@@ -194,7 +194,7 @@ class InteractingSquirmers:
         history = []
         data = [self.xs.tolist(), self.ys.tolist(), self.orientations.tolist(),
                 self.Fs_x.tolist(), self.Fs_y.tolist(), self.Fl_x.tolist(), self.Fl_y.tolist(),
-                self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist()]
+                self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist(), 0]
         history.append(data)
 
         for t in np.arange(0, self.T, self.dt):
@@ -275,7 +275,7 @@ class InteractingSquirmers:
             if t >= tout:
                 data = [self.xs.tolist(), self.ys.tolist(), self.orientations.tolist(),
                         self.Fs_x.tolist(), self.Fs_y.tolist(), self.Fl_x.tolist(), self.Fl_y.tolist(),
-                        self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist()]
+                        self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist(), tout]
                 history.append(data)
                 tout += self.dt_out
 

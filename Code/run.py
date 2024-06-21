@@ -61,10 +61,17 @@ def main(simulation, N, filename):
         sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border, filename, dir='videos')
     elif simulation == 'plot':
         sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border, filename, dir='graphs')
+    elif simulation == 'border':
+        xs = [-0.4]
+        ys = [-0.8]
+        orient = [-np.pi/4]
+        N = 1
+        sim_border = True
+        sim_interacting_squirmers(N, xs, ys, orient, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border, sim_border, filename, dir='graphs')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run squirmer simulations.")
-    parser.add_argument('simulation', choices=['video', 'plot'],
+    parser.add_argument('simulation', choices=['video', 'plot', 'border'],
                         help="Choose which simulation to run")
     parser.add_argument('N', type=int, help="Number of squirmer")
     parser.add_argument('filename', type=str, help="Filename for saving the results")

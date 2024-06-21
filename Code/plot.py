@@ -57,7 +57,11 @@ def plot_squirmers_positions(R, history, filename, dir='graphs'):
     save_path = os.path.join(dir, filename + '.png')
     plt.savefig(save_path)
 
-def plot_sim_nsquirmers(histories, R, N, filename, dir='graphs'):
+def plot_sim_nsquirmers(histories, R, N, sim_border, filename, dir='graphs'):
+    #The simulation with a border is only with one squirmer
+    if sim_border:
+        assert N == 1
+
     plt.figure(figsize=(8, 8))
     plt.plot([-R, R], [-R, -R], 'k-', linewidth=2)
     plt.plot([-R, R], [R, R], 'k-', linewidth=2)
@@ -69,6 +73,11 @@ def plot_sim_nsquirmers(histories, R, N, filename, dir='graphs'):
     xs = [history[0] for history in histories]
     ys = [history[1] for history in histories]
     orientations = [history[2] for history in histories]
+
+    if sim_border:
+        initial_position = ys[0][0]
+        time = [history[-1] for history in histories]
+
     squirmer_xs = []
     squirmer_ys = []
     squirmer_orients = []
@@ -84,6 +93,7 @@ def plot_sim_nsquirmers(histories, R, N, filename, dir='graphs'):
         plt.plot(squirmer_xs[i], squirmer_ys[i], color=colors[i])
         last_orient = squirmer_orients[i][0]
         plot_circle = False
+        reach_init_y = False
         for j in range(len(squirmer_orients[i])):
             new_orient = squirmer_orients[i][j]
             if new_orient != last_orient:
@@ -92,6 +102,10 @@ def plot_sim_nsquirmers(histories, R, N, filename, dir='graphs'):
                 if plot_circle == True:
                     plt.scatter(squirmer_xs[i][j], squirmer_ys[i][j], color=colors[i])
                 plot_circle = not plot_circle
+            if j>0 and sim_border and not reach_init_y and squirmer_ys[i][j] >= initial_position:
+                reach_init_y = True
+                    
+                plt.text(squirmer_xs[i][j], squirmer_ys[i][j], f'Time: {time[j]:.2f}', fontsize=12, color='red')
 
     #Plot initial orientations
     xs = histories[0][0]
