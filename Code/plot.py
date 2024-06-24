@@ -126,7 +126,8 @@ def plot_sim_nsquirmers(histories, R, N, a, border, sim_border, filename, dir='g
         plt.scatter(xs[i], ys[i], color=colors[i], s=s)
         plt.quiver(xs[i], ys[i], np.cos(orientations[i]), np.sin(orientations[i]), color='black', scale=scale_arrow, width=w)
 
-    plt.scatter([-R, R], [-R, R], color='white', alpha=0)
+    if sim_border != True:
+        plt.scatter([-R, R], [-R, R], color='white', alpha=0)
 
     plt.axis('equal')
     plt.xlabel('X')
