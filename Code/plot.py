@@ -57,17 +57,20 @@ def plot_squirmers_positions(R, history, filename, dir='graphs'):
     save_path = os.path.join(dir, filename + '.png')
     plt.savefig(save_path)
 
-def plot_sim_nsquirmers(histories, R, N, sim_border, filename, dir='graphs'):
+def plot_sim_nsquirmers(histories, R, N, a, border, sim_border, filename, dir='graphs'):
     #The simulation with a border is only with one squirmer
     if sim_border:
         assert N == 1
 
-    plt.figure(figsize=(8, 8))
-    plt.plot([-R, R], [-R, -R], 'k-', linewidth=2)
-    if sim_border != True:
-        plt.plot([-R, R], [R, R], 'k-', linewidth=2)
-        plt.plot([-R, -R], [-R, R], 'k-', linewidth=2)
-        plt.plot([R, R], [-R, R], 'k-', linewidth=2)
+    #a : radius of the squirmer
+    fig = plt.figure(figsize=(8, 8))
+
+    if border == True:
+        plt.plot([-R, R], [-R, -R], 'k-', linewidth=2)
+        if sim_border != True:
+            plt.plot([-R, R], [R, R], 'k-', linewidth=2)
+            plt.plot([-R, -R], [-R, R], 'k-', linewidth=2)
+            plt.plot([R, R], [-R, R], 'k-', linewidth=2)
 
     colors = ['blue', 'cyan', 'orange', 'gold', 'green', 'lime', 'red', 'pink', 'purple', 'violet']
 
@@ -90,19 +93,26 @@ def plot_sim_nsquirmers(histories, R, N, sim_border, filename, dir='graphs'):
         squirmer_ys.append(y)
         squirmer_orients.append(orient)
 
+    nb_pixl_fig = fig.get_size_inches()[0]*fig.dpi
+    radius_scatter = nb_pixl_fig/(2*R/a)
+    s = radius_scatter**2
+    scale_arrow = 15
+    w = 0.007
+
     for i in range(N):
         plt.plot(squirmer_xs[i], squirmer_ys[i], color=colors[i])
         last_orient = squirmer_orients[i][0]
-        plot_circle = False
+        plot_circle = 0
         reach_init_y = False
         for j in range(len(squirmer_orients[i])):
             new_orient = squirmer_orients[i][j]
             if new_orient != last_orient:
-                plt.quiver(squirmer_xs[i][j], squirmer_ys[i][j], np.cos(new_orient), np.sin(new_orient), color=colors[i], scale=25, width=0.005)
+                plt.quiver(squirmer_xs[i][j], squirmer_ys[i][j], np.cos(new_orient), np.sin(new_orient), color=colors[i], scale=scale_arrow, width=w)
                 last_orient = new_orient
-                if plot_circle == True:
-                    plt.scatter(squirmer_xs[i][j], squirmer_ys[i][j], color=colors[i])
-                plot_circle = not plot_circle
+                plot_circle += 1
+                if plot_circle == 4:
+                    plt.scatter(squirmer_xs[i][j], squirmer_ys[i][j], color=colors[i], s=s)
+                    plot_circle = 0
             if j>0 and sim_border and not reach_init_y and squirmer_ys[i][j] >= initial_position:
                 reach_init_y = True
                 plt.scatter(squirmer_xs[i][j], squirmer_ys[i][j], color='red')
@@ -113,8 +123,10 @@ def plot_sim_nsquirmers(histories, R, N, sim_border, filename, dir='graphs'):
     ys = histories[0][1]
     orientations = histories[0][2]
     for i in range(N):
-        plt.scatter(xs[i], ys[i], color=colors[i])
-        plt.quiver(xs[i], ys[i], np.cos(orientations[i]), np.sin(orientations[i]), color='black', scale=25, width=0.005)
+        plt.scatter(xs[i], ys[i], color=colors[i], s=s)
+        plt.quiver(xs[i], ys[i], np.cos(orientations[i]), np.sin(orientations[i]), color='black', scale=scale_arrow, width=w)
+
+    plt.scatter([-R, R], [-R, R], color='white', alpha=0)
 
     plt.axis('equal')
     plt.xlabel('X')
@@ -249,3 +261,4 @@ def create_video_from_history(history, R, N, filename='squirmers_simulation.mp4'
     ani = FuncAnimation(fig, update, frames=len(history), init_func=init, blit=True)
     # Save animation as video
     ani.save(save_path, writer='ffmpeg', fps=fps)
+    plt.close()
