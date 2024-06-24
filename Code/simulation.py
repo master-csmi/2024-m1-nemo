@@ -4,6 +4,8 @@ from interactingsquirmers import InteractingSquirmers
 from plot import plot_sim_nsquirmers, plot_sim_squirmer_border, create_video_from_history
 
 def sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border, sim_bord, filename, border_plot, dir='graphs'):
+    #border : False or True to plot the borders
+    #sim_border : False or True, if True it does the simulation with one squirmer and one border
     interact = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border)
     history = interact.loop_time()
 

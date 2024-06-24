@@ -67,10 +67,10 @@ def plot_sim_nsquirmers(histories, R, N, a, border, sim_border, filename, dir='g
 
     if border == True:
         plt.plot([-R, R], [-R, -R], 'k-', linewidth=2)
-        if sim_border != True:
-            plt.plot([-R, R], [R, R], 'k-', linewidth=2)
-            plt.plot([-R, -R], [-R, R], 'k-', linewidth=2)
-            plt.plot([R, R], [-R, R], 'k-', linewidth=2)
+    if sim_border != True:
+        plt.plot([-R, R], [R, R], 'k-', linewidth=2)
+        plt.plot([-R, -R], [-R, R], 'k-', linewidth=2)
+        plt.plot([R, R], [-R, R], 'k-', linewidth=2)
 
     colors = ['blue', 'cyan', 'orange', 'gold', 'green', 'lime', 'red', 'pink', 'purple', 'violet']
 
@@ -115,8 +115,8 @@ def plot_sim_nsquirmers(histories, R, N, a, border, sim_border, filename, dir='g
                     plot_circle = 0
             if j>0 and sim_border and not reach_init_y and squirmer_ys[i][j] >= initial_position:
                 reach_init_y = True
-                plt.scatter(squirmer_xs[i][j], squirmer_ys[i][j], color='red')
-                plt.text(squirmer_xs[i][j], squirmer_ys[i][j], f'Time: {time[j]:.2f}', fontsize=12, color='red')
+                plt.scatter(squirmer_xs[i][j], squirmer_ys[i][j], color='red', s=s)
+                plt.text(squirmer_xs[i][j] + 0.1, squirmer_ys[i][j], f'Time: {time[j]:.2f}', fontsize=12, color='red')
 
     #Plot initial orientations
     xs = histories[0][0]

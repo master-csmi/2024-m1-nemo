@@ -13,7 +13,7 @@ def main(simulation, N, filename):
     #squirmers' radius
     a = 0.05
     #betas
-    beta = -7.5
+    beta = 0
     #time-step
     dt = 1e-4
     #cut-off for -log
@@ -21,7 +21,7 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 1
     #simulation time
-    T = 0.7
+    T = 1
     #periodicity of outputs
     dt_out = 0.05
     #viscovity parameter
@@ -49,7 +49,7 @@ def main(simulation, N, filename):
             ys[k] = y
             k += 1
     border = False
-    border_plot = False
+    border_plot = True
 
     # inter = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border)
     # sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border, filename)
@@ -67,7 +67,7 @@ def main(simulation, N, filename):
         sim_border = True
         for i, pi in enumerate(orient):
             filename = 'sim_num_' + str(i)
-            sim_interacting_squirmers(N, xs, ys, pi, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border, sim_border, filename, border_plot, dir='graphs')
+            sim_interacting_squirmers(N, xs, ys, pi, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, border, sim_border, filename, border_plot, dir='graphs')
     elif simulation == 'Eo_sim':
         sim_Eo_param(Eo, a, v0, dt, dt_out, T, Es, ds, mu, lnEps_cr, border, border_plot)
 
