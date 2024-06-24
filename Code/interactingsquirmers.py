@@ -114,7 +114,7 @@ class InteractingSquirmers:
         eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
         cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
 
-        sinalpha = np.sqrt(1 - cosalpha * cosalpha)
+        sinalpha = np.sqrt(max((1 - cosalpha * cosalpha), 0))
         somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
         sommeFz = B1 * sinalpha * cosalpha - (1/2)*B1 * cosalpha * eieijt**2 + B2 * sinalpha * cosalpha**2 - (1/2)*B2 * (2*cosalpha**2-1) * eieijt**2
 
