@@ -63,11 +63,13 @@ def main(simulation, N, filename):
         sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border, False, filename, dir='graphs')
     elif simulation == 'border':
         xs = [-0.4]
-        ys = [-0.8]
-        orient = [-np.pi/4]
+        ys = [-0.7]
+        orient = [[-np.pi/6], [-np.pi/4], [-np.pi/3], [-np.pi/2]] 
         N = 1
         sim_border = True
-        sim_interacting_squirmers(N, xs, ys, orient, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border, sim_border, filename, dir='graphs')
+        for i, pi in enumerate(orient):
+            filename = 'sim_num_' + str(i)
+            sim_interacting_squirmers(N, xs, ys, pi, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border, sim_border, filename, dir='graphs')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run squirmer simulations.")
