@@ -7,12 +7,11 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
-import time
 from squirmer import Squirmer
 
 class Vicsek_continous:
 
-    def __init__(self, N, R, L, v0, beta, radius, Es, ds, mu, Eo, lnEps_cr, T, dt, noise):
+    def __init__(self, N, R, L, v0, beta, radius, T, dt, noise):
         self.N = N
         self.R = R
         self.L = L
@@ -21,11 +20,6 @@ class Vicsek_continous:
         self.dt = dt
         self.noise = noise
         self.radius = radius
-        self.Es = Es
-        self.ds = ds
-        self.mu = mu
-        self.Eo = Eo
-        self.lnEps_cr = lnEps_cr
         self.size = L/R
         self.density = (N*R**2)/(L**2)
         self.ratio = v0/R
@@ -78,7 +72,7 @@ class Vicsek_continous:
 
     def polar_order_parameter(self):
         #Returns the polar order parameter
-        summ = abs(sum(v0*(np.cos(particle.orientation) + np.sin(particle.orientation)) for particle in self.particles))
+        summ = abs(sum(self.v0*(np.cos(particle.orientation) + np.sin(particle.orientation)) for particle in self.particles))
         polar_order = 1/(self.N*self.v0)*summ
         return polar_order
 
@@ -178,63 +172,3 @@ class Vicsek_continous:
         ax.set_xlim(-self.L / 2, self.L / 2)
         ax.set_ylim(-self.L / 2, self.L / 2)
         ax.set_aspect('equal')
-
-N = 20
-R = 0.25
-L = 10.0
-v0 = 1.0
-beta = 0.5
-radius = 0.1
-T = 1
-dt = 0.1
-noise = 1e-4
-Es = 1
-ds = 2**(7./6)*radius
-Eo = ((3./10.)*v0/radius)
-mu = 0.01
-lnEps_cr = np.exp(-5)
-
-vicsek_model = Vicsek_continous(N, R, L, v0, beta, radius, Es, ds, mu, Eo, lnEps_cr, T, dt, noise)
-
-#Plots initial positions and save the figure
-fig, ax = plt.subplots(figsize=(8, 8))
-vicsek_model.plot(ax)
-plt.title("Initial Positions")
-plt.savefig("vicsek_initial_positions.png")
-plt.close()
-# w = 0
-# for particle in vicsek_model.particles:
-#     print(f"x{w} = {particle.x}")
-#     print(f"y{w} = {particle.y}")
-#     w+=1
-polar = vicsek_model.polar_order_parameter()
-print(f"polar parameter = {polar}")
-prct = 100
-i = 0
-compare = 0
-#Runs the simulation and plot at intervals
-num_steps = 10
-for step in range(num_steps):
-# while prct == 100:
-    compare = copy.deepcopy(vicsek_model.particles)
-    start_time = time.time()
-    vicsek_model.loop_time()
-    end_time = time.time()
-    sim_time = end_time - start_time
-    print(f"Simulation {i + 1} took {sim_time:.2f} seconds")
-    prct = vicsek_model.how_many_in_square()
-    i+=1
-    # w = 0
-    # for particle in vicsek_model.particles:
-    #     print(f"x{w} = {particle.x}")
-    #     print(f"y{w} = {particle.y}")
-    #     w+=1
-
-    polar = vicsek_model.polar_order_parameter()
-    print(f"polar parameter = {polar}")
-
-    fig, ax = plt.subplots(figsize=(8, 8))
-    vicsek_model.plot(ax)
-    plt.title(f"Positions at Step {i + 1}")
-    plt.savefig(f"vicsek_positions_step_{i + 1}.png")
-    plt.close()
