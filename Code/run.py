@@ -1,6 +1,6 @@
 import argparse
 import numpy as np
-from simulation import sim_interacting_squirmers, sim_vid_interact_sq, sim_sq_border, sim_Eo_param
+from simulation import sim_interacting_squirmers, sim_vid_interact_sq, sim_sq_border, sim_Eo_param, sim_vicsek
 
 def main(simulation, N, filename):
     # Define parameters
@@ -70,11 +70,23 @@ def main(simulation, N, filename):
             sim_interacting_squirmers(N, xs, ys, pi, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, border, sim_border, filename, border_plot, dir='graphs/border')
     elif simulation == 'Eo_sim':
         sim_Eo_param(Eo, a, v0, dt, dt_out, T, Es, ds, mu, lnEps_cr, border, border_plot)
+    elif simulation == 'vicsek':
+        N = 20
+        R = 0.25
+        L = 10.0
+        v0 = 1.0
+        beta = 0.5
+        radius = 0.1
+        T = 1
+        dt = 0.1
+        noise = 1e-4
+        nb_step = 5
+        sim_vicsek(N, R, L, v0, beta, radius, T, dt, noise, nb_step)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run squirmer simulations.")
-    parser.add_argument('simulation', choices=['video', 'plot', 'Eo_sim', 'border'],
+    parser.add_argument('simulation', choices=['video', 'plot', 'Eo_sim', 'vicsek', 'border'],
                         help="Choose which simulation to run")
     parser.add_argument('N', type=int, help="Number of squirmer")
     parser.add_argument('filename', type=str, help="Filename for saving the results")
