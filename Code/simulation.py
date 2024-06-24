@@ -6,11 +6,13 @@ from interactingsquirmers import InteractingSquirmers
 from vicsek import Vicsek_continous
 from plot import plot_sim_nsquirmers, plot_sim_squirmer_border, create_video_from_history
 
-def sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border, filename, border_plot, dir='graphs'):
+def sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border, sim_bord, filename, border_plot, dir='graphs'):
+    #border : False or True to plot the borders
+    #sim_border : False or True, if True it does the simulation with one squirmer and one border
     interact = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border)
     history = interact.loop_time()
 
-    plot_sim_nsquirmers(history, R, N, a, border_plot, filename=filename, dir=dir)
+    plot_sim_nsquirmers(history, R, N, a, border_plot, sim_bord, filename=filename, dir=dir)
 
 def sim_sq_border(x_positions, y_positions, orientations, a, betas, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, filename, dir='graphs'):
     #Compute simulation for 4 squirmers close to a border

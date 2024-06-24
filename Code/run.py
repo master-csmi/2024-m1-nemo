@@ -13,7 +13,7 @@ def main(simulation, N, filename):
     #squirmers' radius
     a = 0.05
     #betas
-    beta = -7.5
+    beta = 0
     #time-step
     dt = 1e-4
     #cut-off for -log
@@ -21,7 +21,7 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 1
     #simulation time
-    T = 0.7
+    T = 1
     #periodicity of outputs
     dt_out = 0.05
     #viscovity parameter
@@ -49,7 +49,7 @@ def main(simulation, N, filename):
             ys[k] = y
             k += 1
     border = False
-    border_plot = False
+    border_plot = True
 
     # inter = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border)
     # sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border, filename)
@@ -58,7 +58,16 @@ def main(simulation, N, filename):
     if simulation == 'video':
         sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, border, filename, dir='videos')
     elif simulation == 'plot':
-        sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, border, filename, border_plot, dir='graphs')
+        sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, border, False, filename, border_plot, dir='graphs')
+    elif simulation == 'border':
+        xs = [-0.4]
+        ys = [-0.7]
+        orient = [[-np.pi/6], [-np.pi/4], [-np.pi/3], [-np.pi/2]] 
+        N = 1
+        sim_border = True
+        for i, pi in enumerate(orient):
+            filename = 'sim_num_' + str(i)
+            sim_interacting_squirmers(N, xs, ys, pi, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, border, sim_border, filename, border_plot, dir='graphs/border')
     elif simulation == 'Eo_sim':
         sim_Eo_param(Eo, a, v0, dt, dt_out, T, Es, ds, mu, lnEps_cr, border, border_plot)
     elif simulation == 'vicsek':
@@ -77,7 +86,8 @@ def main(simulation, N, filename):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run squirmer simulations.")
-    parser.add_argument('simulation', choices=['video', 'plot', 'Eo_sim', 'vicsek'],
+
+    parser.add_argument('simulation', choices=['video', 'plot', 'Eo_sim','border', 'vicsek'],
                         help="Choose which simulation to run")
     parser.add_argument('N', type=int, help="Number of squirmer")
     parser.add_argument('filename', type=str, help="Filename for saving the results")
