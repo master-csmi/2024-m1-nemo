@@ -1,6 +1,9 @@
 import numpy as np
+import time
+import matplotlib.pyplot as plt
 from squirmer import Squirmer
 from interactingsquirmers import InteractingSquirmers
+from vicsek import Vicsek_continous
 from plot import plot_sim_nsquirmers, plot_sim_squirmer_border, create_video_from_history
 
 def sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border, filename, border_plot, dir='graphs'):
@@ -51,3 +54,33 @@ def sim_Eo_param(Eo, a, v0, dt, dt_out, T, Es, ds, mu, lnEps_cr, border, border_
         else:
             direo = 'videos/Eo_analysis/' + betas[0][1] + '/' + orient2[2][1]
             sim_vid_interact_sq(2, xseo, yseo, orienteo, a, betas[0][0], v0, 0.8, dt, dt_out, T, Es, ds, mu, Eos, lnEps_cr, border, filenameeo, dir=direo)
+
+def sim_vicsek(N, R, L, v0, beta, radius, T, dt, noise, nb_step):
+
+    vicsek_model = Vicsek_continous(N, R, L, v0, beta, radius, T, dt, noise)
+
+    #Plots initial positions and save the figure
+    fig, ax = plt.subplots(figsize=(8, 8))
+    vicsek_model.plot(ax)
+    plt.title("Initial Positions")
+    plt.savefig("graphs/vicsek/vicsek_initial_positions.png")
+    plt.close()
+    polar = vicsek_model.polar_order_parameter()
+    print(f"polar parameter = {polar}")
+    #Runs the simulation and plot at intervals
+    for step in range(nb_step):
+        start_time = time.time()
+        vicsek_model.loop_time()
+        end_time = time.time()
+        sim_time = end_time - start_time
+        print(f"Simulation {step + 1} took {sim_time:.2f} seconds")
+        prct = vicsek_model.how_many_in_square()
+
+        polar = vicsek_model.polar_order_parameter()
+        print(f"polar parameter = {polar}")
+
+        fig, ax = plt.subplots(figsize=(8, 8))
+        vicsek_model.plot(ax)
+        plt.title(f"Positions at Step {step + 1}")
+        plt.savefig(f"graphs/vicsek/vicsek_positions_step_{step + 1}.png")
+        plt.close()
