@@ -86,7 +86,8 @@ def main(simulation, N, filename):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run squirmer simulations.")
-    parser.add_argument('simulation', choices=['video', 'plot', 'Eo_sim', 'vicsek', 'border'],
+
+    parser.add_argument('simulation', choices=['video', 'plot', 'Eo_sim','border', 'vicsek'],
                         help="Choose which simulation to run")
     parser.add_argument('N', type=int, help="Number of squirmer")
     parser.add_argument('filename', type=str, help="Filename for saving the results")
