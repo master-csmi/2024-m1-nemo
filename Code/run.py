@@ -67,7 +67,7 @@ def main(simulation, N, filename):
         sim_border = True
         for i, pi in enumerate(orient):
             filename = 'sim_num_' + str(i)
-            sim_interacting_squirmers(N, xs, ys, pi, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, border, sim_border, filename, border_plot, dir='graphs')
+            sim_interacting_squirmers(N, xs, ys, pi, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, border, sim_border, filename, border_plot, dir='graphs/border')
     elif simulation == 'Eo_sim':
         sim_Eo_param(Eo, a, v0, dt, dt_out, T, Es, ds, mu, lnEps_cr, border, border_plot)
 
