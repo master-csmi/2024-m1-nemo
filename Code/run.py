@@ -21,7 +21,7 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 1
     #simulation time
-    T = 1
+    T = 20
     #periodicity of outputs
     dt_out = 0.05
     #viscovity parameter

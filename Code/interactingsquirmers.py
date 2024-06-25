@@ -44,6 +44,12 @@ class InteractingSquirmers:
         rgb = matplotlib.colors.hex2color(hex_color)
         luminance = 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]
         return luminance > 0.7
+
+    def polar_order_parameter(self):
+        #Returns the polar order parameter
+        summ = abs(sum(self.v0*(np.cos(squirmer.orientation) + np.sin(squirmer.orientation)) for squirmer in self.squirmers))
+        polar_order = 1/(self.N*self.v0)*summ
+        return polar_order
     
     def is_in_square(self):
         #return True if the squirmers are in the square
@@ -250,24 +256,24 @@ class InteractingSquirmers:
                 s.orientation = self.orientations[i]
 
                 #Reflective or Periodic Boundary
-                if (self.R - s.x) < a:
+                if (self.R - s.x) <= a:
                     if self.border == True:
                         s.x, s.orientation = self.ref_border_x(s, 1)
                     else:
                         s.x = self.perio_border_x(s, 1)
                     self.xs[i], self.orientations[i] = s.x, s.orientation
 
-                if (self.R + s.x) < a:
+                if (self.R + s.x) <= a:
                     if self.border == True:
                         s.x, s.orientation = self.ref_border_x(s, 2)
                     else:
                         s.x = self.perio_border_x(s, 2)
                     self.xs[i], self.orientations[i] = s.x, s.orientation
                     
-                if (self.R - s.y) < a:
+                if (self.R - s.y) <= a:
                     s.y, s.orientation = self.ref_border_y(s, 1)
                     self.ys[i], self.orientations[i] = s.y, s.orientation
-                if (self.R + s.y) < a:
+                if (self.R + s.y) <= a:
                     s.y, s.orientation = self.ref_border_y(s, 2)
                     self.ys[i], self.orientations[i] = s.y, s.orientation
             
@@ -278,6 +284,8 @@ class InteractingSquirmers:
                         self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist(), tout]
                 history.append(data)
                 tout += self.dt_out
+                polar = self.polar_order_parameter()
+                print(f"polar parameter : {polar}")
 
         return history
     

@@ -235,12 +235,10 @@ def create_video_from_history(history, R, N, filename='squirmers_simulation.mp4'
     colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
     for i in range(N):
         color = colors[i % len(colors)]
-        line, = ax.plot([], [], color + 'o', markersize=8, label=f'Squirmer {i + 1}')
+        line, = ax.plot([], [], color + 'o', markersize=8)
         orientation, = ax.plot([], [], color + '-', lw=1)
         lines.append(line)
         orientations.append(orientation)
-    
-    ax.legend()
 
     def init():
         for line in lines:
