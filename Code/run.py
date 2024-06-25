@@ -48,7 +48,9 @@ def main(simulation, N, filename):
             xs[k] = x
             ys[k] = y
             k += 1
+    #border to simulate chanel or box
     border = False
+    #border_plot to do the simulation of the border or not
     border_plot = True
 
     # inter = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border)
