@@ -37,8 +37,8 @@ jobs:
 
     - name: Check code
       run: |
-        python Code/run.py video 1 test
-        python Code/run.py plot 1 test
+        python Code/run.py video 3 test
+        python Code/run.py plot 3 test
 
     - name: Print working directory
       run: |
