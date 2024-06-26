@@ -96,17 +96,23 @@ class InteractingSquirmers:
         Dx, Dy, dist = self.distance_sq(squirmer1, squirmer2)
         
         theta = squirmer1.orientation
-        beta = squirmer1.beta
+        B1 = squirmer1.B1
+        B2 = squirmer1.B2
         a = self.radius
-        
-        ex = Dx/dist
-        ey = Dy/dist
+
+        eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
+        cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
+
+        sinalpha = np.sqrt(max((1 - cosalpha * cosalpha), 0))
+        somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
 
         lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)))
                 
-        val = self.Eo*(1 + beta*(np.cos(theta)*ex + np.sin(theta)*ey))*lnEps*(ex*np.sin(theta) - ey*np.cos(theta))
+        val = (16/10)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
+        val2 = (1/4)*val
+        print(f"x = {squirmer1.x} and val = {val}\n")
         
-        return val
+        return val, val2
         
     def forcesLubrification(self, squirmer1, squirmer2):
         #Computes the lubrification forces between two particles
@@ -228,11 +234,12 @@ class InteractingSquirmers:
                         Fl_x, Fl_y = self.forcesLubrification(s, self.squirmers[j])
                         self.Fl_x[i] += Fl_x
                         self.Fl_y[i] += Fl_y
+                        self.Fl_x[j] -= Fl_x
+                        self.Fl_x[j] -= Fl_y
 
                         #Torques
-                        val1 = self.torquesLubrification(s, self.squirmers[j])
-                        val2 = self.torquesLubrification(self.squirmers[j], s)
-                        self.val[i] += val1 + 0.25*val2
+                        val1, val2 = self.torquesLubrification(s, self.squirmers[j])
+                        self.val[i] += val1 + val2
 
                 #Force between a squirmer and a border
                 if ((self.R-abs(s.x)) < 2**(1/6)*a) and (self.border == True):
