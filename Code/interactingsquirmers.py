@@ -160,7 +160,7 @@ class InteractingSquirmers:
     
     #Reflective boundary condition
     def ref_border_x(self, squirmer, boundary):
-        diff = abs(self.R - abs(squirmer.x))
+        diff = abs(self.R - abs(squirmer.x) + squirmer.radius)
         squirmer.orientation = np.pi - squirmer.orientation
         #Keeps orientation between [0, 2pi]
         squirmer.orientation = squirmer.orientation % (2 * np.pi)
@@ -176,7 +176,7 @@ class InteractingSquirmers:
         squirmer.orientation = -squirmer.orientation
         #Keeps orientation between [0, 2pi]
         squirmer.orientation = squirmer.orientation % (2 * np.pi)
-        diff = abs(self.R - abs(squirmer.y))
+        diff = abs(self.R - abs(squirmer.y) + squirmer.radius)
         if boundary == 1:
             #1 for the up boundary
             squirmer.y = self.R - diff
@@ -263,7 +263,7 @@ class InteractingSquirmers:
                         s.x = self.perio_border_x(s, 1)
                     self.xs[i], self.orientations[i] = s.x, s.orientation
 
-                if (self.R + s.x) <= a:
+                elif (self.R + s.x) <= a:
                     if self.border == True:
                         s.x, s.orientation = self.ref_border_x(s, 2)
                     else:
@@ -273,7 +273,7 @@ class InteractingSquirmers:
                 if (self.R - s.y) <= a:
                     s.y, s.orientation = self.ref_border_y(s, 1)
                     self.ys[i], self.orientations[i] = s.y, s.orientation
-                if (self.R + s.y) <= a:
+                elif (self.R + s.y) <= a:
                     s.y, s.orientation = self.ref_border_y(s, 2)
                     self.ys[i], self.orientations[i] = s.y, s.orientation
             
@@ -285,7 +285,7 @@ class InteractingSquirmers:
                 history.append(data)
                 tout += self.dt_out
                 polar = self.polar_order_parameter()
-                print(f"polar parameter : {polar}")
+                # print(f"polar parameter : {polar}")
 
         return history
     

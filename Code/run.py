@@ -7,7 +7,7 @@ def main(simulation, N, filename):
     #velocity
     v0 = 1
     #length of the square
-    L = 2
+    L = 3
     #half of the length of the square
     R = L/2
     #squirmers' radius
@@ -21,7 +21,7 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 1
     #simulation time
-    T = 20
+    T = 1
     #periodicity of outputs
     dt_out = 0.05
     #viscovity parameter
