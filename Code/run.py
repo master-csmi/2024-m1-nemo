@@ -7,7 +7,7 @@ def main(simulation, N, filename):
     #velocity
     v0 = 1
     #length of the square
-    L = 2
+    L = 3
     #half of the length of the square
     R = L/2
     #squirmers' radius

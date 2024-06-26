@@ -100,18 +100,18 @@ def plot_sim_nsquirmers(histories, R, N, a, border, sim_border, filename, dir='g
     w = 0.007
 
     for i in range(N):
-        plt.plot(squirmer_xs[i], squirmer_ys[i], color=colors[i])
+        plt.plot(squirmer_xs[i], squirmer_ys[i], color=colors[i % len(colors)])
         last_orient = squirmer_orients[i][0]
         plot_circle = 0
         reach_init_y = False
         for j in range(len(squirmer_orients[i])):
             new_orient = squirmer_orients[i][j]
             if new_orient != last_orient:
-                plt.quiver(squirmer_xs[i][j], squirmer_ys[i][j], np.cos(new_orient), np.sin(new_orient), color=colors[i], scale=scale_arrow, width=w)
+                plt.quiver(squirmer_xs[i][j], squirmer_ys[i][j], np.cos(new_orient), np.sin(new_orient), color=colors[i % len(colors)], scale=scale_arrow, width=w)
                 last_orient = new_orient
                 plot_circle += 1
                 if plot_circle == 4:
-                    plt.scatter(squirmer_xs[i][j], squirmer_ys[i][j], color=colors[i], s=s)
+                    plt.scatter(squirmer_xs[i][j], squirmer_ys[i][j], color=colors[i % len(colors)], s=s)
                     plot_circle = 0
             if j>0 and sim_border and not reach_init_y and squirmer_ys[i][j] >= initial_position:
                 reach_init_y = True
@@ -123,7 +123,7 @@ def plot_sim_nsquirmers(histories, R, N, a, border, sim_border, filename, dir='g
     ys = histories[0][1]
     orientations = histories[0][2]
     for i in range(N):
-        plt.scatter(xs[i], ys[i], color=colors[i], s=s)
+        plt.scatter(xs[i], ys[i], color=colors[i % len(colors)], s=s)
         plt.quiver(xs[i], ys[i], np.cos(orientations[i]), np.sin(orientations[i]), color='black', scale=scale_arrow, width=w)
 
     if sim_border != True:
@@ -235,12 +235,10 @@ def create_video_from_history(history, R, N, filename='squirmers_simulation.mp4'
     colors = ['b', 'r', 'g', 'c', 'm', 'y', 'k']
     for i in range(N):
         color = colors[i % len(colors)]
-        line, = ax.plot([], [], color + 'o', markersize=8, label=f'Squirmer {i + 1}')
+        line, = ax.plot([], [], color + 'o', markersize=8)
         orientation, = ax.plot([], [], color + '-', lw=1)
         lines.append(line)
         orientations.append(orientation)
-    
-    ax.legend()
 
     def init():
         for line in lines:
