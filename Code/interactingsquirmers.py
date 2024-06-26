@@ -307,7 +307,8 @@ class InteractingSquirmers:
         return history
     
     def plot_vect_dist(self, filename, dir='graphs'):
-        plt.plot(self.vector_dists_min)
+        t = np.arange(0, self.T, self.dt)
+        plt.plot(t, self.vector_dists_min)
         plt.xlabel('Time step')
         plt.ylabel('Minimum distance')
         plt.title('Evolution of minimum distance over time')
