@@ -8,7 +8,7 @@ from plot import plot_squirmers_positions
 
 class InteractingSquirmers:
 
-    def __init__(self, N, xs, ys, orientations, radius, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border=True):
+    def __init__(self, N, xs, ys, orientations, radius, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border=True):
         self.N = N
         self.xs = np.array(xs, dtype=float)
         self.ys = np.array(ys, dtype=float)
@@ -25,6 +25,9 @@ class InteractingSquirmers:
         self.ds = ds
         self.T = T
         self.lnEps_cr = lnEps_cr
+        self.Do = Do
+        self.no = no
+        self.nos = np.zeros(N, dtype=float)
         self.Fs_x, self.Fs_y, self.Fl_x, self.Fl_y, self.val, self.gamma_w = np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float)
         self.Fs_pw = np.zeros((2,N), dtype=float)
         #border = true || false, true for reflective, false for periodic 
@@ -212,6 +215,7 @@ class InteractingSquirmers:
             self.val.fill(0)
             self.gamma_w.fill(0)
             self.Fs_pw.fill(0)
+            self.nos.fill(0)
             for i,s in enumerate(self.squirmers):
                 Dx, Dy, dist = self.distance_all(s)
 
@@ -234,6 +238,9 @@ class InteractingSquirmers:
                         val2 = self.torquesLubrification(self.squirmers[j], s)
                         self.val[i] += val1 + 0.25*val2
 
+                    #Noise
+                    self.nos[i] = np.random.uniform(-self.no/2, self.no/2)
+
                 #Force between a squirmer and a border
                 if ((self.R-abs(s.x)) < 2**(1/6)*a) and (self.border == True):
                     self.Fs_pw[0][i] += self.compute_force_squirmer_border_x(s)
@@ -247,7 +254,7 @@ class InteractingSquirmers:
                     self.gamma_w[i] += self.compute_torque_squirmer_border(s)
         
             #Evolution of position
-            self.orientations += self.dt*(self.val + self.gamma_w)
+            self.orientations += self.dt*(self.val + self.gamma_w + np.sqrt(2*self.Do)*self.nos)
             self.xs += self.dt*(self.v0 * np.cos(self.orientations) - self.Fs_x - self.Fs_pw[0] + self.Fl_x)
             self.ys += self.dt*(self.v0 * np.sin(self.orientations) - self.Fs_y - self.Fs_pw[1] + self.Fl_y)
             for i, s in enumerate(self.squirmers):
