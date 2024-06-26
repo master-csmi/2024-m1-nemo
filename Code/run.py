@@ -7,11 +7,11 @@ def main(simulation, N, filename):
     #velocity
     v0 = 1
     #length of the square
-    L = 5
+    L = 2
     #half of the length of the square
     R = L/2
     #squirmers' radius
-    a = 0.15
+    a = 0.05
     #betas
     beta = 0
     #time-step
@@ -21,11 +21,11 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 1
     #simulation time
-    T = 0.5
+    T = 0.7
     #periodicity of outputs
     dt_out = 0.05
     #viscovity parameter
-    mu = 0.1
+    mu = 1
     #amplitude of orientational interactions
     #Eo[0] = Eoinitial, E[1] = Eobrumley, E[2] = Eolauga
     Eo = [(((3./10.)*v0/a), "Eo_init"), ((16/10)*mu*np.pi*a**2, "Eo_brumley"), ((-3./2.)*(v0/a), "Eo_lauga"),
@@ -49,7 +49,7 @@ def main(simulation, N, filename):
             ys[k] = y
             k += 1
     #border to simulate chanel or box
-    border = False
+    border = True
     #border_plot to do the simulation of the border or not
     border_plot = True
 
@@ -60,9 +60,6 @@ def main(simulation, N, filename):
     if simulation == 'video':
         sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, border, filename, dir='videos')
     elif simulation == 'plot':
-        xs = [-a, a/0.9]
-        ys = [0, 0]
-        orients = [np.pi/2, np.pi/2]
         sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, border, False, filename, border_plot, dir='graphs')
     elif simulation == 'border':
         xs = [-0.4]

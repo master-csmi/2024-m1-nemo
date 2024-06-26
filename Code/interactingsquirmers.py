@@ -1,4 +1,5 @@
 import numpy as np
+import os
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -110,7 +111,6 @@ class InteractingSquirmers:
                 
         val = (16/10)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
         val2 = (1/4)*val
-        print(f"x = {squirmer1.x} and val = {val}\n")
         
         return val, val2
         
@@ -200,6 +200,7 @@ class InteractingSquirmers:
         return squirmer.x
 
     def loop_time(self):
+        self.vector_dists_min = []
         tout = self.dt_out
         a = self.radius
         #List that contains data to export
@@ -218,8 +219,15 @@ class InteractingSquirmers:
             self.val.fill(0)
             self.gamma_w.fill(0)
             self.Fs_pw.fill(0)
+            list_tmp = []
             for i,s in enumerate(self.squirmers):
                 Dx, Dy, dist = self.distance_all(s)
+                dist_tmp = np.array(dist)
+                dist_nz = dist_tmp[dist_tmp != 0]
+                if dist_nz.size > 0:
+                    tmp = np.array(dist_nz)
+                    tmp2 = tmp - 2*a
+                    list_tmp.append(min(tmp2))
 
                 for j in range(len(dist)):
                     #Force between squirmers
@@ -239,7 +247,8 @@ class InteractingSquirmers:
 
                         #Torques
                         val1, val2 = self.torquesLubrification(s, self.squirmers[j])
-                        self.val[i] += val1 + val2
+                        self.val[i] += val1
+                        self.val[j] += val2
 
                 #Force between a squirmer and a border
                 if ((self.R-abs(s.x)) < 2**(1/6)*a) and (self.border == True):
@@ -252,7 +261,8 @@ class InteractingSquirmers:
                     self.gamma_w[i] += self.compute_torque_squirmer_border(s)
                 if ((self.R - abs(s.y)) < 2**(1/6) * a):
                     self.gamma_w[i] += self.compute_torque_squirmer_border(s)
-        
+            
+            self.vector_dists_min.append(min(list_tmp))
             #Evolution of position
             self.orientations += self.dt*(self.val + self.gamma_w)
             self.xs += self.dt*(self.v0 * np.cos(self.orientations) - self.Fs_x - self.Fs_pw[0] + self.Fl_x)
@@ -296,6 +306,18 @@ class InteractingSquirmers:
 
         return history
     
+    def plot_vect_dist(self, filename, dir='graphs'):
+        plt.plot(self.vector_dists_min)
+        plt.xlabel('Time step')
+        plt.ylabel('Minimum distance')
+        plt.title('Evolution of minimum distance over time')
+        plt.grid(True)
+    
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        save_path = os.path.join(dir, filename + '.png')
+        plt.savefig(save_path)
+
     def run(self, file_name_csv, filename_pos='position_graph', filename_dist='dist_squirmer_graph',):
         self.check_squirmers_square()
         history = self.loop_time()
