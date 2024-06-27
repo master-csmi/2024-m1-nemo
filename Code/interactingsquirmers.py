@@ -257,14 +257,13 @@ class InteractingSquirmers:
                 if (self.R - abs(s.y)) < 2 * a:
                     self.gamma_w[i] += self.compute_torque_squirmer_border(s)
 
+            self.orientations += self.dt * (self.val + self.gamma_w)
+            self.xs += self.dt * (self.v0 * np.cos(self.orientations) - self.Fs_x - self.Fs_pw[0] + self.Fl_x)
+            self.ys += self.dt * (self.v0 * np.sin(self.orientations) - self.Fs_y - self.Fs_pw[1] + self.Fl_y)
             if list_tmp:
                 self.vector_dists_min.append(min(list_tmp))
             if min(list_tmp) < 0:
                 print(min(list_tmp))
-
-            self.orientations += self.dt * (self.val + self.gamma_w)
-            self.xs += self.dt * (self.v0 * np.cos(self.orientations) - self.Fs_x - self.Fs_pw[0] + self.Fl_x)
-            self.ys += self.dt * (self.v0 * np.sin(self.orientations) - self.Fs_y - self.Fs_pw[1] + self.Fl_y)
 
             for i, s in enumerate(self.squirmers):
                 s.x = self.xs[i]

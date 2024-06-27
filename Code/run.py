@@ -5,7 +5,7 @@ from simulation import sim_interacting_squirmers, sim_vid_interact_sq, sim_sq_bo
 def main(simulation, N, filename):
     # Define parameters
     #velocity
-    v0 = 0.1
+    v0 = 1
     #length of the square
     L = 2
     #half of the length of the square
@@ -21,7 +21,7 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 1
     #simulation time
-    T = 100
+    T = 20
     #periodicity of outputs
     dt_out = 0.01
     #viscovity parameter
