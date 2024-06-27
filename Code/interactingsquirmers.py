@@ -225,16 +225,16 @@ class InteractingSquirmers:
                 dist_nz = dist[dist != 0]
                 if dist_nz.size > 0:
                     list_tmp.append(min(dist_nz - 2 * a))
-                    if max(dist_nz - 2 * a) > 1 :
-                        print(min(dist_nz - 2 * a))
+                    if max(dist_nz - 2 * a) > 2*np.sqrt(2) :
+                        print(max(dist_nz - 2 * a))
 
                 close_dist = (dist < self.ds) & (dist != 0)
                 very_close_dist = (dist <= 3 * a) & (dist != 0)
 
                 for j in np.where(close_dist)[0]:
                     Fs_x, Fs_y = self.forcesSteric(s, self.squirmers[j])
-                    self.Fs_x[i] += Fs_x
-                    self.Fs_y[i] += Fs_y
+                    self.Fs_x[i] -= Fs_x
+                    self.Fs_y[i] -= Fs_y
 
                 for j in np.where(very_close_dist)[0]:
                     Fl_x, Fl_y = self.forcesLubrification(s, self.squirmers[j])
