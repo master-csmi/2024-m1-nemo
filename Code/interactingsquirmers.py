@@ -203,7 +203,6 @@ class InteractingSquirmers:
         self.vector_dists_min = []
         tout = self.dt_out
         a = self.radius
-        #List that contains data to export
         history = []
         data = [self.xs.tolist(), self.ys.tolist(), self.orientations.tolist(),
                 self.Fs_x.tolist(), self.Fs_y.tolist(), self.Fl_x.tolist(), self.Fl_y.tolist(),
@@ -211,7 +210,6 @@ class InteractingSquirmers:
         history.append(data)
 
         for t in np.arange(0, self.T, self.dt):
-            # Reset forces and torques
             self.Fs_x.fill(0)
             self.Fs_y.fill(0)
             self.Fl_x.fill(0)
@@ -220,81 +218,80 @@ class InteractingSquirmers:
             self.gamma_w.fill(0)
             self.Fs_pw.fill(0)
             list_tmp = []
-            for i,s in enumerate(self.squirmers):
+
+            for i, s in enumerate(self.squirmers):
                 Dx, Dy, dist = self.distance_all(s)
-                dist_tmp = np.array(dist)
-                dist_nz = dist_tmp[dist_tmp != 0]
+                dist = np.array(dist)
+                dist_nz = dist[dist != 0]
                 if dist_nz.size > 0:
-                    tmp = np.array(dist_nz)
-                    tmp2 = tmp - 2*a
-                    list_tmp.append(min(tmp2))
+                    list_tmp.append(min(dist_nz - 2 * a))
+                    if max(dist_nz - 2 * a) > 1 :
+                        print(min(dist_nz - 2 * a))
 
-                for j in range(len(dist)):
-                    #Force between squirmers
-                    if (dist[j] != 0) and (dist[j] < self.ds):
-                        Fs_x, Fs_y = self.forcesSteric(s, self.squirmers[j])
-                        self.Fs_x[i] -= Fs_x
-                        self.Fs_y[i] -= Fs_y
-                    
-                    #Lubrification forces and torques
-                    if (dist[j] != 0) and (dist[j] <= 3*a):
-                        #Forces
-                        Fl_x, Fl_y = self.forcesLubrification(s, self.squirmers[j])
-                        self.Fl_x[i] += Fl_x
-                        self.Fl_y[i] += Fl_y
-                        self.Fl_x[j] -= Fl_x
-                        self.Fl_x[j] -= Fl_y
+                close_dist = (dist < self.ds) & (dist != 0)
+                very_close_dist = (dist <= 3 * a) & (dist != 0)
 
-                        #Torques
-                        val1, val2 = self.torquesLubrification(s, self.squirmers[j])
-                        self.val[i] += val1
-                        self.val[j] += val2
+                for j in np.where(close_dist)[0]:
+                    Fs_x, Fs_y = self.forcesSteric(s, self.squirmers[j])
+                    self.Fs_x[i] += Fs_x
+                    self.Fs_y[i] += Fs_y
 
-                #Force between a squirmer and a border
-                if ((self.R-abs(s.x)) < 2**(1/6)*a) and (self.border == True):
+                for j in np.where(very_close_dist)[0]:
+                    Fl_x, Fl_y = self.forcesLubrification(s, self.squirmers[j])
+                    self.Fl_x[i] += Fl_x
+                    self.Fl_y[i] += Fl_y
+                    self.Fl_x[j] -= Fl_x
+                    self.Fl_y[j] -= Fl_y
+
+                    val1, val2 = self.torquesLubrification(s, self.squirmers[j])
+                    self.val[i] += val1
+                    self.val[j] += val2
+
+                if (self.R - abs(s.x)) < 2 ** (1 / 6) * a and self.border:
                     self.Fs_pw[0][i] += self.compute_force_squirmer_border_x(s)
-                if ((self.R-abs(s.y)) < 2**(1/6)*a):
+                if (self.R - abs(s.y)) < 2 ** (1 / 6) * a:
                     self.Fs_pw[1][i] += self.compute_force_squirmer_border_y(s)
 
-                #Torque exerted on squirmer by the wall
-                if ((self.R - abs(s.x)) < 2**(1/6) * a) and (self.border == True):
+                if (self.R - abs(s.x)) < 2 * a and self.border:
                     self.gamma_w[i] += self.compute_torque_squirmer_border(s)
-                if ((self.R - abs(s.y)) < 2**(1/6) * a):
+                if (self.R - abs(s.y)) < 2 * a:
                     self.gamma_w[i] += self.compute_torque_squirmer_border(s)
-            
-            self.vector_dists_min.append(min(list_tmp))
-            #Evolution of position
-            self.orientations += self.dt*(self.val + self.gamma_w)
-            self.xs += self.dt*(self.v0 * np.cos(self.orientations) - self.Fs_x - self.Fs_pw[0] + self.Fl_x)
-            self.ys += self.dt*(self.v0 * np.sin(self.orientations) - self.Fs_y - self.Fs_pw[1] + self.Fl_y)
+
+            if list_tmp:
+                self.vector_dists_min.append(min(list_tmp))
+            if min(list_tmp) < 0:
+                print(min(list_tmp))
+
+            self.orientations += self.dt * (self.val + self.gamma_w)
+            self.xs += self.dt * (self.v0 * np.cos(self.orientations) - self.Fs_x - self.Fs_pw[0] + self.Fl_x)
+            self.ys += self.dt * (self.v0 * np.sin(self.orientations) - self.Fs_y - self.Fs_pw[1] + self.Fl_y)
+
             for i, s in enumerate(self.squirmers):
                 s.x = self.xs[i]
                 s.y = self.ys[i]
                 s.orientation = self.orientations[i]
 
-                #Reflective or Periodic Boundary
                 if (self.R - s.x) <= a:
-                    if self.border == True:
+                    if self.border:
                         s.x, s.orientation = self.ref_border_x(s, 1)
                     else:
                         s.x = self.perio_border_x(s, 1)
                     self.xs[i], self.orientations[i] = s.x, s.orientation
 
                 elif (self.R + s.x) <= a:
-                    if self.border == True:
+                    if self.border:
                         s.x, s.orientation = self.ref_border_x(s, 2)
                     else:
                         s.x = self.perio_border_x(s, 2)
                     self.xs[i], self.orientations[i] = s.x, s.orientation
-                    
+
                 if (self.R - s.y) <= a:
                     s.y, s.orientation = self.ref_border_y(s, 1)
                     self.ys[i], self.orientations[i] = s.y, s.orientation
                 elif (self.R + s.y) <= a:
                     s.y, s.orientation = self.ref_border_y(s, 2)
                     self.ys[i], self.orientations[i] = s.y, s.orientation
-            
-            #Update the data to export
+
             if t >= tout:
                 data = [self.xs.tolist(), self.ys.tolist(), self.orientations.tolist(),
                         self.Fs_x.tolist(), self.Fs_y.tolist(), self.Fl_x.tolist(), self.Fl_y.tolist(),
@@ -304,7 +301,9 @@ class InteractingSquirmers:
                 polar = self.polar_order_parameter()
                 # print(f"polar parameter : {polar}")
 
+        self.history = history
         return history
+
     
     def plot_vect_dist(self, filename, dir='graphs'):
         t = np.arange(0, self.T, self.dt)

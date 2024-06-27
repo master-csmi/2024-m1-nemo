@@ -21,18 +21,18 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 1
     #simulation time
-    T = 0.7
+    T = 20
     #periodicity of outputs
-    dt_out = 0.05
+    dt_out = 0.01
     #viscovity parameter
-    mu = 1
+    mu = 10
     #amplitude of orientational interactions
     #Eo[0] = Eoinitial, E[1] = Eobrumley, E[2] = Eolauga
     Eo = [(((3./10.)*v0/a), "Eo_init"), ((16/10)*mu*np.pi*a**2, "Eo_brumley"), ((-3./2.)*(v0/a), "Eo_lauga"),
           (((-3./10.)*v0/a), "mEo_init"), (-5, "m5"), (0.005, "m0_005"), (-2, "m2"), (-0.5, "m0_5"),
           (0.5, "0_5")]
     #distance of steric interactions
-    ds = 2**(7./6)*a
+    ds = 2**(9./6)*a
 
     #coordinates and orientations
     xs, ys, orients = np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float)
