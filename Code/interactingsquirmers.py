@@ -48,8 +48,8 @@ class InteractingSquirmers:
 
     def polar_order_parameter(self):
         #Returns the polar order parameter
-        summ = abs(sum(self.v0*(np.cos(squirmer.orientation) + np.sin(squirmer.orientation)) for squirmer in self.squirmers))
-        polar_order = 1/(self.N*self.v0)*summ
+        summ = sum((np.cos(squirmer.orientation) + np.sin(squirmer.orientation)) for squirmer in self.squirmers)
+        polar_order = abs(1/(self.N)*summ)
         return polar_order
     
     def is_in_square(self):
