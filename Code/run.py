@@ -5,7 +5,7 @@ from simulation import sim_interacting_squirmers, sim_vid_interact_sq, sim_sq_bo
 def main(simulation, N, filename):
     # Define parameters
     #velocity
-    v0 = 1
+    v0 = 0.5
     #length x and y axis
     lbda = 2
     Ly = 1.9
@@ -16,7 +16,7 @@ def main(simulation, N, filename):
     #squirmers' radius
     a = 0.05
     #betas
-    beta = 0
+    beta = 7.5
     #time-step
     dt = 1e-4
     #cut-off for -log
@@ -24,7 +24,7 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 1
     #simulation time
-    T = 50
+    T = 5
     #periodicity of outputs
     dt_out = 0.01
     #viscovity parameter
@@ -51,7 +51,7 @@ def main(simulation, N, filename):
             xs[k] = x
             ys[k] = y
             k += 1
-    print("initialisation passée\n")
+    print("initialisation passée")
     #border to simulate chanel or box
     border = False
     #border_plot to do the simulation of the border or not

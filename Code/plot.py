@@ -220,6 +220,21 @@ def plot_sim_squirmer_border(R, histories, filename, dir='graphs'):
     plt.savefig(save_path)
     plt.close()
 
+def plot_time(interact, list_plot, filename, label, dir='graphs'):
+    plt.figure()
+    t = np.arange(0, interact.T, interact.dt)
+    plt.plot(t, list_plot)
+    plt.xlabel('Time step')
+    plt.ylabel(label)
+    plt.title('Evolution of minimum distance over time')
+    plt.grid(True)
+
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+    save_path = os.path.join(dir, filename + '.png')
+    plt.savefig(save_path)
+    plt.close()
+
 def create_video_from_history(history, Nx, Ny, N, a, filename='squirmers_simulation.mp4', dir='videos', fps=30):
     if not os.path.exists(dir):
         os.makedirs(dir)

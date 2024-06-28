@@ -225,6 +225,7 @@ class InteractingSquirmers:
                 self.Fs_x.tolist(), self.Fs_y.tolist(), self.Fl_x.tolist(), self.Fl_y.tolist(),
                 self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist(), 0]
         history.append(data)
+        self.list_polar = []
 
         for t in np.arange(0, self.T, self.dt):
             self.Fs_x.fill(0)
@@ -275,12 +276,13 @@ class InteractingSquirmers:
                     self.gamma_w[i] += self.compute_torque_squirmer_border(s)
 
             self.orientations += self.dt*(self.val + self.gamma_w)
-            self.xs += self.dt*(self.v0*np.cos(self.orientations) - self.Fs_x - self.Fs_pw[0] + self.Fl_x)
-            self.ys += self.dt*(self.v0*np.sin(self.orientations) - self.Fs_y - self.Fs_pw[1] + self.Fl_y)
+            self.xs += self.dt*(self.v0*np.cos(self.orientations) - self.Fs_x + self.Fs_pw[0] + self.Fl_x)
+            self.ys += self.dt*(self.v0*np.sin(self.orientations) - self.Fs_y + self.Fs_pw[1] + self.Fl_y)
             if list_tmp:
                 self.vector_dists_min.append(min(list_tmp))
             if min(list_tmp) < 0:
                 print(min(list_tmp))
+            self.list_polar.append(self.polar_order_parameter())
 
             for i, s in enumerate(self.squirmers):
                 s.x = self.xs[i]
@@ -314,25 +316,11 @@ class InteractingSquirmers:
                         self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist(), tout]
                 history.append(data)
                 tout += self.dt_out
-                polar = self.polar_order_parameter()
                 # print(f"polar parameter : {polar}")
 
         self.history = history
         return history
 
-    
-    def plot_vect_dist(self, filename, dir='graphs'):
-        t = np.arange(0, self.T, self.dt)
-        plt.plot(t, self.vector_dists_min)
-        plt.xlabel('Time step')
-        plt.ylabel('Minimum distance')
-        plt.title('Evolution of minimum distance over time')
-        plt.grid(True)
-    
-        if not os.path.exists(dir):
-            os.makedirs(dir)
-        save_path = os.path.join(dir, filename + '.png')
-        plt.savefig(save_path)
 
     def run(self, file_name_csv, filename_pos='position_graph', filename_dist='dist_squirmer_graph',):
         self.check_squirmers_square()
