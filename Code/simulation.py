@@ -28,7 +28,7 @@ def sim_sq_border(x_positions, y_positions, orientations, a, betas, v0, R, dt, d
 
 def sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border, filename, dir='videos'):
     #Create a video of N squirmers interacting
-    interact_sq = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border)
+    interact_sq = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border)
     history = interact_sq.loop_time()
     plot_time(interact_sq, interact_sq.vector_dists_min, "min_dist_" + filename, 'minimal distance', dir)
     plot_time(interact_sq, interact_sq.list_polar, "polar_" + filename, 'polar parameter', dir)
