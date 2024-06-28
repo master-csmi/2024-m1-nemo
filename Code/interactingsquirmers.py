@@ -272,7 +272,7 @@ class InteractingSquirmers:
                 self.nos[i] = np.random.uniform(-self.no/2, self.no/2)
 
                 #Force between a squirmer and a border
-                if ((self.R-abs(s.x)) < 2**(1/6)*a) and (self.border == True):
+                if ((self.Nx-abs(s.x)) < 2**(1/6)*a) and (self.border == True):
                     self.Fs_pw[0][i] += self.compute_force_squirmer_border_x(s)
                 if (self.Ny - abs(s.y)) < 2**(1/6)*a:
                     self.Fs_pw[1][i] += self.compute_force_squirmer_border_y(s)
