@@ -49,9 +49,11 @@ class InteractingSquirmers:
 
     def polar_order_parameter(self):
         #Returns the polar order parameter
-        summ = sum((np.cos(squirmer.orientation) + np.sin(squirmer.orientation)) for squirmer in self.squirmers)
+        summ = 1./self.N*sum((np.cos(squirmer.orientation)) for squirmer in self.squirmers)
+        summ2 =  1./self.N*sum((np.sin(squirmer.orientation)) for squirmer in self.squirmers)
+        summ_final = np.sqrt(summ**2 + summ2**2)
         polar_order = abs(1/(self.N)*summ)
-        return polar_order
+        return summ_final
     
     def is_in_square(self):
         #return True if the squirmers are in the square
@@ -154,8 +156,8 @@ class InteractingSquirmers:
         return tmp*squirmer.y
 
     def compute_torque_squirmer_border(self, squirmer):
-        Dy = abs(squirmer.y)-self.Ny
-        Dx = abs(squirmer.x)-self.Nx
+        Dy = self.Ny-abs(squirmer.y)
+        Dx = self.Nx-abs(squirmer.x)
         dist = np.sqrt(Dx**2 + Dy**2)
         theta = squirmer.orientation
         B1 = squirmer.B1
@@ -186,7 +188,7 @@ class InteractingSquirmers:
         diff = abs(self.Nx - abs(squirmer.x))
         squirmer.orientation = np.pi - squirmer.orientation
         #Keeps orientation between [0, 2pi]
-        squirmer.orientation = squirmer.orientation % (2 * np.pi)
+        # squirmer.orientation = squirmer.orientation % (2 * np.pi)
         if boundary == 1:
             #1 for the right border
             squirmer.x = self.Nx - diff
@@ -198,7 +200,7 @@ class InteractingSquirmers:
     def ref_border_y(self, squirmer, boundary):
         squirmer.orientation = -squirmer.orientation
         #Keeps orientation between [0, 2pi]
-        squirmer.orientation = squirmer.orientation % (2 * np.pi)
+        # squirmer.orientation = squirmer.orientation % (2 * np.pi)
         diff = abs(self.Ny - abs(squirmer.y))
         if boundary == 1:
             #1 for the up boundary
@@ -275,9 +277,9 @@ class InteractingSquirmers:
                 if (self.Ny - abs(s.y)) < 2*a:
                     self.gamma_w[i] += self.compute_torque_squirmer_border(s)
 
-            self.orientations += self.dt*(self.val + self.gamma_w)
-            self.xs += self.dt*(self.v0*np.cos(self.orientations) - self.Fs_x + self.Fs_pw[0] + self.Fl_x)
-            self.ys += self.dt*(self.v0*np.sin(self.orientations) - self.Fs_y + self.Fs_pw[1] + self.Fl_y)
+            self.orientations += self.dt*(self.val )
+            self.xs += self.dt*(self.v0*np.cos(self.orientations) - self.Fs_x  + self.Fl_x)
+            self.ys += self.dt*(self.v0*np.sin(self.orientations) - self.Fs_y  + self.Fl_y)
             if list_tmp:
                 self.vector_dists_min.append(min(list_tmp))
             if min(list_tmp) < 0:
