@@ -4,15 +4,17 @@ import matplotlib.pyplot as plt
 from squirmer import Squirmer
 from interactingsquirmers import InteractingSquirmers
 from vicsek import Vicsek_continous
-from plot import plot_sim_nsquirmers, plot_sim_squirmer_border, create_video_from_history
+from plot import plot_sim_nsquirmers, plot_sim_squirmer_border, create_video_from_history, plot_time
 
-def sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border, sim_bord, filename, border_plot, dir='graphs'):
+def sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border, sim_bord, filename, border_plot, dir='graphs'):
     #border : False or True to plot the borders
     #sim_border : False or True, if True it does the simulation with one squirmer and one border
-    interact = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border)
+    interact = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border)
     history = interact.loop_time()
+    plot_time(interact, interact.vector_dists_min, "min_dist_" + filename, 'minimal distance', dir)
+    plot_time(interact, interact.list_polar, "polar_" + filename, 'polar parameter', dir)
 
-    plot_sim_nsquirmers(history, R, N, a, border_plot, sim_bord, filename=filename, dir=dir)
+    plot_sim_nsquirmers(history, Nx, Ny, N, a, border_plot, sim_bord, filename=filename, dir=dir)
 
 def sim_sq_border(x_positions, y_positions, orientations, a, betas, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, filename, dir='graphs'):
     #Compute simulation for 4 squirmers close to a border
@@ -24,12 +26,14 @@ def sim_sq_border(x_positions, y_positions, orientations, a, betas, v0, R, dt, d
 
     plot_sim_squirmer_border(R, histories, filename, dir=dir)
 
-def sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border, filename, dir='videos'):
+def sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border, filename, dir='videos'):
     #Create a video of N squirmers interacting
-    interact_sq = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border)
+    interact_sq = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border)
     history = interact_sq.loop_time()
+    plot_time(interact_sq, interact_sq.vector_dists_min, "min_dist_" + filename, 'minimal distance', dir)
+    plot_time(interact_sq, interact_sq.list_polar, "polar_" + filename, 'polar parameter', dir)
 
-    create_video_from_history(history, R=R, N=N, filename=filename, dir=dir)
+    create_video_from_history(history, Nx, Ny, N, a, filename=filename, dir=dir)
 
 def sim_Eo_param(Eo, a, v0, dt, dt_out, T, Es, ds, mu, lnEps_cr, Do, no, border, border_plot):
     betas = [(0, "beta0"), (-7.5, "betainf"), (7.5, "betasup")]
@@ -52,10 +56,10 @@ def sim_Eo_param(Eo, a, v0, dt, dt_out, T, Es, ds, mu, lnEps_cr, Do, no, border,
         orienteo = [orient1, orient2[2][0]]
         if output_type == 'plot':
             direo = 'graphs/Eo_analysis/' + betas[0][1] + '/' + orient2[2][1]
-            sim_interacting_squirmers(2, xseo, yseo, orienteo, a, betas[0][0], v0, 0.8, dt, dt_out, T, Es, ds, mu, Eos, lnEps_cr, Do, no, border, filenameeo, border_plot, dir=direo)
+            sim_interacting_squirmers(2, xseo, yseo, orienteo, a, betas[0][0], v0, 1, 1, dt, dt_out, T, Es, ds, mu, Eos, lnEps_cr, Do, no, border, filenameeo, border_plot, dir=direo)
         else:
             direo = 'videos/Eo_analysis/' + betas[0][1] + '/' + orient2[2][1]
-            sim_vid_interact_sq(2, xseo, yseo, orienteo, a, betas[0][0], v0, 0.8, dt, dt_out, T, Es, ds, mu, Eos, lnEps_cr, Do, no, border, filenameeo, dir=direo)
+            sim_vid_interact_sq(2, xseo, yseo, orienteo, a, betas[0][0], v0, 1, 1, dt, dt_out, T, Es, ds, mu, Eos, lnEps_cr, Do, no, border, filenameeo, dir=direo)
 
 def sim_vicsek(N, R, L, v0, beta, radius, T, dt, no, nb_step):
 
