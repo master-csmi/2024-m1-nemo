@@ -254,7 +254,7 @@ class InteractingSquirmers:
                     self.gamma_w[i] += self.compute_torque_squirmer_border(s)
         
             #Evolution of position
-            self.orientations += self.dt*(self.val + self.gamma_w + np.sqrt(2*self.Do)*self.nos)
+            self.orientations += self.dt*(self.val + self.gamma_w) + np.sqrt(2*self.dt*self.Do)*self.nos
             self.xs += self.dt*(self.v0 * np.cos(self.orientations) - self.Fs_x - self.Fs_pw[0] + self.Fl_x)
             self.ys += self.dt*(self.v0 * np.sin(self.orientations) - self.Fs_y - self.Fs_pw[1] + self.Fl_y)
             for i, s in enumerate(self.squirmers):
