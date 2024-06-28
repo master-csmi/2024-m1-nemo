@@ -9,7 +9,7 @@ from plot import plot_squirmers_positions
 
 class InteractingSquirmers:
 
-    def __init__(self, N, xs, ys, orientations, radius, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, border=True):
+    def __init__(self, N, xs, ys, orientations, radius, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border=True):
         self.N = N
         self.xs = np.array(xs, dtype=float)
         self.ys = np.array(ys, dtype=float)
@@ -27,6 +27,9 @@ class InteractingSquirmers:
         self.ds = ds
         self.T = T
         self.lnEps_cr = lnEps_cr
+        self.Do = Do
+        self.no = no
+        self.nos = np.zeros(N, dtype=float)
         self.Fs_x, self.Fs_y, self.Fl_x, self.Fl_y, self.val, self.gamma_w = np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float)
         self.Fs_pw = np.zeros((2,N), dtype=float)
         #border = true || false, true for reflective, false for periodic 
@@ -238,15 +241,13 @@ class InteractingSquirmers:
             self.gamma_w.fill(0)
             self.Fs_pw.fill(0)
             list_tmp = []
-
+            self.nos.fill(0)
             for i, s in enumerate(self.squirmers):
                 Dx, Dy, dist = self.distance_all(s)
                 dist = np.array(dist)
                 dist_nz = dist[dist!=0]
                 if dist_nz.size > 0:
                     list_tmp.append(min(dist_nz-2*a))
-                    if max(dist_nz-2*a) > np.sqrt((2*self.Nx)**2 + (2*self.Ny)**2):
-                        print(max(dist_nz-2*a))
 
                 close_dist = (dist<self.ds)&(dist!=0)
                 very_close_dist = (dist<=3*a)&(dist!=0)
@@ -267,7 +268,11 @@ class InteractingSquirmers:
                     self.val[i] += val1
                     self.val[j] += val2
 
-                if (self.Nx - abs(s.x)) < 2**(1/6)*a and self.border:
+                #Noise
+                self.nos[i] = np.random.uniform(-self.no/2, self.no/2)
+
+                #Force between a squirmer and a border
+                if ((self.R-abs(s.x)) < 2**(1/6)*a) and (self.border == True):
                     self.Fs_pw[0][i] += self.compute_force_squirmer_border_x(s)
                 if (self.Ny - abs(s.y)) < 2**(1/6)*a:
                     self.Fs_pw[1][i] += self.compute_force_squirmer_border_y(s)
@@ -277,15 +282,14 @@ class InteractingSquirmers:
                 if (self.Ny - abs(s.y)) < 2*a:
                     self.gamma_w[i] += self.compute_torque_squirmer_border(s)
 
-            self.orientations += self.dt*(self.val )
-            self.xs += self.dt*(self.v0*np.cos(self.orientations) - self.Fs_x  + self.Fl_x)
-            self.ys += self.dt*(self.v0*np.sin(self.orientations) - self.Fs_y  + self.Fl_y)
+            self.orientations += self.dt*(self.val + self.gamma_w) + np.sqrt(2*self.dt*self.Do)*self.nos
+            self.xs += self.dt*(self.v0*np.cos(self.orientations) - self.Fs_x - self.Fs_pw[0] + self.Fl_x)
+            self.ys += self.dt*(self.v0*np.sin(self.orientations) - self.Fs_y - self.Fs_pw[1] + self.Fl_y)
             if list_tmp:
                 self.vector_dists_min.append(min(list_tmp))
             if min(list_tmp) < 0:
                 print(min(list_tmp))
             self.list_polar.append(self.polar_order_parameter())
-
             for i, s in enumerate(self.squirmers):
                 s.x = self.xs[i]
                 s.y = self.ys[i]

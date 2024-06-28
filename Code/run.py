@@ -36,6 +36,10 @@ def main(simulation, N, filename):
           (0.5, "0_5")]
     #distance of steric interactions
     ds = 2**(7./6)*a
+    #angular diffusivity
+    Do = 1e-2
+    #angular noise
+    no = 1e-4
 
     #coordinates and orientations
     xs, ys, orients = np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float)
@@ -62,9 +66,9 @@ def main(simulation, N, filename):
     # inter.loop_time()
 
     if simulation == 'video':
-        sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, border, filename, dir='videos')
+        sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, Do, no, border, filename, dir='videos')
     elif simulation == 'plot':
-        sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, border, False, filename, border_plot, dir='graphs')
+        sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, Do, no, border, False, filename, border_plot, dir='graphs')
     elif simulation == 'border':
         xs = [-0.4]
         ys = [-0.7]
@@ -73,9 +77,9 @@ def main(simulation, N, filename):
         sim_border = True
         for i, pi in enumerate(orient):
             filename = 'sim_num_' + str(i)
-            sim_interacting_squirmers(N, xs, ys, pi, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, border, sim_border, filename, border_plot, dir='graphs/border')
+            sim_interacting_squirmers(N, xs, ys, pi, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, Do, no, border, sim_border, filename, border_plot, dir='graphs/border')
     elif simulation == 'Eo_sim':
-        sim_Eo_param(Eo, a, v0, dt, dt_out, T, Es, ds, mu, lnEps_cr, border, border_plot)
+        sim_Eo_param(Eo, a, v0, dt, dt_out, T, Es, ds, mu, lnEps_cr, Do, no, border, border_plot)
     elif simulation == 'vicsek':
         N = 20
         R = 0.25
