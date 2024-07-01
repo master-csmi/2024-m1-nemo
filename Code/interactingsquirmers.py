@@ -123,8 +123,8 @@ class InteractingSquirmers:
         Dx, Dy, dist = self.distance_sq(squirmer1, squirmer2)
 
         theta = squirmer1.orientation
-        B1 = squirmer1.B1
-        B2 = squirmer1.B2
+        B1 = self.B1
+        B2 = self.B2
         a = self.radius
 
         eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
@@ -164,9 +164,9 @@ class InteractingSquirmers:
         eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
         cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
 
-        sinalpha = np.sqrt(max((1 - cosalpha * cosalpha), 0))
+        sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
         somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
-        lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)))
+        lnEps = -np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
 
         gamma_w = (16/5)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
         # dist_center = np.sqrt(squirmer.x**2 + squirmer.y**2)
@@ -240,8 +240,9 @@ class InteractingSquirmers:
 
             dist = np.array(dists)
             dist_nz = dist[dist!=0]
-            min_dist = min(dist_nz.flatten() - 2*a)
-            self.vector_dists_min.append(min_dist)
+            if dist_nz.size > 0:
+                min_dist = min(dist_nz.flatten() - 2*a)
+                self.vector_dists_min.append(min_dist)
 
             for i, s in enumerate(self.squirmers):
                 dist_steric = (dists[i,:]<self.ds)&(dists[i,:]!=0)
@@ -305,7 +306,6 @@ class InteractingSquirmers:
             if np.any(mask_x1):
                 #Box simulation
                 if self.border:
-                    print(self.xs[mask_x1], "\n")
                     self.xs[mask_x1], self.orientations[mask_x1] = self.ref_border_x(self.xs[mask_x1], self.orientations[mask_x1], 1)
                 #Chanel simulation
                 else:
@@ -320,9 +320,9 @@ class InteractingSquirmers:
             
             #y_borders
             if np.any(mask_y1):
-                self.xs[mask_y1] = self.perio_border_x(self.ys[mask_y1], 1)
+                self.ys[mask_y1], self.orientations[mask_y1] = self.ref_border_y(self.ys[mask_y1], self.orientations[mask_y1], 1)
             if np.any(mask_y2):
-                self.xs[mask_y2] = self.perio_border_x(self.ys[mask_y2], 2)
+                self.ys[mask_y2], self.orientations[mask_y2] = self.ref_border_y(self.ys[mask_y2], self.orientations[mask_y2], 2)
 
             for i, s in enumerate(self.squirmers):
                 s.x = self.xs[i]
@@ -330,6 +330,7 @@ class InteractingSquirmers:
                 s.orientation = self.orientations[i]
             
             if t >= tout:
+                print(tout)
                 data = [self.xs.tolist(), self.ys.tolist(), self.orientations.tolist(),
                         self.Fs_x.tolist(), self.Fs_y.tolist(), self.Fl_x.tolist(), self.Fl_y.tolist(),
                         self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist(), tout]
