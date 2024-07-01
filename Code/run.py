@@ -8,13 +8,13 @@ def main(simulation, N, filename):
     v0 = 0.5
     #length x and y axis
     lbda = 2
-    Ly = 1.9
+    Ly = 25
     Lx = lbda*Ly
     #half of the length of axis
     Nx = Lx/2
     Ny = Ly/2
     #squirmers' radius
-    a = 0.05
+    a = 0.1
     #betas
     beta = 7.5
     #time-step
@@ -42,19 +42,20 @@ def main(simulation, N, filename):
     no = 1e-4
 
     #coordinates and orientations
-    xs, ys, orients = np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float)
-    for j in range(N):
-        orientation = np.random.uniform(0, 2*np.pi)
-        orients[j] = orientation
-    k = 0
-    while k < N:
-        x = np.random.uniform(-(Nx-2*a), (Nx-2*a))
-        y = np.random.uniform(-(Ny-2*a), (Ny-2*a))
-        #Each particle must have a unique initial position
-        if not any(np.isclose(x, xs, atol=1.1*a)) and not any(np.isclose(y, ys, atol=1.1*a)):
-            xs[k] = x
-            ys[k] = y
-            k += 1
+    orients = np.zeros(N, dtype=float)
+    orients = np.random.uniform(0, 2*np.pi, size=N)
+    xs = np.empty(N)
+    ys = np.empty(N)
+
+    for k in range(N):
+        while True:
+            x = np.random.uniform(-(Nx-2*a), (Nx-2*a))
+            y = np.random.uniform(-(Ny-2*a), (Ny-2*a))
+            if k == 0 or np.all(np.sqrt((xs[:k] - x)**2 + (ys[:k] - y)**2) > 2*a):
+                xs[k] = x
+                ys[k] = y
+                break
+    print(xs)
     print("initialisation passée")
     #border to simulate chanel or box
     border = False
