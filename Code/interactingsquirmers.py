@@ -96,33 +96,8 @@ class InteractingSquirmers:
         Fs_y = tmp*Dys
         return Fs_x, Fs_y
     
-    def torquesLubrification(self, squirmer1, squirmer2):
+    def torquesLubrification(self, Dx, Dy, dist, theta):
         #Computes the lubrification torques produced by two interacting squirmers
-        Dx, Dy, dist = self.distance_sq(squirmer1, squirmer2)
-        
-        theta = squirmer1.orientation
-        B1 = squirmer1.B1
-        B2 = squirmer1.B2
-        a = self.radius
-
-        eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
-        cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
-
-        sinalpha = np.sqrt(max((1 - cosalpha * cosalpha), 0))
-        somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
-
-        lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)))
-                
-        val = (16/10)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
-        val2 = (1/4)*val
-        
-        return val, val2
-        
-    def forcesLubrification(self, squirmer1, squirmer2):
-        #Computes the lubrification forces between two particles
-        Dx, Dy, dist = self.distance_sq(squirmer1, squirmer2)
-
-        theta = squirmer1.orientation
         B1 = self.B1
         B2 = self.B2
         a = self.radius
@@ -130,11 +105,30 @@ class InteractingSquirmers:
         eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
         cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
 
-        sinalpha = np.sqrt(max((1 - cosalpha * cosalpha), 0))
+        sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
+        somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
+
+        lnEps = -np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
+                
+        val = (16/10)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
+        val2 = (1/4)*val
+        
+        return val, val2
+        
+    def forcesLubrification(self, Dx, Dy, dist, theta):
+        #Computes the lubrification forces between two particles
+        B1 = self.B1
+        B2 = self.B2
+        a = self.radius
+
+        eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
+        cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
+
+        sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
         somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
         sommeFz = B1 * sinalpha * cosalpha - (1/2)*B1 * cosalpha * eieijt**2 + B2 * sinalpha * cosalpha**2 - (1/2)*B2 * (2*cosalpha**2-1) * eieijt**2
 
-        lnEps = -np.log(max(self.lnEps_cr,(dist/a - 2)))
+        lnEps = -np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
         
         #lambda=1
         F_x = np.pi * self.mu * a * eieijt * somme * lnEps * Dx
@@ -258,16 +252,23 @@ class InteractingSquirmers:
                 #Lubrification forces and torques
                 if np.any(dist_lubrification):
                     j_dist_lubr = np.where(dist_lubrification)[0]
-                    for j in j_dist_lubr:
-                        Fl_x, Fl_y = self.forcesLubrification(s, self.squirmers[j])
-                        self.Fl_x[i] += Fl_x
-                        self.Fl_y[i] += Fl_y
-                        self.Fl_x[j] -= Fl_x
-                        self.Fl_y[j] -= Fl_y
-
-                        val1, val2 = self.torquesLubrification(s, self.squirmers[j])
-                        self.val[i] += val1
-                        self.val[j] += val2
+    
+                    # Calcul vectorisé des forces et torques pour toutes les paires
+                    Dx_lubr = Dxs[i, j_dist_lubr]
+                    Dy_lubr = Dys[i, j_dist_lubr]
+                    dist_lubr = dists[i, j_dist_lubr]
+                    orientations_lubr = self.orientations[j_dist_lubr]
+                    
+                    Fl_x, Fl_y = self.forcesLubrification(Dx_lubr, Dy_lubr, dist_lubr, orientations_lubr)
+                    val1, val2 = self.torquesLubrification(Dx_lubr, Dy_lubr, dist_lubr, orientations_lubr)
+                    
+                    # Mise à jour des forces et des torques
+                    self.Fl_x[i] += np.sum(Fl_x)
+                    self.Fl_y[i] += np.sum(Fl_y)
+                    self.Fl_x[j_dist_lubr] -= Fl_x
+                    self.Fl_y[j_dist_lubr] -= Fl_y
+                    self.val[i] += np.sum(val1)
+                    self.val[j_dist_lubr] += val2
 
                 #Noise
                 self.nos[i] = np.random.uniform(-self.no/2, self.no/2)

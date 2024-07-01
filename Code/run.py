@@ -14,7 +14,7 @@ def main(simulation, N, filename):
     Nx = Lx/2
     Ny = Ly/2
     #squirmers' radius
-    a = 0.05
+    a = 0.1
     #betas
     beta = 7.5
     #time-step
@@ -24,7 +24,7 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 1
     #simulation time
-    T = 1
+    T = 5
     #periodicity of outputs
     dt_out = 0.01
     #viscovity parameter
