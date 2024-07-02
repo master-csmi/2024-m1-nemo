@@ -31,7 +31,7 @@ with **N** the number of squirmers you want to simulate,
 - **border**, 4 simulations are done with one squirmer and one border with 4 different initial orientation, the resulting graph is stored in the **graphs/border** directory
 - **vicsek**, a simulation with **N** particles is done with 5 time-step the 6 resulting graphs are stored in the **graphs/vicsek** directory
 
-**filename** a name file used with **vid_interact_sq** and **sq_border**.
+**filename** a name file used with **video**, **plot** and **border**.
 
 You can modify the simulation parameters by editing the file **Code/run.py** and **Code/simulation**.
 
