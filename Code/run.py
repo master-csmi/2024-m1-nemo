@@ -5,26 +5,26 @@ from simulation import sim_interacting_squirmers, sim_vid_interact_sq, sim_sq_bo
 def main(simulation, N, filename):
     # Define parameters
     #velocity
-    v0 = 0.5
+    v0 = 0.3
     #length x and y axis
     lbda = 2
-    Ly = 25
+    Ly = 2
     Lx = lbda*Ly
     #half of the length of axis
     Nx = Lx/2
     Ny = Ly/2
     #squirmers' radius
-    a = 0.1
+    a = 0.03
     #betas
     beta = 7.5
     #time-step
-    dt = 1e-4
+    dt = 1e-3
     #cut-off for -log
     lnEps_cr = np.exp(-5)
     #amplitude of steric interactions
-    Es = 1
+    Es = 0.5
     #simulation time
-    T = 5
+    T = 2.5
     #periodicity of outputs
     dt_out = 0.01
     #viscovity parameter

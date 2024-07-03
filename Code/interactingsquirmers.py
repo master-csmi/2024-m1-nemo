@@ -92,7 +92,7 @@ class InteractingSquirmers:
         a = self.radius
 
         tmp = -3*(self.Es/a)*(2*(2*a/dists)**13-(2*a/dists)**7)/np.sqrt(dists)
-        Fs_x =  tmp*Dxs
+        Fs_x = tmp*Dxs
         Fs_y = tmp*Dys
         return Fs_x, Fs_y
     
@@ -163,23 +163,13 @@ class InteractingSquirmers:
         lnEps = -np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
 
         gamma_w = (16/5)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
-        # dist_center = np.sqrt(squirmer.x**2 + squirmer.y**2)
-        # ex = squirmer.x / dist_center
-        # ey = squirmer.y / dist_center
-
-        # lnEps = -np.log(max(self.lnEps_cr, (self.R - dist_center)/squirmer.radius - 1))
-
-        # gamma_w = 2*self.Eo*(1 + squirmer.beta*(np.cos(squirmer.orientation)*ex + np.sin(squirmer.orientation)*ey)) * \
-        #         lnEps*(np.sin(squirmer.orientation)*ex - np.cos(squirmer.orientation)*ey)
         
         return gamma_w
     
     #Reflective boundary condition
     def ref_border_x(self, xs, orientation, boundary):
-        diff = abs(self.Nx - abs(xs))
+        diff = abs(self.Nx - abs(xs) + self.radius)
         orientation = np.pi - orientation
-        #Keeps orientation between [0, 2pi]
-        # squirmer.orientation = squirmer.orientation % (2 * np.pi)
         if boundary == 1:
             #1 for the right border
             xs = self.Nx - diff
@@ -190,14 +180,13 @@ class InteractingSquirmers:
     
     def ref_border_y(self, ys, orientation, boundary):
         orientation = -orientation
-        #Keeps orientation between [0, 2pi]
-        # squirmer.orientation = squirmer.orientation % (2 * np.pi)
-        diff = abs(self.Ny - abs(ys))
         if boundary == 1:
             #1 for the up boundary
-            ys = self.Ny - diff
+            diff = ys + self.radius - self.Ny
+            ys = self.Ny - diff - self.radius
         else:
-            ys = -self.Ny + diff
+            diff = ys - self.radius + self.Ny
+            ys = -self.Ny - diff + self.radius
 
         return ys, orientation
 
@@ -235,43 +224,44 @@ class InteractingSquirmers:
             dist = np.array(dists)
             dist_nz = dist[dist!=0]
             if dist_nz.size > 0:
-                min_dist = min(dist_nz.flatten() - 2*a)
+                min_dist = np.min(dist_nz - 2*a)
                 self.vector_dists_min.append(min_dist)
-
-            for i, s in enumerate(self.squirmers):
-                dist_steric = (dists[i,:]<self.ds)&(dists[i,:]!=0)
-                dist_lubrification = (dists[i,:]<=3*a)&(dists[i,:]!=0)
-
-                #Steric forces
-                if np.any(dist_steric):
-                    j_dist_steric = np.where(dist_steric)[0]
-                    Fs_x, Fs_y = self.forcesSteric(Dxs[i, j_dist_steric], Dys[i, j_dist_steric], dists[i, j_dist_steric])
-                    self.Fs_x[i] -= np.sum(Fs_x)
-                    self.Fs_y[i] -= np.sum(Fs_y)
-
-                #Lubrification forces and torques
-                if np.any(dist_lubrification):
-                    j_dist_lubr = np.where(dist_lubrification)[0]
+                if min_dist < 0:
+                    print(f"min_dist = {min_dist}")
+                    print(f"t_min_dist <0 = {t}")
+                    # indices_min = np.argwhere((dist - 2 * a) == min_dist)
     
-                    # Calcul vectorisé des forces et torques pour toutes les paires
-                    Dx_lubr = Dxs[i, j_dist_lubr]
-                    Dy_lubr = Dys[i, j_dist_lubr]
-                    dist_lubr = dists[i, j_dist_lubr]
-                    orientations_lubr = self.orientations[j_dist_lubr]
-                    
-                    Fl_x, Fl_y = self.forcesLubrification(Dx_lubr, Dy_lubr, dist_lubr, orientations_lubr)
-                    val1, val2 = self.torquesLubrification(Dx_lubr, Dy_lubr, dist_lubr, orientations_lubr)
-                    
-                    # Mise à jour des forces et des torques
-                    self.Fl_x[i] += np.sum(Fl_x)
-                    self.Fl_y[i] += np.sum(Fl_y)
-                    self.Fl_x[j_dist_lubr] -= Fl_x
-                    self.Fl_y[j_dist_lubr] -= Fl_y
-                    self.val[i] += np.sum(val1)
-                    self.val[j_dist_lubr] += val2
+                    # for idx in indices_min:
+                    #     idx_squirm1 = idx[0]
+                    #     idx_squirm2 = idx[1]
+                    #     print(f"Squirmer 1: x={self.xs[idx_squirm1]}, y={self.ys[idx_squirm1]}")
+                    #     print(f"Squirmer 2: x={self.xs[idx_squirm2]}, y={self.ys[idx_squirm2]}")
 
-                #Noise
-                self.nos[i] = np.random.uniform(-self.no/2, self.no/2)
+            dist_steric = (dists<self.ds)&(dists!=0)
+            dist_lubrification = (dists<=3*a)&(dists!=0)
+            j_dist_steric = np.where(dist_steric)
+            j_dist_lubr = np.where(dist_lubrification)
+
+            #Steric Forces
+            Fs_x, Fs_y = self.forcesSteric(Dxs[j_dist_steric], Dys[j_dist_steric], dists[j_dist_steric])
+            # print(Fs_x)
+            self.Fs_x[j_dist_steric[0]] -= Fs_x
+            self.Fs_y[j_dist_steric[0]] -= Fs_y
+            self.Fs_x[j_dist_steric[1]] += Fs_x
+            self.Fs_y[j_dist_steric[1]] += Fs_y
+
+            #Lubrification Forces and Torques
+            Fl_x, Fl_y = self.forcesLubrification(Dxs[j_dist_lubr], Dys[j_dist_lubr], dists[j_dist_lubr], self.orientations[j_dist_lubr[0]])
+            val1, val2 = self.torquesLubrification(Dxs[j_dist_lubr], Dys[j_dist_lubr], dists[j_dist_lubr], self.orientations[j_dist_lubr[0]])
+            self.Fl_x[j_dist_lubr[0]] += np.sum(Fl_x)
+            self.Fl_y[j_dist_lubr[0]] += np.sum(Fl_y)
+            self.Fl_x[j_dist_lubr[1]] -= Fl_x
+            self.Fl_y[j_dist_lubr[1]] -= Fl_y
+            self.val[j_dist_lubr[0]] += np.sum(val1)
+            self.val[j_dist_lubr[1]] += val2
+
+            #Noise
+            self.nos = np.random.uniform(-self.no/2, self.no/2, size=self.N)
 
             #Force between a squirmer and a border
             dist_forces_x = (self.Nx-abs(self.xs)) < 2**(1/6)*a
@@ -285,7 +275,7 @@ class InteractingSquirmers:
                 i_dist_force_x = np.where(dist_forces_x)[0]
                 i_dist_torque_x = np.where(dist_torques_x)[0]
                 self.Fs_pw[0][i_dist_force_x] += self.compute_force_squirmer_border_x(self.xs[i_dist_force_x], self.ys[i_dist_force_x])
-                self.gamma_w[i_dist_torque_x] += self.compute_torque_squirmer_border(self.squirmers[i_dist_torque_x], self.ys[i_dist_torque_x], self.orientations[i_dist_torque_x])
+                self.gamma_w[i_dist_torque_x] += self.compute_torque_squirmer_border(self.xs[i_dist_torque_x], self.ys[i_dist_torque_x], self.orientations[i_dist_torque_x])
 
             i_dist_force_y = np.where(dist_forces_y)[0]
             i_dist_torque_y = np.where(dist_torques_y)[0]
@@ -293,16 +283,16 @@ class InteractingSquirmers:
             self.gamma_w[i_dist_torque_y] += self.compute_torque_squirmer_border(self.xs[i_dist_torque_y], self.ys[i_dist_torque_y], self.orientations[i_dist_torque_y])
 
             self.orientations += self.dt*(self.val + self.gamma_w) + np.sqrt(2*self.dt*self.Do)*self.nos
-            self.xs += self.dt*(self.v0*np.cos(self.orientations) - self.Fs_x - self.Fs_pw[0] + self.Fl_x)
-            self.ys += self.dt*(self.v0*np.sin(self.orientations) - self.Fs_y - self.Fs_pw[1] + self.Fl_y)
+            self.xs += self.dt*(self.v0*np.cos(self.orientations) - self.Fs_x)
+            self.ys += self.dt*(self.v0*np.sin(self.orientations) - self.Fs_y)
             
             self.list_polar.append(self.polar_order_parameter())
 
             #Borders
-            mask_x1 = (self.Nx - self.xs) <= a
-            mask_x2 = (self.Nx + self.xs) <= a
-            mask_y1 = (self.Ny - self.ys) <= a
-            mask_y2 = (self.Ny + self.ys) <= a
+            mask_x1 = (self.xs + a) > self.Nx
+            mask_x2 = (self.xs - a) < -self.Nx
+            mask_y1 = (self.ys + a) > self.Ny
+            mask_y2 = (self.ys - a) < -self.Ny
             #x_borders
             if np.any(mask_x1):
                 #Box simulation
