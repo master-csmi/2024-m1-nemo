@@ -5,7 +5,7 @@ from simulation import sim_interacting_squirmers, sim_vid_interact_sq, sim_sq_bo
 def main(simulation, N, filename):
     # Define parameters
     #velocity
-    v0 = 0.3
+    v0 = 0.5
     #length x and y axis
     lbda = 2
     Ly = 2
@@ -24,7 +24,7 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 0.5
     #simulation time
-    T = 2.5
+    T = 2
     #periodicity of outputs
     dt_out = 0.01
     #viscovity parameter
@@ -35,7 +35,7 @@ def main(simulation, N, filename):
           (((-3./10.)*v0/a), "mEo_init"), (-5, "m5"), (0.005, "m0_005"), (-2, "m2"), (-0.5, "m0_5"),
           (0.5, "0_5")]
     #distance of steric interactions
-    ds = 2**(7./6)*a
+    ds = 2**(8./6)*a
     #angular diffusivity
     Do = 1e-2
     #angular noise

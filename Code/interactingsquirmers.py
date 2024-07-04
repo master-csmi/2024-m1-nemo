@@ -168,12 +168,13 @@ class InteractingSquirmers:
     
     #Reflective boundary condition
     def ref_border_x(self, xs, orientation, boundary):
-        diff = abs(self.Nx - abs(xs) + self.radius)
         orientation = np.pi - orientation
         if boundary == 1:
             #1 for the right border
+            diff = xs + self.radius - self.Nx
             xs = self.Nx - diff
         else:
+            diff = xs - self.radius + self.Nx
             xs = -self.Nx + diff
 
         return xs, orientation
@@ -229,13 +230,13 @@ class InteractingSquirmers:
                 if min_dist < 0:
                     print(f"min_dist = {min_dist}")
                     print(f"t_min_dist <0 = {t}")
-                    # indices_min = np.argwhere((dist - 2 * a) == min_dist)
+                    indices_min = np.argwhere((dist - 2 * a) == min_dist)
     
-                    # for idx in indices_min:
-                    #     idx_squirm1 = idx[0]
-                    #     idx_squirm2 = idx[1]
-                    #     print(f"Squirmer 1: x={self.xs[idx_squirm1]}, y={self.ys[idx_squirm1]}")
-                    #     print(f"Squirmer 2: x={self.xs[idx_squirm2]}, y={self.ys[idx_squirm2]}")
+                    for idx in indices_min:
+                        idx_squirm1 = idx[0]
+                        idx_squirm2 = idx[1]
+                        print(f"Squirmer1: x={self.xs[idx_squirm1]}, y={self.ys[idx_squirm1]}")
+                        print(f"Squirmer2: x={self.xs[idx_squirm2]}, y={self.ys[idx_squirm2]}")
 
             dist_steric = (dists<self.ds)&(dists!=0)
             dist_lubrification = (dists<=3*a)&(dists!=0)
@@ -243,22 +244,26 @@ class InteractingSquirmers:
             j_dist_lubr = np.where(dist_lubrification)
 
             #Steric Forces
-            Fs_x, Fs_y = self.forcesSteric(Dxs[j_dist_steric], Dys[j_dist_steric], dists[j_dist_steric])
-            # print(Fs_x)
-            self.Fs_x[j_dist_steric[0]] -= Fs_x
-            self.Fs_y[j_dist_steric[0]] -= Fs_y
-            self.Fs_x[j_dist_steric[1]] += Fs_x
-            self.Fs_y[j_dist_steric[1]] += Fs_y
+            print(f"Dxs = {Dxs}\n Dys = {Dys}\n dists = {dists}")
+            Fs_x, Fs_y = self.forcesSteric(Dxs[dist_steric], Dys[dist_steric], dists[dist_steric])
+            # print(f"Fs_x = {Fs_x} and shape = {Fs_x.shape}")
+            # print(f"self_Fs_x = {self.Fs_x[j_dist_steric[0]]}")
+            self.Fs_x[j_dist_steric[0]] += (Fs_x)
+            # print(f"self.Fs_x après = {self.Fs_x[j_dist_steric[0]]} and shape = {self.Fs_x[j_dist_steric[0]].shape}")
+            # print("\n")
+            self.Fs_y[j_dist_steric[0]] += (Fs_y)
 
             #Lubrification Forces and Torques
             Fl_x, Fl_y = self.forcesLubrification(Dxs[j_dist_lubr], Dys[j_dist_lubr], dists[j_dist_lubr], self.orientations[j_dist_lubr[0]])
             val1, val2 = self.torquesLubrification(Dxs[j_dist_lubr], Dys[j_dist_lubr], dists[j_dist_lubr], self.orientations[j_dist_lubr[0]])
-            self.Fl_x[j_dist_lubr[0]] += np.sum(Fl_x)
-            self.Fl_y[j_dist_lubr[0]] += np.sum(Fl_y)
+            self.Fl_x[j_dist_lubr[0]] += Fl_x
+            self.Fl_y[j_dist_lubr[0]] += Fl_y
             self.Fl_x[j_dist_lubr[1]] -= Fl_x
             self.Fl_y[j_dist_lubr[1]] -= Fl_y
-            self.val[j_dist_lubr[0]] += np.sum(val1)
+            self.val[j_dist_lubr[0]] += val1
             self.val[j_dist_lubr[1]] += val2
+            # print(f"Fl_x = {self.Fl_x}")
+            # print(f"Fl_y = {self.Fl_y}\n")
 
             #Noise
             self.nos = np.random.uniform(-self.no/2, self.no/2, size=self.N)
@@ -283,8 +288,8 @@ class InteractingSquirmers:
             self.gamma_w[i_dist_torque_y] += self.compute_torque_squirmer_border(self.xs[i_dist_torque_y], self.ys[i_dist_torque_y], self.orientations[i_dist_torque_y])
 
             self.orientations += self.dt*(self.val + self.gamma_w) + np.sqrt(2*self.dt*self.Do)*self.nos
-            self.xs += self.dt*(self.v0*np.cos(self.orientations) - self.Fs_x)
-            self.ys += self.dt*(self.v0*np.sin(self.orientations) - self.Fs_y)
+            self.xs += self.dt*(self.v0*np.cos(self.orientations) + self.Fs_x + self.Fl_x + self.Fs_pw[0])
+            self.ys += self.dt*(self.v0*np.sin(self.orientations) + self.Fs_y + self.Fl_y + self.Fs_pw[1])
             
             self.list_polar.append(self.polar_order_parameter())
 
