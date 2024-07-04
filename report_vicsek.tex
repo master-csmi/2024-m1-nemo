@@ -127,4 +127,24 @@ When called, the class initializes $N$ particles with random position and orient
     \item \texttt{loop\_time()} uses \texttt{update\_orientation()} and \texttt{update\_position()} for each time step $dt$
     \item \texttt{plot(ax)} plots the square and the particles in the ax
 \end{itemize}
+
+\subsection{InteractingSquirmers}
+This internship is a continuation and an improvement of the NEMO project.
+The goal is to study the interactions between squirmers and their collective behaviors.\\
+
+\subsubsection{Eo parameter}
+The first thing done during the internship was to study the effect of the $Eo$ parameter on the alignment of the squirmers.\\
+One can see the simulations done and their resulting graphs in the \texttt{graphs/Eo_analysis} and \texttt{videos/Eo_analysis} directories.\\
+One also can type:
+\begin{verbatim}
+    python3 Code/run.py Eo_sim 2 filename
+\end{verbatim}
+and modify the \texttt{Code/run.py} file with the parameters one wants to test,
+ then for each $Eo$ in \texttt{Code/run.py} and each $orient2$ and $betas$ in \texttt{sim\_Eo\_param} in \texttt{Code/simulation.py}, 
+ a simulation is done and the resulting graphs are stored in the \texttt{graphs} or \texttt{videos} 
+ directory depending on one's choice.\\
+
+\subsubsection{N squirmers}
+The first step was to modify the code done during the initial project to simulate the behavior of $N$ squirmers.
+
 \end{document}
