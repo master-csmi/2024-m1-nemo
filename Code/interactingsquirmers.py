@@ -91,7 +91,9 @@ class InteractingSquirmers:
         #Compute the steric forces between two particles
         a = self.radius
 
-        tmp = -3*(self.Es/a)*(2*(2*a/dists)**13-(2*a/dists)**7)/np.sqrt(dists)
+        Vc = np.minimum(a/dists, 0.5)
+
+        tmp = -3*(self.Es/a)*(2*(2*Vc)**13-(2*Vc)**7)/np.sqrt(dists)
         Fs_x = tmp*Dxs
         Fs_y = tmp*Dys
         return Fs_x, Fs_y
@@ -106,11 +108,12 @@ class InteractingSquirmers:
         cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
 
         sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
-        somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
+        somme = B1 * sinalpha + B2 * cosalpha*sinalpha
+        #-B1 * sinalpha - B2 * cosalpha*sinalpha
 
-        lnEps = -np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
+        lnEps = np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
                 
-        val = (16/10)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
+        val = (8/5)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
         val2 = (1/4)*val
         
         return val, val2
@@ -125,26 +128,26 @@ class InteractingSquirmers:
         cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
 
         sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
-        somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
+        somme = B1 * sinalpha + B2 * cosalpha*sinalpha
         sommeFz = B1 * sinalpha * cosalpha - (1/2)*B1 * cosalpha * eieijt**2 + B2 * sinalpha * cosalpha**2 - (1/2)*B2 * (2*cosalpha**2-1) * eieijt**2
 
-        lnEps = -np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
+        lnEps = np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
         
         #lambda=1
-        F_x = np.pi * self.mu * a * eieijt * somme * lnEps * Dx
-        F_y = -9* self.mu * np.pi*a*(1/4)*sommeFz* lnEps * Dy
+        F_x = -np.pi * self.mu * a * eieijt * somme * lnEps * Dx
+        F_y = -9 * self.mu * np.pi*a*(1/4)*sommeFz* lnEps * Dy
 
         return F_x, F_y
     
     def compute_force_squirmer_border_x(self, xs, ys):
         RRi = np.sqrt((xs - self.Nx)**2 + (ys - self.Ny)**2)
         tmp = -6*((self.Es*(self.Nx - xs))/(self.radius*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
-        return tmp*xs
+        return -tmp*xs
     
     def compute_force_squirmer_border_y(self, xs, ys):
         RRi = np.sqrt((xs - self.Nx)**2 + (ys - self.Ny)**2)
         tmp = -6*((self.Es*(self.Ny - ys))/(self.radius*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
-        return tmp*ys
+        return -tmp*ys
 
     def compute_torque_squirmer_border(self, xs, ys, orientations):
         Dy = self.Ny-abs(ys)
@@ -160,7 +163,7 @@ class InteractingSquirmers:
 
         sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
         somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
-        lnEps = -np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
+        lnEps = np.log(np.maximum(self.lnEps_cr,((dist-2*a)/a - 2)))
 
         gamma_w = (16/5)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
         
@@ -231,12 +234,9 @@ class InteractingSquirmers:
                     print(f"min_dist = {min_dist}")
                     print(f"t_min_dist <0 = {t}")
                     indices_min = np.argwhere((dist - 2 * a) == min_dist)
-    
-                    for idx in indices_min:
-                        idx_squirm1 = idx[0]
-                        idx_squirm2 = idx[1]
-                        print(f"Squirmer1: x={self.xs[idx_squirm1]}, y={self.ys[idx_squirm1]}")
-                        print(f"Squirmer2: x={self.xs[idx_squirm2]}, y={self.ys[idx_squirm2]}")
+
+                    print(f"Squirmer1: x={self.xs[indices_min[0][0]]}, y={self.ys[indices_min[0][1]]}")
+                    print(f"Squirmer2: x={self.xs[indices_min[1][0]]}, y={self.ys[indices_min[1][1]]}")
 
             dist_steric = (dists<self.ds)&(dists!=0)
             dist_lubrification = (dists<=3*a)&(dists!=0)
@@ -244,7 +244,7 @@ class InteractingSquirmers:
             j_dist_lubr = np.where(dist_lubrification)
 
             #Steric Forces
-            print(f"Dxs = {Dxs}\n Dys = {Dys}\n dists = {dists}")
+            # print(f"Dxs = {Dxs}\n Dys = {Dys}\n dists = {dists}")
             Fs_x, Fs_y = self.forcesSteric(Dxs[dist_steric], Dys[dist_steric], dists[dist_steric])
             # print(f"Fs_x = {Fs_x} and shape = {Fs_x.shape}")
             # print(f"self_Fs_x = {self.Fs_x[j_dist_steric[0]]}")
@@ -272,8 +272,8 @@ class InteractingSquirmers:
             dist_forces_x = (self.Nx-abs(self.xs)) < 2**(1/6)*a
             dist_forces_y = (self.Ny-abs(self.ys)) < 2**(1/6)*a
 
-            dist_torques_x = (self.Nx - abs(self.xs)) < 2*a
-            dist_torques_y = (self.Ny - abs(self.ys)) < 2*a
+            dist_torques_x = (self.Nx-abs(self.xs)) < 2*a
+            dist_torques_y = (self.Ny-abs(self.ys)) < 2*a
 
             #If we simulate in a box
             if self.border:
@@ -287,11 +287,12 @@ class InteractingSquirmers:
             self.Fs_pw[1][i_dist_force_y] += self.compute_force_squirmer_border_y(self.xs[i_dist_force_y], self.ys[i_dist_force_y])
             self.gamma_w[i_dist_torque_y] += self.compute_torque_squirmer_border(self.xs[i_dist_torque_y], self.ys[i_dist_torque_y], self.orientations[i_dist_torque_y])
 
+            # print(self.val)
+
+            #Evolution of position
             self.orientations += self.dt*(self.val + self.gamma_w) + np.sqrt(2*self.dt*self.Do)*self.nos
             self.xs += self.dt*(self.v0*np.cos(self.orientations) + self.Fs_x + self.Fl_x + self.Fs_pw[0])
             self.ys += self.dt*(self.v0*np.sin(self.orientations) + self.Fs_y + self.Fl_y + self.Fs_pw[1])
-            
-            self.list_polar.append(self.polar_order_parameter())
 
             #Borders
             mask_x1 = (self.xs + a) > self.Nx
@@ -325,6 +326,8 @@ class InteractingSquirmers:
                 s.y = self.ys[i]
                 s.orientation = self.orientations[i]
             
+            self.list_polar.append(self.polar_order_parameter())
+            
             if t >= tout:
                 print(tout)
                 data = [self.xs.tolist(), self.ys.tolist(), self.orientations.tolist(),
@@ -332,7 +335,6 @@ class InteractingSquirmers:
                         self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist(), tout]
                 history.append(data)
                 tout += self.dt_out
-                # print(f"polar parameter : {polar}")
 
         self.history = history
         return history

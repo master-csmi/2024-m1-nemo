@@ -4,42 +4,42 @@ from simulation import sim_interacting_squirmers, sim_vid_interact_sq, sim_sq_bo
 
 def main(simulation, N, filename):
     # Define parameters
-    #velocity
-    v0 = 0.5
+    #velocity #F*dt < v0
+    v0 = 0.3
     #length x and y axis
     lbda = 2
-    Ly = 2
+    Ly = 5
     Lx = lbda*Ly
     #half of the length of axis
     Nx = Lx/2
     Ny = Ly/2
     #squirmers' radius
-    a = 0.03
+    a = 0.02
     #betas
-    beta = 7.5
+    beta = 0
     #time-step
     dt = 1e-3
     #cut-off for -log
-    lnEps_cr = np.exp(-5)
+    lnEps_cr = a*0.001
     #amplitude of steric interactions
     Es = 0.5
     #simulation time
-    T = 2
+    T = 15
     #periodicity of outputs
     dt_out = 0.01
     #viscovity parameter
-    mu = 1
+    mu = 5
     #amplitude of orientational interactions
     #Eo[0] = Eoinitial, E[1] = Eobrumley, E[2] = Eolauga
     Eo = [(((3./10.)*v0/a), "Eo_init"), ((16/10)*mu*np.pi*a**2, "Eo_brumley"), ((-3./2.)*(v0/a), "Eo_lauga"),
           (((-3./10.)*v0/a), "mEo_init"), (-5, "m5"), (0.005, "m0_005"), (-2, "m2"), (-0.5, "m0_5"),
           (0.5, "0_5")]
     #distance of steric interactions
-    ds = 2**(8./6)*a
+    ds = 2**(7./6)*a
     #angular diffusivity
-    Do = 1e-2
+    Do = 0.5
     #angular noise
-    no = 1e-4
+    no = 1e-2
 
     #coordinates and orientations
     orients = np.zeros(N, dtype=float)
