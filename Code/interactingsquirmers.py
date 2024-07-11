@@ -5,11 +5,10 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from csv_file import export_data_csv, read_csv_file
 from squirmer import Squirmer
-from plot import plot_squirmers_positions
 
 class InteractingSquirmers:
 
-    def __init__(self, N, xs, ys, orientations, radius, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border=True):
+    def __init__(self, N, xs, ys, orientations, radius, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, Do, no, border=True):
         self.N = N
         self.xs = np.array(xs, dtype=float)
         self.ys = np.array(ys, dtype=float)
@@ -23,7 +22,7 @@ class InteractingSquirmers:
         self.dt_out = dt_out
         self.Es = Es
         self.mu = mu
-        self.Eo = Eo
+        self.R = R
         self.ds = ds
         self.T = T
         self.lnEps_cr = lnEps_cr
@@ -212,6 +211,7 @@ class InteractingSquirmers:
                 self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist(), 0]
         history.append(data)
         self.list_polar = []
+        self.list_cluster_param = []
 
         for t in np.arange(0, self.T, self.dt):
             self.Fs_x.fill(0)
@@ -237,6 +237,12 @@ class InteractingSquirmers:
 
                     print(f"Squirmer1: x={self.xs[indices_min[0][0]]}, y={self.ys[indices_min[0][1]]}")
                     print(f"Squirmer2: x={self.xs[indices_min[1][0]]}, y={self.ys[indices_min[1][1]]}")
+            
+            #Clustering order parameter
+            dist_neigh = (dists<self.R)&(dists!=0)
+            n_neigh = np.sum(dist_neigh, axis=1)
+            self.list_cluster_param.append((1/self.N**2)*sum(n_neigh))
+
 
             dist_steric = (dists<self.ds)&(dists!=0)
             dist_lubrification = (dists<=3*a)&(dists!=0)
@@ -326,6 +332,7 @@ class InteractingSquirmers:
                 s.y = self.ys[i]
                 s.orientation = self.orientations[i]
             
+            #Polar order parameter
             self.list_polar.append(self.polar_order_parameter())
             
             if t >= tout:
@@ -338,10 +345,3 @@ class InteractingSquirmers:
 
         self.history = history
         return history
-
-
-    def run(self, file_name_csv, filename_pos='position_graph', filename_dist='dist_squirmer_graph',):
-        self.check_squirmers_square()
-        history = self.loop_time()
-        export_data_csv(file_name_csv, history)
-        plot_squirmers_positions(self.R, history, filename_pos)

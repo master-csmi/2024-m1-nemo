@@ -1,6 +1,6 @@
 import argparse
 import numpy as np
-from simulation import sim_interacting_squirmers, sim_vid_interact_sq, sim_sq_border, sim_Eo_param, sim_vicsek
+from simulation import sim_interacting_squirmers, sim_vid_interact_sq, sim_Eo_param, sim_vicsek
 
 def main(simulation, N, filename):
     # Define parameters
@@ -8,7 +8,7 @@ def main(simulation, N, filename):
     v0 = 0.3
     #length x and y axis
     lbda = 2
-    Ly = 5
+    Ly = 2
     Lx = lbda*Ly
     #half of the length of axis
     Nx = Lx/2
@@ -24,7 +24,7 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 0.5
     #simulation time
-    T = 15
+    T = 5
     #periodicity of outputs
     dt_out = 0.01
     #viscovity parameter
@@ -40,6 +40,8 @@ def main(simulation, N, filename):
     Do = 0.5
     #angular noise
     no = 1e-2
+    #Distance of particle seen as "Neighbour"
+    R = 0.07
 
     #coordinates and orientations
     orients = np.zeros(N, dtype=float)
@@ -67,9 +69,9 @@ def main(simulation, N, filename):
     # inter.loop_time()
 
     if simulation == 'video':
-        sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, Do, no, border, filename, dir='videos')
+        sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, Do, no, border, filename, dir='videos')
     elif simulation == 'plot':
-        sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, Do, no, border, False, filename, border_plot, dir='graphs')
+        sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, Do, no, border, False, filename, border_plot, dir='graphs')
     elif simulation == 'border':
         xs = [-0.4]
         ys = [-0.7]
@@ -78,7 +80,7 @@ def main(simulation, N, filename):
         sim_border = True
         for i, pi in enumerate(orient):
             filename = 'sim_num_' + str(i)
-            sim_interacting_squirmers(N, xs, ys, pi, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, Do, no, border, sim_border, filename, border_plot, dir='graphs/border')
+            sim_interacting_squirmers(N, xs, ys, pi, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, Do, no, border, sim_border, filename, border_plot, dir='graphs/border')
     elif simulation == 'Eo_sim':
         sim_Eo_param(Eo, a, v0, dt, dt_out, T, Es, ds, mu, lnEps_cr, Do, no, border, border_plot)
     elif simulation == 'vicsek':

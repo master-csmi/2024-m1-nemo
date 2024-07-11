@@ -1,37 +1,28 @@
 import numpy as np
 import time
 import matplotlib.pyplot as plt
-from squirmer import Squirmer
 from interactingsquirmers import InteractingSquirmers
 from vicsek import Vicsek_continous
-from plot import plot_sim_nsquirmers, plot_sim_squirmer_border, create_video_from_history, plot_time
+from plot import plot_sim_nsquirmers, create_video_from_history, plot_time
 
-def sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border, sim_bord, filename, border_plot, dir='graphs'):
+def sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, Do, no, border, sim_bord, filename, border_plot, dir='graphs'):
     #border : False or True to plot the borders
     #sim_border : False or True, if True it does the simulation with one squirmer and one border
-    interact = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border)
+    interact = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, Do, no, border)
     history = interact.loop_time()
     plot_time(interact, interact.vector_dists_min, "min_dist_" + filename, 'minimal distance', dir)
     plot_time(interact, interact.list_polar, "polar_" + filename, 'polar parameter', dir)
+    plot_time(interact, interact.list_cluster_param, "cluster_" + filename, 'clustering order parameter', dir)
 
     plot_sim_nsquirmers(history, Nx, Ny, N, a, border_plot, sim_bord, filename=filename, dir=dir)
 
-def sim_sq_border(x_positions, y_positions, orientations, a, betas, v0, R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, filename, dir='graphs'):
-    #Compute simulation for 4 squirmers close to a border
-    histories = []
-    for beta in betas:
-        squirmers = [Squirmer(x, y, orient, a, beta, v0) for x, y, orient in zip(x_positions, y_positions, orientations)]
-        interact_sqs = [InteractingSquirmers(squirmers[i], squirmers[i + 1], R, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no) for i in range(0, len(squirmers), 2)]
-        histories.append([interact_sq.loop_time() for interact_sq in interact_sqs])
-
-    plot_sim_squirmer_border(R, histories, filename, dir=dir)
-
-def sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border, filename, dir='videos'):
+def sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, Do, no, border, filename, dir='videos'):
     #Create a video of N squirmers interacting
-    interact_sq = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo, lnEps_cr, Do, no, border)
+    interact_sq = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, Do, no, border)
     history = interact_sq.loop_time()
     plot_time(interact_sq, interact_sq.vector_dists_min, "min_dist_" + filename, 'minimal distance', dir)
     plot_time(interact_sq, interact_sq.list_polar, "polar_" + filename, 'polar parameter', dir)
+    plot_time(interact_sq, interact_sq.list_cluster_param, "cluster_" + filename, 'clustering order parameter', dir)
 
     create_video_from_history(history, Nx, Ny, N, a, filename=filename, dir=dir)
 
