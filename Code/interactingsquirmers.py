@@ -1,9 +1,6 @@
 import numpy as np
-import os
 import matplotlib
 matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-from csv_file import export_data_csv, read_csv_file
 from squirmer import Squirmer
 
 class InteractingSquirmers:
@@ -230,13 +227,13 @@ class InteractingSquirmers:
             if dist_nz.size > 0:
                 min_dist = np.min(dist_nz - 2*a)
                 self.vector_dists_min.append(min_dist)
-                if min_dist < 0:
-                    print(f"min_dist = {min_dist}")
-                    print(f"t_min_dist <0 = {t}")
-                    indices_min = np.argwhere((dist - 2 * a) == min_dist)
+                # if min_dist < 0:
+                    # print(f"min_dist = {min_dist}")
+                    # print(f"t_min_dist <0 = {t}")
+                    # indices_min = np.argwhere((dist - 2 * a) == min_dist)
 
-                    print(f"Squirmer1: x={self.xs[indices_min[0][0]]}, y={self.ys[indices_min[0][1]]}")
-                    print(f"Squirmer2: x={self.xs[indices_min[1][0]]}, y={self.ys[indices_min[1][1]]}")
+                    # print(f"Squirmer1: x={self.xs[indices_min[0][0]]}, y={self.ys[indices_min[0][1]]}")
+                    # print(f"Squirmer2: x={self.xs[indices_min[1][0]]}, y={self.ys[indices_min[1][1]]}")
             
             #Clustering order parameter
             dist_neigh = (dists<self.R)&(dists!=0)
