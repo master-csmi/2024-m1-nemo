@@ -30,7 +30,8 @@ The motion of the squirmers is simulated using two different models: a continuou
 steric forces, and a full model using the finite element library Feel++.
 
 \section{Objectives}
-The main goal is to model the dynamics of a schoal of squirmers within confined environments, 
+The main goal is to model the dynamics of a schoal of squirmers within confined environments, a channel or a box and to
+ study the parameter that affect the alignement of the squirmers.
 
 \section{Vicsek}
 \subsection{Model}
@@ -128,6 +129,7 @@ When called, the class initializes $N$ particles with random position and orient
     \item \texttt{plot(ax)} plots the square and the particles in the ax
 \end{itemize}
 
+\newpage
 \section{InteractingSquirmers}
 This internship is a continuation and an improvement of the project done during the first year of Master.
 The goal is to study the interactions and collective behaviors of squirmers.\\
@@ -143,6 +145,7 @@ and modify the \texttt{Code/run.py} file with the parameters one wants to test,
  then for each $Eo$ in \texttt{Code/run.py} and each $orient2$ and $betas$ in \texttt{sim\_Eo\_param} in \texttt{Code/simulation.py}, 
  a simulation is done and the resulting graphs or videos are stored in the \texttt{graphs} or \texttt{videos} 
  directory depending on one's choice.\\
+
 \subsubsection*{Evolution of orientation}
 The evolution of the orientation of one squirmer is given by : 
 $$
@@ -165,13 +168,19 @@ For squirmers having the same $\beta$ parameter we note the following relation:
 $$
 \Gamma_{ji->i} = \frac{1}{4}\Gamma_{ij->i}
 $$
-We want to study the effect of $E_0$ on the alignment of squirmers so the 
+We want to study the effect of $E_0$ on the alignment of squirmers so $\Gamma_{i}^W$, which is the torque 
+exerted by a wall on the squirmer, will be ignored.
+
+\subsubsection*{Numerical Experiments}
+The simulation are done with two squirmers of radius $a=0.05$, velocity $v_0=1$, $\beta$ varying from $\beta_1 = 0$,
+ $\beta_2 = -7.5$ and $\beta_3 = 7.5$, orientation $\theta$ varying 
+
 \subsection{N squirmers}
 The first step was to modify the code done during the initial project to simulate the behavior of $N$ squirmers.
 
 \newpage
 
-\nocite{*}
-\bibliographystyle{plain}
-\bibliography{/bibliography/biblio}
+% \nocite{*}
+% \bibliographystyle{plain}
+% \bibliography{/bibliography/biblio}
 \end{document}
