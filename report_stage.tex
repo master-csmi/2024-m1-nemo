@@ -106,8 +106,8 @@ for a square system with repulsive borders
     \item $T$ the time of simulation
     \item $dt$ the time step between each iteration
     \item $noise$ the $\eta$ parameter, used to counteract the alignment of the particles
-    \item $beta$, $Es$, $ds$, $mu$, $Eo$, $lnEps_cr$ are parameters which initialize Squirmers but
-    are not used
+    \item $beta$ is a parameter which initializes the Squirmers but
+    is not used
 \end{itemize}
 When called, the class initializes $N$ particles with random position and orientation within the square.
 \subsubsection*{Methods}
@@ -128,23 +128,50 @@ When called, the class initializes $N$ particles with random position and orient
     \item \texttt{plot(ax)} plots the square and the particles in the ax
 \end{itemize}
 
-\subsection{InteractingSquirmers}
-This internship is a continuation and an improvement of the NEMO project.
-The goal is to study the interactions between squirmers and their collective behaviors.\\
+\section{InteractingSquirmers}
+This internship is a continuation and an improvement of the project done during the first year of Master.
+The goal is to study the interactions and collective behaviors of squirmers.\\
 
-\subsubsection{Eo parameter}
+\subsection{Eo parameter}
 The first thing done during the internship was to study the effect of the $Eo$ parameter on the alignment of the squirmers.\\
-One can see the simulations done and their resulting graphs in the \texttt{graphs/Eo_analysis} and \texttt{videos/Eo_analysis} directories.\\
+One can see the simulations done and their resulting graphs in the \texttt{graphs/Eo\_analysis} and \texttt{videos/Eo\_analysis} directories.\\
 One also can type:
 \begin{verbatim}
     python3 Code/run.py Eo_sim 2 filename
 \end{verbatim}
 and modify the \texttt{Code/run.py} file with the parameters one wants to test,
  then for each $Eo$ in \texttt{Code/run.py} and each $orient2$ and $betas$ in \texttt{sim\_Eo\_param} in \texttt{Code/simulation.py}, 
- a simulation is done and the resulting graphs are stored in the \texttt{graphs} or \texttt{videos} 
+ a simulation is done and the resulting graphs or videos are stored in the \texttt{graphs} or \texttt{videos} 
  directory depending on one's choice.\\
+\subsubsection*{Evolution of orientation}
+The evolution of the orientation of one squirmer is given by : 
+$$
+\frac{d \theta_i}{dt} = \sum \Gamma_{ij->i} + \sum \Gamma_{ji->i} +  \Gamma_{i}^W.
+$$
+$\Gamma_{ij->k}$ is the torque exerted on the $k^\mathrm{th}$ particle by the flow associated to the $i^\mathrm{th}$ particle, but perturbed by the presence of the $j^\mathrm{th}$ particle.\\
 
-\subsubsection{N squirmers}
+\vspace{0.5cm}
+
+The torques acting on the squirmer $i$ can be calculated explicitly by: \\
+$$
+\Gamma_{ij->i} = E_0(1 + \beta_i e_{ij})(-\ln\epsilon)\hat{e}_{ij}\times \hat{e}_i \cite{Lauga}
+$$
+and
+$$
+\Gamma_{ji->i} = \frac{1}{4}E_0(1 + \beta_j e_{ji})(-\ln\epsilon)\hat{e}_{ji}\times \hat{e}_j \cite{Lauga}
+$$
+with $\hat{e}_{ij} = \frac{(x_j - x_i)}{||x_j - x_i||}$, $e_{ij} = \hat{e}_i\cdot \hat{e}_{ij}$ and $Eo$ the parameter to test.\\ 
+For squirmers having the same $\beta$ parameter we note the following relation:
+$$
+\Gamma_{ji->i} = \frac{1}{4}\Gamma_{ij->i}
+$$
+We want to study the effect of $E_0$ on the alignment of squirmers so the 
+\subsection{N squirmers}
 The first step was to modify the code done during the initial project to simulate the behavior of $N$ squirmers.
 
+\newpage
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{/bibliography/biblio}
 \end{document}
