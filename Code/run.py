@@ -8,7 +8,7 @@ def main(simulation, N, filename):
     v0 = 0.3
     #length x and y axis
     lbda = 2
-    Ly = 2
+    Ly = 3
     Lx = lbda*Ly
     #half of the length of axis
     Nx = Lx/2
@@ -26,7 +26,7 @@ def main(simulation, N, filename):
     #simulation time
     T = 5
     #periodicity of outputs
-    dt_out = 0.01
+    dt_out = 0.05
     #viscovity parameter
     mu = 5
     #amplitude of orientational interactions

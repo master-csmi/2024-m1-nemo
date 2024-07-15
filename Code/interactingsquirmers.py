@@ -241,7 +241,7 @@ class InteractingSquirmers:
             #Clustering order parameter
             dist_neigh = (dists<self.R)&(dists!=0)
             n_neigh = np.sum(dist_neigh, axis=1)
-            self.list_cluster_param.append((1/self.N**2)*sum(n_neigh))
+            self.list_cluster_param.append((1/(self.N*self.N/2))*sum(n_neigh))
 
 
             dist_steric = (dists<self.ds)&(dists!=0)
@@ -264,8 +264,6 @@ class InteractingSquirmers:
             val1, val2 = self.torquesLubrification(Dxs[j_dist_lubr], Dys[j_dist_lubr], dists[j_dist_lubr], self.orientations[j_dist_lubr[0]])
             self.Fl_x[j_dist_lubr[0]] += Fl_x
             self.Fl_y[j_dist_lubr[0]] += Fl_y
-            self.Fl_x[j_dist_lubr[1]] -= Fl_x
-            self.Fl_y[j_dist_lubr[1]] -= Fl_y
             self.val[j_dist_lubr[0]] += val1
             self.val[j_dist_lubr[1]] += val2
             # print(f"Fl_x = {self.Fl_x}")
