@@ -6,13 +6,16 @@ from vicsek import Vicsek_continous
 from plot import plot_sim_nsquirmers, create_video_from_history, plot_time
 
 def sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, Do, no, border, sim_bord, filename, border_plot, dir='graphs'):
-    #border : False or True to plot the borders
-    #sim_border : False or True, if True it does the simulation with one squirmer and one border
+    #border : False to simulate a channel and True to simulate a box
+    #border_plot : False or True to plot the borders
+    #sim_bord : False or True, if True it does the simulation with one squirmer and one border
     interact = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, Do, no, border)
     history = interact.loop_time()
-    plot_time(interact, interact.vector_dists_min, "min_dist_" + filename, 'minimal distance', dir)
-    plot_time(interact, interact.list_polar, "polar_" + filename, 'polar parameter', dir)
-    plot_time(interact, interact.list_cluster_param, "cluster_" + filename, 'clustering order parameter', dir)
+
+    if sim_bord == False:
+        plot_time(interact, interact.vector_dists_min, "min_dist_" + filename, 'minimal distance', dir)
+        plot_time(interact, interact.list_polar, "polar_" + filename, 'polar parameter', dir)
+        plot_time(interact, interact.list_cluster_param, "cluster_" + filename, 'clustering order parameter', dir)
 
     plot_sim_nsquirmers(history, Nx, Ny, N, a, border_plot, sim_bord, filename=filename, dir=dir)
 

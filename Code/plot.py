@@ -49,7 +49,10 @@ def plot_sim_nsquirmers(histories, Nx, Ny, N, a, border, sim_border, filename, d
 
     nb_pixl_fig = fig.get_size_inches()[1]*fig.dpi
     radius_scatter = nb_pixl_fig/(2*Ny/a)
-    s = radius_scatter
+    if sim_border == True:
+        s = radius_scatter**2
+    else:
+        s = radius_scatter
     scale_arrow = 15
     w = 0.005
 

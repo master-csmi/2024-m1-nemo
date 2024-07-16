@@ -71,14 +71,17 @@ def main(simulation, N, filename):
     elif simulation == 'plot':
         sim_interacting_squirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, Do, no, border, False, filename, border_plot, dir='graphs')
     elif simulation == 'border':
+        a = 0.05
         xs = [-0.4]
         ys = [-0.7]
         orient = [[-np.pi/6], [-np.pi/4], [-np.pi/3], [-np.pi/2]] 
         N = 1
         sim_border = True
+        T = 0.7
+        v0 = 1
         for i, pi in enumerate(orient):
             filename = 'sim_num_' + str(i)
-            sim_interacting_squirmers(N, xs, ys, pi, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, Do, no, border, sim_border, filename, border_plot, dir='graphs/border')
+            sim_interacting_squirmers(N, xs, ys, pi, a, beta, v0, 0.5, 1, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, Do, no, border, sim_border, filename, border_plot, dir='graphs/border')
     elif simulation == 'Eo_sim':
         sim_Eo_param(Eo, a, v0, dt, dt_out, T, Es, ds, mu, lnEps_cr, Do, no, border, border_plot)
     elif simulation == 'vicsek':
