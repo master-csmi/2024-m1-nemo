@@ -5,6 +5,7 @@
 \usepackage{mathtools}
 \usepackage{tikz}
 \usepackage{subcaption}
+\usepackage{float}
 
 \begin{document}
 \title{Collective motion of squirmers in confined environments}
@@ -131,8 +132,7 @@ When called, the class initializes $N$ particles with random position and orient
 
 \newpage
 \section{InteractingSquirmers}
-This internship is a continuation and an improvement of the project done during the first year of Master.
-The goal is to study the interactions and collective behaviors of squirmers.\\
+During this section the improvements to the code and the simulations will be explained.\\
 
 \subsection{$E_0$ parameter}
 The first thing done during the internship was to study the effect of the $E_0$ parameter on the alignment of the squirmers.\\
@@ -146,7 +146,7 @@ and modify the \texttt{Code/run.py} file with the parameters one wants to test,
  a simulation is done and the resulting graphs or videos are stored in the \texttt{graphs} or \texttt{videos} 
  directory depending on one's choice.\\
 
-\subsubsection*{Evolution of orientation}
+\subsubsection{Evolution of orientation}
 The evolution of the orientation of one squirmer is given by : 
 $$
 \frac{d \theta_i}{dt} = \sum \Gamma_{ij->i} + \sum \Gamma_{ji->i} +  \Gamma_{i}^W.
@@ -171,16 +171,40 @@ $$
 We want to study the effect of $E_0$ on the alignment of squirmers in an open environment so $\Gamma_{i}^W$, which is the torque 
 exerted by a wall on the squirmer, is not used.
 
-\subsubsection*{Numerical Experiments}
-The simulations are done with two squirmers of radius $a=0.05$, velocity $v_0=1$, viscosity $\mu = 1$, $\beta$ varying from $\beta_1 = 0$,
- $\beta_2 = -7.5$ and $\beta_3 = 7.5$, orientation $\theta$ varying between the major orientations of the unit circle.\\
+\subsubsection{Numerical Experiments}
+The simulations are done with two squirmers placed at coordinates $(x_1, y_1) = (-a, 0)$ and $(x_2, y_2) = (\frac{2a}{1.5}, 0)$ with radius $a=0.05$, velocity $v_0=1$, viscosity $\mu = 1$, $\beta$ varying from $\beta_1 = 0$,
+ $\beta_2 = -7.5$ and $\beta_3 = 7.5$, orientation $\theta_1 = \frac{\pi}{2}$ and $\theta_2$ varying between the major orientations of the unit circle.\\
  The value chosen for the $E_0$ parameter are chosen from the previous studies or to test the impact of larger values on the squirmers, such as:
  $$
- E_{0_{1}} = \frac{3}{10}\frac{v_0}{a}, E_{0_{2}} = \frac{16}{10}\mu\pi a^2 \cite{Brumley} \, E_{0_{3}} = \frac{-3}{2}\frac{v_0}{a} \cite{Lauga},
+ E_{0_{1}} = \frac{3}{10}\frac{v_0}{a}, E_{0_{2}} = \frac{8}{5}\mu\pi a^2 \cite{Brumley}, E_{0_{3}} = \frac{-3}{2}\frac{v_0}{a} \cite{Lauga},
  E_{0_{4}} = -E_{0_{1}}, E_{0_{5}} = -5$$
  $$
  E_{0_{6}} = \frac{5}{1000}, E_{0_{7}} = -2, E_{0_{8}} = -\frac{1}{2}, E_{0_{9}} = -E_{0_{8}}
  $$
+The focus is for $\theta_2 = \pi$ and $\theta_2 = \frac{3\pi}{4}$ as the interactions are the biggest when the two squirmers are about to collide.
+\begin{figure}[H]
+    \centering
+    \textbf{$\beta_1$ and $\theta_2 = \pi$}\par\medskip
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1\textwidth]{graphs/Eo_analysis/beta0/pi_/pi_Eo_brumley.png}
+        \caption{\footnotesize Simulation parameters: $a=0.05$, $v_0=1$, $\beta_1=0$, $\mu=1$ and $E_{0_{2}}=\frac{8}{5}\mu\pi a^2$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1\textwidth]{graphs/Eo_analysis/beta0/pi_/pi_Eo_init.png}
+        \caption{\footnotesize Simulation parameters: $a=0.05$, $v_0=1$, $\beta_1=0$, $\mu=1$ and $E_{0_{1}}=\frac{3}{10}\frac{v_0}{a}$}
+    \end{minipage}
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1\textwidth]{graphs/Eo_analysis/beta0/pi_/pi_m2.png}
+        \caption{\footnotesize Simulation parameters: $a=0.05$, $v_0=1$, $\beta_1=0$, $\mu=1$ and $E_{0_{7}}=-2$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1\textwidth]{graphs/Eo_analysis/beta0/pi_/pi_m5.png}
+        \caption{\footnotesize Simulation parameters: $a=0.05$, $v_0=1$, $\beta_1=0$, $\mu=1$ and $E_{0_{5}}=-5$}
+    \end{minipage}
+    position and orientation of squirmer1: $(x1,y1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$\\
+    position and orientation of squirmer2: $(x2,y2)=(\frac{2a}{1.5},0)$, $\theta_2=\pi$\\
+    The arrows shows when the orientations of the squirmers are affected and a circle is plotted every four time the orientation of a squirmer is affected
+\end{figure}
 
 \subsection{N squirmers}
 The first step was to modify the code done during the initial project to simulate the behavior of $N$ squirmers.
