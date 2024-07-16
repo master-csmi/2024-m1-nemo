@@ -134,15 +134,15 @@ When called, the class initializes $N$ particles with random position and orient
 This internship is a continuation and an improvement of the project done during the first year of Master.
 The goal is to study the interactions and collective behaviors of squirmers.\\
 
-\subsection{Eo parameter}
-The first thing done during the internship was to study the effect of the $Eo$ parameter on the alignment of the squirmers.\\
+\subsection{$E_0$ parameter}
+The first thing done during the internship was to study the effect of the $E_0$ parameter on the alignment of the squirmers.\\
 One can see the simulations done and their resulting graphs in the \texttt{graphs/Eo\_analysis} and \texttt{videos/Eo\_analysis} directories.\\
 One also can type:
 \begin{verbatim}
     python3 Code/run.py Eo_sim 2 filename
 \end{verbatim}
 and modify the \texttt{Code/run.py} file with the parameters one wants to test,
- then for each $Eo$ in \texttt{Code/run.py} and each $orient2$ and $betas$ in \texttt{sim\_Eo\_param} in \texttt{Code/simulation.py}, 
+ then for each $E_0$ in \texttt{Code/run.py} and each $orient2$ and $betas$ in \texttt{sim\_Eo\_param} in \texttt{Code/simulation.py}, 
  a simulation is done and the resulting graphs or videos are stored in the \texttt{graphs} or \texttt{videos} 
  directory depending on one's choice.\\
 
@@ -163,24 +163,31 @@ and
 $$
 \Gamma_{ji->i} = \frac{1}{4}E_0(1 + \beta_j e_{ji})(-\ln\epsilon)\hat{e}_{ji}\times \hat{e}_j \cite{Lauga}
 $$
-with $\hat{e}_{ij} = \frac{(x_j - x_i)}{||x_j - x_i||}$, $e_{ij} = \hat{e}_i\cdot \hat{e}_{ij}$ and $Eo$ the parameter to test.\\ 
+with $\hat{e}_{ij} = \frac{(x_j - x_i)}{||x_j - x_i||}$, $e_{ij} = \hat{e}_i\cdot \hat{e}_{ij}$ and $E_0$ the parameter to test.\\ 
 For squirmers having the same $\beta$ parameter we note the following relation:
 $$
 \Gamma_{ji->i} = \frac{1}{4}\Gamma_{ij->i}
 $$
-We want to study the effect of $E_0$ on the alignment of squirmers so $\Gamma_{i}^W$, which is the torque 
-exerted by a wall on the squirmer, will be ignored.
+We want to study the effect of $E_0$ on the alignment of squirmers in an open environment so $\Gamma_{i}^W$, which is the torque 
+exerted by a wall on the squirmer, is not used.
 
 \subsubsection*{Numerical Experiments}
-The simulation are done with two squirmers of radius $a=0.05$, velocity $v_0=1$, $\beta$ varying from $\beta_1 = 0$,
- $\beta_2 = -7.5$ and $\beta_3 = 7.5$, orientation $\theta$ varying 
+The simulations are done with two squirmers of radius $a=0.05$, velocity $v_0=1$, viscosity $\mu = 1$, $\beta$ varying from $\beta_1 = 0$,
+ $\beta_2 = -7.5$ and $\beta_3 = 7.5$, orientation $\theta$ varying between the major orientations of the unit circle.\\
+ The value chosen for the $E_0$ parameter are chosen from the previous studies or to test the impact of larger values on the squirmers, such as:
+ $$
+ E_{0_{1}} = \frac{3}{10}\frac{v_0}{a}, E_{0_{2}} = \frac{16}{10}\mu\pi a^2 \cite{Brumley} \, E_{0_{3}} = \frac{-3}{2}\frac{v_0}{a} \cite{Lauga},
+ E_{0_{4}} = -E_{0_{1}}, E_{0_{5}} = -5$$
+ $$
+ E_{0_{6}} = \frac{5}{1000}, E_{0_{7}} = -2, E_{0_{8}} = -\frac{1}{2}, E_{0_{9}} = -E_{0_{8}}
+ $$
 
 \subsection{N squirmers}
 The first step was to modify the code done during the initial project to simulate the behavior of $N$ squirmers.
 
 \newpage
 
-% \nocite{*}
-% \bibliographystyle{plain}
-% \bibliography{/bibliography/biblio}
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{bibliography/biblio}
 \end{document}

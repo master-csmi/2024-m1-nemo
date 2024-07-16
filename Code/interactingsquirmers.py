@@ -227,16 +227,16 @@ class InteractingSquirmers:
             if dist_nz.size > 0:
                 min_dist = np.min(dist_nz - 2*a)
                 self.vector_dists_min.append(min_dist)
-                if min_dist < 0:
-                    print(f"min_dist = {min_dist}")
-                    print(f"t_min_dist <0 = {t}")
-                    indices_min = np.argwhere((dist - 2 * a) == min_dist)
+                # if min_dist < 0:
+                #     print(f"min_dist = {min_dist}")
+                #     print(f"t_min_dist <0 = {t}")
+                #     indices_min = np.argwhere((dist - 2 * a) == min_dist)
     
-                    for idx in indices_min:
-                        idx_squirm1 = idx[0]
-                        idx_squirm2 = idx[1]
-                        print(f"Squirmer1: x={self.xs[idx_squirm1]}, y={self.ys[idx_squirm1]}")
-                        print(f"Squirmer2: x={self.xs[idx_squirm2]}, y={self.ys[idx_squirm2]}")
+                #     for idx in indices_min:
+                #         idx_squirm1 = idx[0]
+                #         idx_squirm2 = idx[1]
+                #         print(f"Squirmer1: x={self.xs[idx_squirm1]}, y={self.ys[idx_squirm1]}")
+                #         print(f"Squirmer2: x={self.xs[idx_squirm2]}, y={self.ys[idx_squirm2]}")
 
             dist_steric = (dists<self.ds)&(dists!=0)
             dist_lubrification = (dists<=3*a)&(dists!=0)
@@ -244,7 +244,7 @@ class InteractingSquirmers:
             j_dist_lubr = np.where(dist_lubrification)
 
             #Steric Forces
-            print(f"Dxs = {Dxs}\n Dys = {Dys}\n dists = {dists}")
+            # print(f"Dxs = {Dxs}\n Dys = {Dys}\n dists = {dists}")
             Fs_x, Fs_y = self.forcesSteric(Dxs[dist_steric], Dys[dist_steric], dists[dist_steric])
             # print(f"Fs_x = {Fs_x} and shape = {Fs_x.shape}")
             # print(f"self_Fs_x = {self.Fs_x[j_dist_steric[0]]}")

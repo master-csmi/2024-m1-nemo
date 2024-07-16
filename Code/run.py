@@ -76,6 +76,7 @@ def main(simulation, N, filename):
         orient = [[-np.pi/6], [-np.pi/4], [-np.pi/3], [-np.pi/2]] 
         N = 1
         sim_border = True
+        T = 0.7
         for i, pi in enumerate(orient):
             filename = 'sim_num_' + str(i)
             sim_interacting_squirmers(N, xs, ys, pi, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eo[0][0], lnEps_cr, Do, no, border, sim_border, filename, border_plot, dir='graphs/border')
