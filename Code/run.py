@@ -30,7 +30,7 @@ def main(simulation, N, filename):
     #periodicity of outputs
     dt_out = 0.05
     #viscovity parameter
-    mu = 0.1
+    mu = 10
     #amplitude of orientational interactions
     #Eo[0] = Eoinitial, E[1] = Eobrumley, E[2] = Eolauga
     Eo = [(((3./10.)*v0/a), "Eo_init"), ((16/10)*mu*np.pi*a**2, "Eo_brumley"), ((-3./2.)*(v0/a), "Eo_lauga"),
@@ -39,7 +39,7 @@ def main(simulation, N, filename):
     #distance of steric interactions
     ds = 2**(7./6)*a
     #angular diffusivity
-    Do = 2
+    Do = 0
     #angular noise
     no = 1e-2
     #Distance of particle seen as "Neighbour"
