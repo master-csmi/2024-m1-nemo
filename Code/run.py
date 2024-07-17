@@ -10,7 +10,7 @@ def main(simulation, N, filename):
     v0 = 0.3
     #length x and y axis
     lbda = 2
-    Ly = 2
+    Ly = 3
     Lx = lbda*Ly
     #half of the length of axis
     Nx = Lx/2
@@ -26,11 +26,11 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 0.5
     #simulation time
-    T = 100
+    T = 5
     #periodicity of outputs
-    dt_out = 0.05
+    dt_out = 0.01
     #viscovity parameter
-    mu = 10
+    mu = 0.1
     #amplitude of orientational interactions
     #Eo[0] = Eoinitial, E[1] = Eobrumley, E[2] = Eolauga
     Eo = [(((3./10.)*v0/a), "Eo_init"), ((16/10)*mu*np.pi*a**2, "Eo_brumley"), ((-3./2.)*(v0/a), "Eo_lauga"),

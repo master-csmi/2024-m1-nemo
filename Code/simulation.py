@@ -28,7 +28,7 @@ def sim_vid_interact_sq(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, 
     plot_time(interact_sq, interact_sq.list_cluster_param, "cluster_" + filename, 'clustering order parameter', dir)
     print(f"Mean polar order = {np.mean(interact_sq.list_polar)}")
 
-    # create_video_from_history(history, Nx, Ny, N, a, filename=filename, dir=dir)
+    create_video_from_history(history, Nx, Ny, N, a, filename=filename, dir=dir)
 
 def sim_Eo_param(Eo, a, v0, dt, dt_out, T, Es, ds, mu, lnEps_cr, Do, no, border, border_plot):
     betas = [(0, "beta0"), (-7.5, "betainf"), (7.5, "betasup")]

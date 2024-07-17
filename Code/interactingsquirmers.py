@@ -73,8 +73,8 @@ class InteractingSquirmers:
         return Dx, Dy, np.sqrt(Dx**2 + Dy**2)
     
     def distance_all(self):
-        Dxs = self.xs - self.xs[:, None]
-        Dys = self.ys - self.ys[:, None]
+        Dxs = self.xs[:, None] - self.xs
+        Dys = self.ys[:, None] - self.ys
         dists = np.sqrt(Dxs**2 + Dys**2)
         return Dxs, Dys, dists
     
@@ -89,7 +89,7 @@ class InteractingSquirmers:
 
         Vc = np.minimum(a/dists, 0.5)
 
-        tmp = -3*(self.Es/a)*(2*(2*Vc)**13-(2*Vc)**7)/np.sqrt(dists)
+        tmp = -3*(self.Es/(6*np.pi*self.mu*a))*(2*(2*Vc)**13-(2*Vc)**7)/np.sqrt(dists)
         Fs_x = tmp*Dxs
         Fs_y = tmp*Dys
         return Fs_x, Fs_y
@@ -137,13 +137,13 @@ class InteractingSquirmers:
     
     def compute_force_squirmer_border_x(self, xs, ys):
         RRi = np.sqrt((xs - self.Nx)**2 + (ys - self.Ny)**2)
-        tmp = -6*((self.Es*(self.Nx - xs))/(self.radius*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
-        return -tmp*xs
+        tmp = -6*((self.Es*(self.Nx - xs))/(6*np.pi*self.mu*self.radius*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
+        return tmp*xs
     
     def compute_force_squirmer_border_y(self, xs, ys):
         RRi = np.sqrt((xs - self.Nx)**2 + (ys - self.Ny)**2)
-        tmp = -6*((self.Es*(self.Ny - ys))/(self.radius*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
-        return -tmp*ys
+        tmp = -6*((self.Es*(self.Ny - ys))/(6*np.pi*self.mu*self.radius*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
+        return tmp*ys
 
     def compute_torque_squirmer_border(self, xs, ys, orientations):
         Dy = self.Ny-abs(ys)
@@ -165,16 +165,65 @@ class InteractingSquirmers:
         
         return gamma_w
     
+    def force_lubrification_border_x(self, xs, theta, border):
+        B1 = self.B1
+        B2 = self.B2
+        a = self.radius
+
+        if border == 1:
+            #border = 1 for right border
+            Dx = self.Nx - xs
+        else:
+            #else for left border
+            Dx = -self.Nx - xs
+        Dy = 0
+        dist = np.sqrt(Dx**2 + Dy**2)
+
+        eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
+        cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
+
+        sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
+        somme = B1 * sinalpha + B2 * cosalpha*sinalpha
+        lnEps = np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
+        
+        #lambda=1
+        F_x = -(16/5) * np.pi * self.mu * a * eieijt * somme * lnEps * Dx
+        return F_x
+    
+    def force_lubrification_border_y(self, ys, theta, border):
+        B1 = self.B1
+        B2 = self.B2
+        a = self.radius
+        if border == 1:
+            #border = 1 for upper wall
+            Dy = self.Ny - ys
+        else:
+            #else for lower wall
+            Dy = -self.Ny - ys
+        Dx = 0
+        dist = np.sqrt(Dx**2 + Dy**2)
+
+        eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
+        cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
+
+        sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
+        sommeFz = B1 * sinalpha * cosalpha - (1/2)*B1 * cosalpha * eieijt**2 + B2 * sinalpha * cosalpha**2 - (1/2)*B2 * (2*cosalpha**2-1) * eieijt**2
+        lnEps = np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
+        
+        #lambda=1
+        F_y = -9 * self.mu * np.pi*a*(1/4)*sommeFz* lnEps * Dy
+        return F_y
+
     #Reflective boundary condition
     def ref_border_x(self, xs, orientation, boundary):
         orientation = np.pi - orientation
         if boundary == 1:
             #1 for the right border
             diff = xs + self.radius - self.Nx
-            xs = self.Nx - diff
+            xs = self.Nx - diff - self.radius
         else:
             diff = xs - self.radius + self.Nx
-            xs = -self.Nx + diff
+            xs = -self.Nx - diff + self.radius
 
         return xs, orientation
     
@@ -261,6 +310,8 @@ class InteractingSquirmers:
             val1, val2 = self.torquesLubrification(Dxs[j_dist_lubr], Dys[j_dist_lubr], dists[j_dist_lubr], self.orientations[j_dist_lubr[0]])
             self.Fl_x[j_dist_lubr[0]] += Fl_x
             self.Fl_y[j_dist_lubr[0]] += Fl_y
+            self.Fl_x[j_dist_lubr[1]] -= Fl_x
+            self.Fl_y[j_dist_lubr[1]] -= Fl_y
             self.val[j_dist_lubr[0]] += val1
             self.val[j_dist_lubr[1]] += val2
             # print(f"Fl_x = {self.Fl_x}")
@@ -273,27 +324,41 @@ class InteractingSquirmers:
             dist_forces_x = (self.Nx-abs(self.xs)) < 2**(1/6)*a
             dist_forces_y = (self.Ny-abs(self.ys)) < 2**(1/6)*a
 
-            dist_torques_x = (self.Nx-abs(self.xs)) < 2*a
-            dist_torques_y = (self.Ny-abs(self.ys)) < 2*a
+            dist_lub_x = (self.Nx-abs(self.xs)) < 2*a
+            dist_lub_y = (self.Ny-abs(self.ys)) < 2*a
 
             #If we simulate in a box
             if self.border:
                 i_dist_force_x = np.where(dist_forces_x)[0]
-                i_dist_torque_x = np.where(dist_torques_x)[0]
+                i_dist_lub_x = np.where(dist_lub_x)[0]
                 self.Fs_pw[0][i_dist_force_x] += self.compute_force_squirmer_border_x(self.xs[i_dist_force_x], self.ys[i_dist_force_x])
-                self.gamma_w[i_dist_torque_x] += self.compute_torque_squirmer_border(self.xs[i_dist_torque_x], self.ys[i_dist_torque_x], self.orientations[i_dist_torque_x])
+                self.gamma_w[i_dist_lub_x] += self.compute_torque_squirmer_border(self.xs[i_dist_lub_x], self.ys[i_dist_lub_x], self.orientations[i_dist_lub_x])
+
+                i_dist_lub_x_r = i_dist_lub_x[self.xs[i_dist_lub_x] > 0]
+                i_dist_lub_x_l = i_dist_lub_x[self.xs[i_dist_lub_x] < 0]
+                Fl_xr = self.force_lubrification_border_x(self.xs[i_dist_lub_x_r], self.orientations[i_dist_lub_x_r], 1)
+                Fl_xl = self.force_lubrification_border_x(self.xs[i_dist_lub_x_l], self.orientations[i_dist_lub_x_l], 2)
+                self.Fl_x[i_dist_lub_x_r] += Fl_xr
+                self.Fl_x[i_dist_lub_x_l] += Fl_xl
 
             i_dist_force_y = np.where(dist_forces_y)[0]
-            i_dist_torque_y = np.where(dist_torques_y)[0]
+            i_dist_lub_y = np.where(dist_lub_y)[0]
             self.Fs_pw[1][i_dist_force_y] += self.compute_force_squirmer_border_y(self.xs[i_dist_force_y], self.ys[i_dist_force_y])
-            self.gamma_w[i_dist_torque_y] += self.compute_torque_squirmer_border(self.xs[i_dist_torque_y], self.ys[i_dist_torque_y], self.orientations[i_dist_torque_y])
+            self.gamma_w[i_dist_lub_y] += self.compute_torque_squirmer_border(self.xs[i_dist_lub_y], self.ys[i_dist_lub_y], self.orientations[i_dist_lub_y])
+
+            i_dist_lub_y_u = i_dist_lub_y[self.ys[i_dist_lub_y] > 0]
+            i_dist_lub_y_d = i_dist_lub_y[self.ys[i_dist_lub_y] < 0]
+            Fl_yu = self.force_lubrification_border_y(self.ys[i_dist_lub_y_u], self.orientations[i_dist_lub_y_u], 1)
+            Fl_yd = self.force_lubrification_border_y(self.ys[i_dist_lub_y_d], self.orientations[i_dist_lub_y_d], 2)
+            self.Fl_y[i_dist_lub_y_u] += Fl_yu
+            self.Fl_y[i_dist_lub_y_d] += Fl_yd
 
             # print(self.val)
 
             #Evolution of position
             self.orientations += self.dt*(self.val + self.gamma_w) + np.sqrt(2*self.dt*self.Do)*self.nos
-            self.xs += self.dt*(self.v0*np.cos(self.orientations) + self.Fs_x + self.Fl_x + self.Fs_pw[0])
-            self.ys += self.dt*(self.v0*np.sin(self.orientations) + self.Fs_y + self.Fl_y + self.Fs_pw[1])
+            self.xs += self.dt*(self.v0*np.cos(self.orientations) - self.Fs_x - self.Fs_pw[0] + self.Fl_x) + np.sqrt(2*self.dt*self.Do)*self.nos
+            self.ys += self.dt*(self.v0*np.sin(self.orientations) - self.Fs_y - self.Fs_pw[1] + self.Fl_y) + np.sqrt(2*self.dt*self.Do)*self.nos
 
             #Borders
             mask_x1 = (self.xs + a) > self.Nx
