@@ -125,7 +125,7 @@ class InteractingSquirmers:
 
         sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
         somme = B1 * sinalpha + B2 * cosalpha*sinalpha
-        sommeFz = B1 * sinalpha * cosalpha - (1/2)*B1 * cosalpha * eieijt**2 + B2 * sinalpha * cosalpha**2 - (1/2)*B2 * (2*cosalpha**2-1) * eieijt**2
+        sommeFz = B1 * sinalpha * cosalpha + (1/2)*B1 * cosalpha * eieijt**2 + B2 * sinalpha * cosalpha**2 + (1/2)*B2 * (2*cosalpha**2-1) * eieijt**2
 
         lnEps = np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
         
@@ -144,28 +144,8 @@ class InteractingSquirmers:
         RRi = np.sqrt((xs - self.Nx)**2 + (ys - self.Ny)**2)
         tmp = -6*((self.Es*(self.Ny - ys))/(6*np.pi*self.mu*self.radius*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
         return tmp*ys
-
-    def compute_torque_squirmer_border(self, xs, ys, orientations):
-        Dy = self.Ny-abs(ys)
-        Dx = self.Nx-abs(xs)
-        dist = np.sqrt(Dx**2 + Dy**2)
-        theta = orientations
-        B1 = self.B1
-        B2 = self.B2
-        a = self.radius
-
-        eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
-        cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
-
-        sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
-        somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
-        lnEps = np.log(np.maximum(self.lnEps_cr,((dist-2*a)/a - 2)))
-
-        gamma_w = (16/5)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
-        
-        return gamma_w
     
-    def force_lubrification_border_x(self, xs, theta, border):
+    def force_torque_lubrification_border_x(self, xs, theta, border):
         B1 = self.B1
         B2 = self.B2
         a = self.radius
@@ -188,9 +168,10 @@ class InteractingSquirmers:
         
         #lambda=1
         F_x = -(16/5) * np.pi * self.mu * a * eieijt * somme * lnEps * Dx
-        return F_x
+        gamma_w = (16/5)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
+        return F_x, gamma_w
     
-    def force_lubrification_border_y(self, ys, theta, border):
+    def force_torque_lubrification_border_y(self, ys, theta, border):
         B1 = self.B1
         B2 = self.B2
         a = self.radius
@@ -207,12 +188,14 @@ class InteractingSquirmers:
         cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
 
         sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
-        sommeFz = B1 * sinalpha * cosalpha - (1/2)*B1 * cosalpha * eieijt**2 + B2 * sinalpha * cosalpha**2 - (1/2)*B2 * (2*cosalpha**2-1) * eieijt**2
+        somme = B1 * sinalpha + B2 * cosalpha*sinalpha
+        sommeFz = B1 * sinalpha * cosalpha + (1/2)*B1 * cosalpha * eieijt**2 + B2 * sinalpha * cosalpha**2 + (1/2)*B2 * (2*cosalpha**2-1) * eieijt**2
         lnEps = np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
         
         #lambda=1
         F_y = -9 * self.mu * np.pi*a*(1/4)*sommeFz* lnEps * Dy
-        return F_y
+        gamma_w = (16/5)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
+        return F_y, gamma_w
 
     #Reflective boundary condition
     def ref_border_x(self, xs, orientation, boundary):
@@ -320,7 +303,7 @@ class InteractingSquirmers:
             #Noise
             self.nos = np.random.uniform(-self.no/2, self.no/2, size=self.N)
 
-            #Force between a squirmer and a border
+            #Forces and torques between a squirmer and a border
             dist_forces_x = (self.Nx-abs(self.xs)) < 2**(1/6)*a
             dist_forces_y = (self.Ny-abs(self.ys)) < 2**(1/6)*a
 
@@ -332,26 +315,27 @@ class InteractingSquirmers:
                 i_dist_force_x = np.where(dist_forces_x)[0]
                 i_dist_lub_x = np.where(dist_lub_x)[0]
                 self.Fs_pw[0][i_dist_force_x] += self.compute_force_squirmer_border_x(self.xs[i_dist_force_x], self.ys[i_dist_force_x])
-                self.gamma_w[i_dist_lub_x] += self.compute_torque_squirmer_border(self.xs[i_dist_lub_x], self.ys[i_dist_lub_x], self.orientations[i_dist_lub_x])
 
                 i_dist_lub_x_r = i_dist_lub_x[self.xs[i_dist_lub_x] > 0]
                 i_dist_lub_x_l = i_dist_lub_x[self.xs[i_dist_lub_x] < 0]
-                Fl_xr = self.force_lubrification_border_x(self.xs[i_dist_lub_x_r], self.orientations[i_dist_lub_x_r], 1)
-                Fl_xl = self.force_lubrification_border_x(self.xs[i_dist_lub_x_l], self.orientations[i_dist_lub_x_l], 2)
+                Fl_xr, gamma_wr = self.force_torque_lubrification_border_x(self.xs[i_dist_lub_x_r], self.orientations[i_dist_lub_x_r], 1)
+                Fl_xl, gamma_wl = self.force_torque_lubrification_border_x(self.xs[i_dist_lub_x_l], self.orientations[i_dist_lub_x_l], 2)
                 self.Fl_x[i_dist_lub_x_r] += Fl_xr
                 self.Fl_x[i_dist_lub_x_l] += Fl_xl
+                self.gamma_w[i_dist_lub_x_r] += gamma_wr
+                self.gamma_w[i_dist_lub_x_l] += gamma_wl
 
             i_dist_force_y = np.where(dist_forces_y)[0]
             i_dist_lub_y = np.where(dist_lub_y)[0]
             self.Fs_pw[1][i_dist_force_y] += self.compute_force_squirmer_border_y(self.xs[i_dist_force_y], self.ys[i_dist_force_y])
-            self.gamma_w[i_dist_lub_y] += self.compute_torque_squirmer_border(self.xs[i_dist_lub_y], self.ys[i_dist_lub_y], self.orientations[i_dist_lub_y])
-
             i_dist_lub_y_u = i_dist_lub_y[self.ys[i_dist_lub_y] > 0]
             i_dist_lub_y_d = i_dist_lub_y[self.ys[i_dist_lub_y] < 0]
-            Fl_yu = self.force_lubrification_border_y(self.ys[i_dist_lub_y_u], self.orientations[i_dist_lub_y_u], 1)
-            Fl_yd = self.force_lubrification_border_y(self.ys[i_dist_lub_y_d], self.orientations[i_dist_lub_y_d], 2)
+            Fl_yu, gamma_wu = self.force_torque_lubrification_border_y(self.ys[i_dist_lub_y_u], self.orientations[i_dist_lub_y_u], 1)
+            Fl_yd, gamma_wd = self.force_torque_lubrification_border_y(self.ys[i_dist_lub_y_d], self.orientations[i_dist_lub_y_d], 2)
             self.Fl_y[i_dist_lub_y_u] += Fl_yu
             self.Fl_y[i_dist_lub_y_d] += Fl_yd
+            self.gamma_w[i_dist_lub_y_u] += gamma_wu
+            self.gamma_w[i_dist_lub_y_d] += gamma_wd
 
             # print(self.val)
 

@@ -24,7 +24,7 @@ def main(simulation, N, filename):
     #cut-off for -log
     lnEps_cr = a*0.001
     #amplitude of steric interactions
-    Es = 0.5
+    Es = 0.1
     #simulation time
     T = 5
     #periodicity of outputs
