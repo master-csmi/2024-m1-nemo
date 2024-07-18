@@ -311,13 +311,13 @@ In addition, we need to compute $\partial_{R_i} V_i$ to obtain the force applied
     &= \frac{E_s}{6\pi\mu r}\left[ 12(X_{box}-X)\frac{r^{12}}{\lvert R - R_i\rvert^{14}} - 6(X_{box}-X)\frac{r^6}{\lvert R-R_i\rvert^8} \right] \\
     &= -\frac{E_s (X-X_{box})}{\pi\mu r^2 \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right] 
 \end{align*}
-Equivalently, we have : $\frac{\partial V_i}{\partial Y}$ = $ -6 \frac{E_s (Y-Y_{box})}{r \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right]$
+Equivalently, we have : $\frac{\partial V_i}{\partial Y}$ = $ - \frac{E_s (Y-Y_{box})}{\pi\mu r^2 \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right]$
 
 We have : 
 \begin{equation*}
     \boxed{\nabla_{R_i} V_i = \begin{pmatrix}
-        -6 \frac{E_s (X-X_{box})}{r \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right] \\
-        -6 \frac{E_s (Y-Y_{box})}{r \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right]
+        -6 \frac{E_s (X-X_{box})}{\pi\mu r^2 \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right] \\
+        -6 \frac{E_s (Y-Y_{box})}{\pi\mu r^2 \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right]
     \end{pmatrix}}
 \end{equation*}
 
@@ -363,33 +363,33 @@ We have :
 The figure shows the different vectors involved in the computations which will follow.
 \\We define : 
 \begin{itemize}
-    \item $W_n(\mathrm{cos}(\theta))$ = $\frac{2}{n(n+1)}Pn'(\mathrm{cos}(\theta))$ \cite{Brumley}
+    \item $W_n(\mathrm{cos}(\theta))$ = $\frac{2}{n(n+1)}P_n'(\mathrm{cos}(\theta))$ \cite{Brumley}
     \item $P_n(\mathrm{cos}(\theta))$ the Legendre polynomials \cite{Wikipedia}
     \item $e_i.e_{ij} = \mathrm{cos}(\theta)$
     \item $e_i.e^{\perp}_{ij}$ = $\frac{(Y_{R_j} - Y_{R_i})\mathrm{cos}(\theta) - (X_{R_j} - X_{R_i})\mathrm{sin}(\theta)}{\lvert R_{ij} \rvert} $
 \end{itemize}
 
 The tangential lubrification forces acting on the two spheres can be calculated explicitly by :
-\\ $F_z^{S_i}$ = $-9 \mu \pi r \frac{\lambda ^2}{(\lambda +1)^2} \sum_{n} \left[ B_n W_n(e_i.e_{ij})e_i.e_{ij} + \frac{1}{2} B_n W_n'(e_i.e_{ij})(e_i.e^{\perp}_{ij})^2 \right] (ln \epsilon + O(1))$ \cite{Brumley}
+\\ $F_z^{S_i}$ = $-9 \mu \pi r \frac{\lambda ^2}{(\lambda +1)^2} \sum_{n} \left[ B_n W_n(-e_i.e_{ij})e_i.e_{ij} + \frac{1}{2} B_n W_n'(-e_i.e_{ij})(e_i.e^{\perp}_{ij})^2 \right] (ln \epsilon + O(1))$ \cite{Brumley}
 
 For $n$ = 1 : \begin{align*}
-    W_1(\mathrm{cos}(\theta)) &= -\mathrm{sin}(\theta) \\
-    W_1'(\mathrm{cos}(\theta)) &= -\mathrm{cos}(\theta) \\
-    B_1 W_1(\mathrm{cos}(\theta))e_i.e_{ij}+ \frac{1}{2} B_1  W_1'(\mathrm{cos}(\theta)) (e_i.e^{\perp}_{ij})^2  &= -B_1 \mathrm{sin}(\theta)e_i.e_{ij} - \frac{1}{2} B_1  \mathrm{cos}(\theta) (e_i.e^{\perp}_{ij})^2 \\
-    &= -B_1 \mathrm{sin}(\theta)\mathrm{cos}(\theta) - \frac{1}{2} B_1  \mathrm{cos}(\theta) (e_i.e^{\perp}_{ij})^2
+    W_1(\mathrm{-cos}(\theta)) &= \mathrm{sin}(\theta) \\
+    W_1'(\mathrm{-cos}(\theta)) &= \mathrm{cos}(\theta) \\
+    B_1 W_1(\mathrm{-cos}(\theta))e_i.e_{ij}+ \frac{1}{2} B_1  W_1'(\mathrm{-cos}(\theta)) (e_i.e^{\perp}_{ij})^2  &= B_1 \mathrm{sin}(\theta)e_i.e_{ij} + \frac{1}{2} B_1  \mathrm{cos}(\theta) (e_i.e^{\perp}_{ij})^2 \\
+    &= B_1 \mathrm{sin}(\theta)\mathrm{cos}(\theta) + \frac{1}{2} B_1  \mathrm{cos}(\theta) (e_i.e^{\perp}_{ij})^2
 \end{align*} 
 For $n$ = 2 : \begin{align*}
-    W_2(\mathrm{cos}(\theta)) &= -\mathrm{cos}(\theta)\mathrm{sin}(\theta) \\
-    W_2'(\mathrm{cos}(\theta)) &= \mathrm{cos}^2(\theta)+ \mathrm{sin}^2(\theta) = 1\\
-    B_2 W_2(\mathrm{cos}(\theta))e_i.e_{ij}+ \frac{1}{2} B_2  W_2'(\mathrm{cos}(\theta)) (e_i.e_x)^2  &= -B_2 \mathrm{cos}(\theta)e_i.e_{ij} - \frac{1}{2} B_2 (e_i.e^{\perp}_{ij})^2 \\
-    &= -B_2 \mathrm{cos}^2(\theta) - \frac{1}{2} B_2 (e_i.e^{\perp}_{ij})^2
+    W_2(\mathrm{-cos}(\theta)) &= \mathrm{cos}(\theta)\mathrm{sin}(\theta) \\
+    W_2'(\mathrm{-cos}(\theta)) &= 2\mathrm{cos}^2(\theta) - 1\\
+    B_2 W_2(\mathrm{-cos}(\theta))e_i.e_{ij}+ \frac{1}{2} B_2  W_2'(\mathrm{-cos}(\theta)) (e_i.e_x)^2  &= B_2 \mathrm{sin}(\theta)\mathrm{cos}(\theta)e_i.e_{ij} + \frac{1}{2} B_2(2\mathrm{cos}^2(\theta) - 1) (e_i.e^{\perp}_{ij})^2 \\
+    &= B_2 \mathrm{sin}(\theta)\mathrm{cos}^2(\theta) + \frac{1}{2} B_2(2\mathrm{cos}^2(\theta) - 1) (e_i.e^{\perp}_{ij})^2
 \end{align*}  
 
 So :
 \begin{equation*}
 \footnotesize
 \boxed{
-    F_z^{S_i} = -9 \mu \pi r \frac{\lambda ^2}{(\lambda +1)^2} \left[ -B_1 \mathrm{sin}(\theta)\mathrm{cos}(\theta) - \frac{1}{2} B_1  \mathrm{cos}(\theta) (e_i.e^{\perp}_{ij})^2 -B_2 \mathrm{cos}^2(\theta) - \frac{1}{2} B_2 (e_i.e^{\perp}_{ij})^2(e_i.e^{\perp}_{ij})^2\right](ln \epsilon + O(1))}
+    F_z^{S_i} = -9 \mu \pi r \frac{\lambda ^2}{(\lambda +1)^2} \left[ B_1 \mathrm{sin}(\theta)\mathrm{cos}(\theta) + \frac{1}{2} B_1  \mathrm{cos}(\theta) (e_i.e^{\perp}_{ij})^2 +B_2 \mathrm{sin}(\theta)\mathrm{cos}^2(\theta) + \frac{1}{2} B_2(2\mathrm{cos}^2(\theta) - 1) (e_i.e^{\perp}_{ij})^2\right](ln \epsilon + O(1))}
 \end{equation*}
 \normalsize
 \vspace{0.5cm}
@@ -398,7 +398,7 @@ The normal forces acting on the two spheres can be calculated explicitly by : \\
  $F_x^{S_i}$ = $-\frac{4}{5} \mu \pi r \frac{\lambda(\lambda +4)}{(\lambda +1)^2} \sum_{n} B_n W_n(e_i.e_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
 \\ So :
 \begin{equation*}
-    \boxed{F_x^{S_i} = -\frac{4}{5} \mu \pi r \frac{\lambda(\lambda +4)}{(\lambda +1)^2} \left[ -B_1\mathrm{sin}(\theta) -B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta)\right] (ln \epsilon + O(1))}
+    \boxed{F_x^{S_i} = -\frac{4}{5} \mu \pi r \frac{\lambda(\lambda +4)}{(\lambda +1)^2} \left[ B_1\mathrm{sin}(\theta) +B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta)\right] (ln \epsilon + O(1))}
 \end{equation*}
 
 \subsection{The evolution of the orientation}
@@ -412,19 +412,20 @@ $\Gamma_{ij->k}$ is the torque exerted on the $k^\mathrm{th}$ particle by the fl
 \vspace{0.5cm}
 
 The torques acting on the squirmer $i$ can be calculated explicitly by : \\
-$T_y^{S_i}$ = $\frac{16 \lambda}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\sum_{n} B_n W_n(e_i.e_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
+$\Gamma_{ij->i}$ = $\frac{16 \lambda}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\sum_{n} B_n W_n(e_i.e_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
 \\ So :
 \begin{equation*}
-    \boxed{T_y^{S_i} = \frac{16 \lambda}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\left[-B_1\mathrm{sin}(\theta) -B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta) \right] (ln \epsilon + O(1))}
+    \boxed{\Gamma_{ij->i} = \frac{16 \lambda}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\left[B_1\mathrm{sin}(\theta) +B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta) \right] (ln \epsilon + O(1))}
 \end{equation*}
 
 The torques acting on the squirmer $j$ can be calculated explicitly by : \\
-$T_y^{S_j}$ = $\frac{4 \lambda^2}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\sum_{n} B_n W_n(e_i.e_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
+$\Gamma_{ji->i}$ = $\frac{4 \lambda^2}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\sum_{n} B_n W_n(e_i.e_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
 \\ So :
 \begin{equation*}
-    \boxed{T_y^{S_j} = \frac{4 \lambda^2}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\left[-B_1\mathrm{sin}(\theta) -B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta) \right] (ln \epsilon + O(1))}
+    \boxed{\Gamma_{ji->i} = \frac{4 \lambda^2}{5(\lambda +1)} \mu \pi r^2 e_j.e^{\perp}_{ji}\left[B_1\mathrm{sin}(\theta) +B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta) \right] (ln \epsilon + O(1))}
 \end{equation*}
-
+One can note that for two squirmers having the same $\lambda$:
+$$\Gamma_{ji->i} = \frac{1}{4}\Gamma_{ij->i}$$
 
 \section{InteractingSquirmers}
 During this section the improvements to the code and the simulations will be explained.\\
