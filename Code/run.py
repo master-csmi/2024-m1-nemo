@@ -1,5 +1,4 @@
 import argparse
-import numpy as np
 import time
 from interactingsquirmers import run
 from simulation import sim_vicsek
@@ -36,6 +35,8 @@ def main(simulation, N, filename):
     ds = 2**(7./6)*a
     #Translational diffusivity
     D = 0
+    #noise
+    n = 1e-2
     #angular noise
     no = 1e-2
     #Distance of particle seen as "Neighbour"
@@ -47,13 +48,13 @@ def main(simulation, N, filename):
     border_plot = False
 
     if simulation == 'video':
-        run('video', N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, no, border, filename, border_plot)
+        run('video', N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border, filename, border_plot)
     elif simulation == 'plot':
-        run('plot', N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, no, border, filename, border_plot)
+        run('plot', N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border, filename, border_plot)
     elif simulation == 'border':
-        run('border', N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, no, border, filename, border_plot)
+        run('border', N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border, filename, border_plot)
     elif simulation == 'Eo_sim':
-        run('Eo_sim', N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, no, border, filename, border_plot)
+        run('Eo_sim', N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border, filename, border_plot)
     elif simulation == 'vicsek':
         sim_vicsek()
     end_time = time.time()
