@@ -52,10 +52,10 @@ The main goal is to model the dynamics of a group of squirmers within confined e
         \filldraw[color=black, fill=black, very thick](0.1,2.8) circle(0.1);
         \draw[thick, -, color=black!60] (0,0) -- (2,0);
         \node at (1,-0.2) {{$R$}};
-        % Length of the arrow
+        %Length of the arrow
         \pgfmathsetmacro{\len}{sqrt(1.28)}
 
-        % Draw arrows with random directions
+        %Draw arrows with random directions
         \foreach \x/\y in {-1.5/0.2, 0.5/2.3, 2.6/0, -0.2/-1.8, -1.2/-0.4, -2.8/1.5, 0.3/-2.2, 0.1/2.8} {
             \pgfmathsetmacro{\angle}{random()*360}
             \draw[thick, ->, color=green] (\x,\y) -- ++({\len*cos(\angle)},{\len*sin(\angle)});
@@ -261,22 +261,24 @@ Thus, $u$ in cartesian coordinates is given by :
 The evolution of the mass center $R_i$ = $(X_i, Y_i)$ of one squirmer $i$ in presence of 
 another squirmer $j$ and rigid boundaries, is given by :
 \begin{center}
-$\boxed{\frac{dR_i}{dt}$ = $v_0 p_i -  \nabla_{R_{ij}} V_{ij} - \partial_{R_i} V_i + F^{hydro}}$
+$\boxed{\frac{dR_i}{dt}$ = $v_0 p_i -  \nabla_{R_{ij}} V_{ij} - \partial_{R_i} V_i + F^{hydro} + \sqrt{2D}\eta_i(t)}$
 \end{center}
 We have : \begin{itemize}
     \item $v_0$ the particle swimming velocity,
     \item $p_i$ = $(\mathrm{cos}(\theta),\mathrm{sin}(\theta))$ orientation,
     \item $F^{hydro}$ the lubrification forces given by Brumley\cite{Brumley},
-    \item $V_{ij}$ and $V_i$, Weeks-Chandler-Andersen potential : repulsive steric force avoiding the overlapping of two squirmers or of one squirmer and a rigid boundary. The force is activated when the distance between two surfaces is small.
+    \item $V_{ij}$ and $V_i$, Weeks-Chandler-Andersen potential : repulsive steric force avoiding the overlapping of two squirmers or of one squirmer and a rigid boundary. The force is activated when the distance between two surfaces is small,
+    \item $D$ the translational diffusivity
+    \item $\eta_i$'s are independent noises. 
 \end{itemize} 
 \vspace{0,5cm}
-$V_{ij}$ = $\frac{E_s}{6\pi\mu a}\left[\left(\frac{2r}{\lvert R_{ij}\rvert}\right)^{12} - \left(\frac{2r}{\lvert R_{ij}\rvert}\right)^6\right]$ and  $V_i$ = $\frac{E_s}{6\pi\mu a} \left[ \left( \frac{r}{\lvert R - R_i \rvert} \right)^{12} - \left( \frac{r}{\lvert R - R_i \rvert} \right) ^6 \right]$ 
+$V_{ij}$ = $\frac{E_s}{6\pi\mu r}\left[\left(\frac{2r}{\lvert R_{ij}\rvert}\right)^{12} - \left(\frac{2r}{\lvert R_{ij}\rvert}\right)^6\right]$ and  $V_i$ = $\frac{E_s}{6\pi\mu r} \left[ \left( \frac{r}{\lvert R - R_i \rvert} \right)^{12} - \left( \frac{r}{\lvert R - R_i \rvert} \right) ^6 \right]$ 
 \vspace{0,3cm}
 \\With : \begin{itemize}
     \item $R_{ij}$ = $\sqrt{D_x^2+D_y^2}$, $\lvert R_{ij} \rvert$ the distance between the centers of two squirmers,
     \item $\lvert R - R_i\rvert$ the distance between the wall and the squirmer center,
     \item $E_s$ a positive constant,
-    \item $a$ the radius of a squirmer,
+    \item $r$ the radius of a squirmer,
     \item $\mu$ the dynamic viscosity.
 \end{itemize}
 
@@ -394,21 +396,36 @@ So :
 \normalsize
 \vspace{0.5cm}
 
-The normal forces acting on the two spheres can be calculated explicitly by : \\
+The normal forces acting on the two spheres can be calculated explicitly by: \\
  $F_x^{S_i}$ = $-\frac{4}{5} \mu \pi r \frac{\lambda(\lambda +4)}{(\lambda +1)^2} \sum_{n} B_n W_n(e_i.e_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
 \\ So :
 \begin{equation*}
+    \footnotesize
     \boxed{F_x^{S_i} = -\frac{4}{5} \mu \pi r \frac{\lambda(\lambda +4)}{(\lambda +1)^2} \left[ B_1\mathrm{sin}(\theta) +B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta)\right] (ln \epsilon + O(1))}
+\end{equation*}
+
+The effect of a wall can be calculated by replacing one of the spheres with one of infinite diameter:
+\begin{equation*}
+    \footnotesize
+    \boxed{F_{zw}^{S_i} = -9 \mu \pi r \left[ B_1 \mathrm{sin}(\theta)\mathrm{cos}(\theta) + \frac{1}{2} B_1  \mathrm{cos}(\theta) (e_i.e^{\perp}_{ij})^2 +B_2 \mathrm{sin}(\theta)\mathrm{cos}^2(\theta) + \frac{1}{2} B_2(2\mathrm{cos}^2(\theta) - 1) (e_i.e^{\perp}_{ij})^2\right](ln \epsilon + O(1))}\\
+\end{equation*}
+\begin{equation*}
+    \footnotesize
+    \boxed{F_{xw}^{S_i} = -\frac{4}{5} \mu \pi r \left[ B_1\mathrm{sin}(\theta) +B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta)\right] (ln \epsilon + O(1))}
 \end{equation*}
 
 \subsection{The evolution of the orientation}
 The evolution of the orientation of one squirmer is given by : 
 $$
-\frac{d \theta_i}{dt} = \sum \Gamma_{ij->i} + \sum \Gamma_{ji->i} +  \Gamma_{i}^W.
+\boxed{\frac{d \theta_i}{dt} = \sum \Gamma_{ij->i} + \sum \Gamma_{ji->i} +  \Gamma_{i}^W + \sqrt{2D_o} \eta_o^{(i)}}.
 $$
-
-$\Gamma_{ij->k}$ is the torque exerted on the $k^\mathrm{th}$ particle by the flow associated to the $i^\mathrm{th}$ particle, but perturbed by the presence of the $j^\mathrm{th}$ particle.\\
-
+We have:
+\begin{itemize}
+    \item $\Gamma_{ij->k}$ the torque exerted on the $k^\mathrm{th}$ particle by the flow associated to the $i^\mathrm{th}$ particle, but perturbed by the presence of the $j^\mathrm{th}$ particle,
+    \item $\Gamma_{i}^W$ the torque exerted on the $i^\mathrm{th}$ particle by the interactions with the walls,
+    \item $D_o$ the angular diffusivity,
+    \item $\eta_o^{(i)}$ the noises, independent of $\eta^{i}$.
+\end{itemize}
 \vspace{0.5cm}
 
 The torques acting on the squirmer $i$ can be calculated explicitly by : \\
@@ -424,8 +441,13 @@ $\Gamma_{ji->i}$ = $\frac{4 \lambda^2}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_
 \begin{equation*}
     \boxed{\Gamma_{ji->i} = \frac{4 \lambda^2}{5(\lambda +1)} \mu \pi r^2 e_j.e^{\perp}_{ji}\left[B_1\mathrm{sin}(\theta) +B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta) \right] (ln \epsilon + O(1))}
 \end{equation*}
-One can note that for two squirmers having the same $\lambda$:
+One can note that for two squirmers having the same radius $r$, $\lambda = 0$ and:
 $$\Gamma_{ji->i} = \frac{1}{4}\Gamma_{ij->i}$$
+
+Similarly as for the forces, the torques produced by the walls can be calculated by replacing one of the spheres with one of infinite diameter:
+\begin{equation*}
+    \boxed{\Gamma_{w->i} = \frac{16}{5} \mu \pi r^2 e_i.e^{\perp}_{ij}\left[B_1\mathrm{sin}(\theta) +B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta) \right] (ln \epsilon + O(1))}
+\end{equation*}
 
 \section{InteractingSquirmers}
 During this section the improvements to the code and the simulations will be explained.\\
