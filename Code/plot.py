@@ -11,7 +11,7 @@ def is_light_color(hex_color):
     luminance = 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]
     return luminance > 0.7
 
-def plot_sim_nsquirmers(histories, Nx, Ny, N, a, border, sim_border, filename, dir='graphs'):
+def plot_sim_nsquirmers(histories, Nx, Ny, N, a, border_plot, sim_border, filename, dir='graphs'):
     #The simulation with a border is only with one squirmer
     if sim_border:
         assert N == 1
@@ -19,9 +19,10 @@ def plot_sim_nsquirmers(histories, Nx, Ny, N, a, border, sim_border, filename, d
     #a : radius of the squirmer
     fig = plt.figure(figsize=(8, 8))
 
-    if border == True:
+    if sim_border == True:
         plt.plot([-Nx, Nx], [-Ny, -Ny], 'k-', linewidth=2)
-    if sim_border != True:
+    if (border_plot == True) and (sim_border == False):
+        plt.plot([-Nx, Nx], [-Ny, -Ny], 'k-', linewidth=2)
         plt.plot([-Nx, Nx], [Ny, Ny], 'k-', linewidth=2)
         plt.plot([-Nx, -Nx], [-Ny, Ny], 'k-', linewidth=2)
         plt.plot([Nx, Nx], [-Ny, Ny], 'k-', linewidth=2)

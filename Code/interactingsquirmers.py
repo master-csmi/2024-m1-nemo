@@ -2,10 +2,11 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 from squirmer import Squirmer
+from plot import plot_sim_nsquirmers, create_video_from_history, plot_time
 
 class InteractingSquirmers:
 
-    def __init__(self, N, xs, ys, orientations, radius, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, Do, no, border=True):
+    def __init__(self, N, xs, ys, orientations, radius, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border=True):
         self.N = N
         self.xs = np.array(xs, dtype=float)
         self.ys = np.array(ys, dtype=float)
@@ -23,7 +24,9 @@ class InteractingSquirmers:
         self.ds = ds
         self.T = T
         self.lnEps_cr = lnEps_cr
-        self.Do = Do
+        self.D = D
+        self.Do = 3*D/(4*radius**2)
+        self.n = n
         self.no = no
         self.nos = np.zeros(N, dtype=float)
         self.Fs_x, self.Fs_y, self.Fl_x, self.Fl_y, self.val, self.gamma_w = np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float), np.zeros(N, dtype=float)
@@ -73,8 +76,8 @@ class InteractingSquirmers:
         return Dx, Dy, np.sqrt(Dx**2 + Dy**2)
     
     def distance_all(self):
-        Dxs = self.xs - self.xs[:, None]
-        Dys = self.ys - self.ys[:, None]
+        Dxs = self.xs[:, None] - self.xs
+        Dys = self.ys[:, None] - self.ys
         dists = np.sqrt(Dxs**2 + Dys**2)
         return Dxs, Dys, dists
     
@@ -89,7 +92,7 @@ class InteractingSquirmers:
 
         Vc = np.minimum(a/dists, 0.5)
 
-        tmp = -3*(self.Es/a)*(2*(2*Vc)**13-(2*Vc)**7)/np.sqrt(dists)
+        tmp = -(self.Es/(np.pi*self.mu*a**2))*(2*(2*Vc)**13-(2*Vc)**7)/dists
         Fs_x = tmp*Dxs
         Fs_y = tmp*Dys
         return Fs_x, Fs_y
@@ -125,7 +128,7 @@ class InteractingSquirmers:
 
         sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
         somme = B1 * sinalpha + B2 * cosalpha*sinalpha
-        sommeFz = B1 * sinalpha * cosalpha - (1/2)*B1 * cosalpha * eieijt**2 + B2 * sinalpha * cosalpha**2 - (1/2)*B2 * (2*cosalpha**2-1) * eieijt**2
+        sommeFz = B1 * sinalpha * cosalpha + (1/2)*B1 * cosalpha * eieijt**2 + B2 * sinalpha * cosalpha**2 + (1/2)*B2 * (2*cosalpha**2-1) * eieijt**2
 
         lnEps = np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
         
@@ -137,44 +140,76 @@ class InteractingSquirmers:
     
     def compute_force_squirmer_border_x(self, xs, ys):
         RRi = np.sqrt((xs - self.Nx)**2 + (ys - self.Ny)**2)
-        tmp = -6*((self.Es*(self.Nx - xs))/(self.radius*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
-        return -tmp*xs
+        tmp = -((self.Es*(self.Nx - xs))/(np.pi*self.mu*self.radius**2*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
+        return tmp*xs
     
     def compute_force_squirmer_border_y(self, xs, ys):
         RRi = np.sqrt((xs - self.Nx)**2 + (ys - self.Ny)**2)
-        tmp = -6*((self.Es*(self.Ny - ys))/(self.radius*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
-        return -tmp*ys
-
-    def compute_torque_squirmer_border(self, xs, ys, orientations):
-        Dy = self.Ny-abs(ys)
-        Dx = self.Nx-abs(xs)
-        dist = np.sqrt(Dx**2 + Dy**2)
-        theta = orientations
+        tmp = -((self.Es*(self.Ny - ys))/(np.pi*self.mu*self.radius**2*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
+        return tmp*ys
+    
+    def force_torque_lubrification_border_x(self, xs, theta, border):
         B1 = self.B1
         B2 = self.B2
         a = self.radius
+
+        if border == 1:
+            #border = 1 for right border
+            Dx = self.Nx - xs
+        else:
+            #else for left border
+            Dx = -self.Nx - xs
+        Dy = 0
+        dist = np.sqrt(Dx**2 + Dy**2)
 
         eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
         cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
 
         sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
-        somme = - B1 * sinalpha - B2 * cosalpha*sinalpha
-        lnEps = np.log(np.maximum(self.lnEps_cr,((dist-2*a)/a - 2)))
-
-        gamma_w = (16/5)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
+        somme = B1 * sinalpha + B2 * cosalpha*sinalpha
+        lnEps = np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
         
-        return gamma_w
+        #lambda=1
+        F_x = -(4/5) * np.pi * self.mu * a * eieijt * somme * lnEps * Dx
+        gamma_w = (16/5)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
+        return F_x, gamma_w
     
+    def force_torque_lubrification_border_y(self, ys, theta, border):
+        B1 = self.B1
+        B2 = self.B2
+        a = self.radius
+        if border == 1:
+            #border = 1 for upper wall
+            Dy = self.Ny - ys
+        else:
+            #else for lower wall
+            Dy = -self.Ny - ys
+        Dx = 0
+        dist = np.sqrt(Dx**2 + Dy**2)
+
+        eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
+        cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
+
+        sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
+        somme = B1 * sinalpha + B2 * cosalpha*sinalpha
+        sommeFz = B1 * sinalpha * cosalpha + (1/2)*B1 * cosalpha * eieijt**2 + B2 * sinalpha * cosalpha**2 + (1/2)*B2 * (2*cosalpha**2-1) * eieijt**2
+        lnEps = np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
+        
+        #lambda=1
+        F_y = -9 * self.mu * np.pi*a*sommeFz* lnEps * Dy
+        gamma_w = (16/5)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
+        return F_y, gamma_w
+
     #Reflective boundary condition
     def ref_border_x(self, xs, orientation, boundary):
         orientation = np.pi - orientation
         if boundary == 1:
             #1 for the right border
             diff = xs + self.radius - self.Nx
-            xs = self.Nx - diff
+            xs = self.Nx - diff - self.radius
         else:
             diff = xs - self.radius + self.Nx
-            xs = -self.Nx + diff
+            xs = -self.Nx - diff + self.radius
 
         return xs, orientation
     
@@ -261,39 +296,64 @@ class InteractingSquirmers:
             val1, val2 = self.torquesLubrification(Dxs[j_dist_lubr], Dys[j_dist_lubr], dists[j_dist_lubr], self.orientations[j_dist_lubr[0]])
             self.Fl_x[j_dist_lubr[0]] += Fl_x
             self.Fl_y[j_dist_lubr[0]] += Fl_y
+            self.Fl_x[j_dist_lubr[1]] -= Fl_x
+            self.Fl_y[j_dist_lubr[1]] -= Fl_y
             self.val[j_dist_lubr[0]] += val1
             self.val[j_dist_lubr[1]] += val2
             # print(f"Fl_x = {self.Fl_x}")
             # print(f"Fl_y = {self.Fl_y}\n")
 
-            #Noise
+            #Noises
+            self.ns = np.random.uniform(-self.n/2, self.n/2, size=self.N)
             self.nos = np.random.uniform(-self.no/2, self.no/2, size=self.N)
 
-            #Force between a squirmer and a border
+            #Forces and torques between a squirmer and a border
             dist_forces_x = (self.Nx-abs(self.xs)) < 2**(1/6)*a
             dist_forces_y = (self.Ny-abs(self.ys)) < 2**(1/6)*a
 
-            dist_torques_x = (self.Nx-abs(self.xs)) < 2*a
-            dist_torques_y = (self.Ny-abs(self.ys)) < 2*a
+            dist_lub_x = (self.Nx-abs(self.xs)) < 2*a
+            dist_lub_y = (self.Ny-abs(self.ys)) < 2*a
 
             #If we simulate in a box
             if self.border:
                 i_dist_force_x = np.where(dist_forces_x)[0]
-                i_dist_torque_x = np.where(dist_torques_x)[0]
+                i_dist_lub_x = np.where(dist_lub_x)[0]
+                
                 self.Fs_pw[0][i_dist_force_x] += self.compute_force_squirmer_border_x(self.xs[i_dist_force_x], self.ys[i_dist_force_x])
-                self.gamma_w[i_dist_torque_x] += self.compute_torque_squirmer_border(self.xs[i_dist_torque_x], self.ys[i_dist_torque_x], self.orientations[i_dist_torque_x])
+
+                i_dist_lub_x_r = i_dist_lub_x[self.xs[i_dist_lub_x] > 0]
+                i_dist_lub_x_l = i_dist_lub_x[self.xs[i_dist_lub_x] < 0]
+                
+                Fl_xr, gamma_wr = self.force_torque_lubrification_border_x(self.xs[i_dist_lub_x_r], self.orientations[i_dist_lub_x_r], 1)
+                Fl_xl, gamma_wl = self.force_torque_lubrification_border_x(self.xs[i_dist_lub_x_l], self.orientations[i_dist_lub_x_l], 2)
+                
+                self.Fl_x[i_dist_lub_x_r] += Fl_xr
+                self.Fl_x[i_dist_lub_x_l] += Fl_xl
+                self.gamma_w[i_dist_lub_x_r] += gamma_wr
+                self.gamma_w[i_dist_lub_x_l] += gamma_wl
 
             i_dist_force_y = np.where(dist_forces_y)[0]
-            i_dist_torque_y = np.where(dist_torques_y)[0]
+            i_dist_lub_y = np.where(dist_lub_y)[0]
+
             self.Fs_pw[1][i_dist_force_y] += self.compute_force_squirmer_border_y(self.xs[i_dist_force_y], self.ys[i_dist_force_y])
-            self.gamma_w[i_dist_torque_y] += self.compute_torque_squirmer_border(self.xs[i_dist_torque_y], self.ys[i_dist_torque_y], self.orientations[i_dist_torque_y])
+            
+            i_dist_lub_y_u = i_dist_lub_y[self.ys[i_dist_lub_y] > 0]
+            i_dist_lub_y_d = i_dist_lub_y[self.ys[i_dist_lub_y] < 0]
+            
+            Fl_yu, gamma_wu = self.force_torque_lubrification_border_y(self.ys[i_dist_lub_y_u], self.orientations[i_dist_lub_y_u], 1)
+            Fl_yd, gamma_wd = self.force_torque_lubrification_border_y(self.ys[i_dist_lub_y_d], self.orientations[i_dist_lub_y_d], 2)
+            
+            self.Fl_y[i_dist_lub_y_u] += Fl_yu
+            self.Fl_y[i_dist_lub_y_d] += Fl_yd
+            self.gamma_w[i_dist_lub_y_u] += gamma_wu
+            self.gamma_w[i_dist_lub_y_d] += gamma_wd
 
             # print(self.val)
 
             #Evolution of position
             self.orientations += self.dt*(self.val + self.gamma_w) + np.sqrt(2*self.dt*self.Do)*self.nos
-            self.xs += self.dt*(self.v0*np.cos(self.orientations) + self.Fs_x + self.Fl_x + self.Fs_pw[0])
-            self.ys += self.dt*(self.v0*np.sin(self.orientations) + self.Fs_y + self.Fl_y + self.Fs_pw[1])
+            self.xs += self.dt*(self.v0*np.cos(self.orientations) - self.Fs_x - self.Fs_pw[0] + self.Fl_x) + np.sqrt(2*self.dt*self.D)*self.ns
+            self.ys += self.dt*(self.v0*np.sin(self.orientations) - self.Fs_y - self.Fs_pw[1] + self.Fl_y) + np.sqrt(2*self.dt*self.D)*self.ns
 
             #Borders
             mask_x1 = (self.xs + a) > self.Nx
@@ -340,3 +400,104 @@ class InteractingSquirmers:
 
         self.history = history
         return history
+
+def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border, filename, border_plot=False):
+    if choice == 'video':
+        #coordinates and orientations
+        orients = np.zeros(N, dtype=float)
+        orients = np.random.uniform(0, 2*np.pi, size=N)
+        xs = np.empty(N)
+        ys = np.empty(N)
+        dir = 'videos'
+
+        for k in range(N):
+            while True:
+                x = np.random.uniform(-(Nx-2*a), (Nx-2*a))
+                y = np.random.uniform(-(Ny-2*a), (Ny-2*a))
+                if k == 0 or np.all(np.sqrt((xs[:k] - x)**2 + (ys[:k] - y)**2) > 2*a):
+                    xs[k] = x
+                    ys[k] = y
+                    break
+        print(xs)
+        print("initialisation done")
+        interact = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border)
+        history = interact.loop_time()
+        plot_time(interact, interact.vector_dists_min, "min_dist_" + filename, 'minimal distance', dir)
+        plot_time(interact, interact.list_polar, "polar_" + filename, 'polar parameter', dir)
+        plot_time(interact, interact.list_cluster_param, "cluster_" + filename, 'clustering order parameter', dir)
+        print(f"Mean polar order = {np.mean(interact.list_polar)}")
+
+        create_video_from_history(history, Nx, Ny, N, a, filename=filename, dir=dir)
+    elif choice == 'plot':
+        #coordinates and orientations
+        orients = np.zeros(N, dtype=float)
+        orients = np.random.uniform(0, 2*np.pi, size=N)
+        xs = np.empty(N)
+        ys = np.empty(N)
+        dir = 'graphs'
+
+        for k in range(N):
+            while True:
+                x = np.random.uniform(-(Nx-2*a), (Nx-2*a))
+                y = np.random.uniform(-(Ny-2*a), (Ny-2*a))
+                if k == 0 or np.all(np.sqrt((xs[:k] - x)**2 + (ys[:k] - y)**2) > 2*a):
+                    xs[k] = x
+                    ys[k] = y
+                    break
+        print(xs)
+        print("initialisation done")
+        interact = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border)
+        history = interact.loop_time()
+        plot_time(interact, interact.vector_dists_min, "min_dist_" + filename, 'minimal distance', dir=dir)
+        plot_time(interact, interact.list_polar, "polar_" + filename, 'polar parameter', dir=dir)
+        plot_time(interact, interact.list_cluster_param, "cluster_" + filename, 'clustering order parameter', dir=dir)
+
+        plot_sim_nsquirmers(history, Nx, Ny, N, a, border_plot, False, filename=filename, dir=dir)
+    elif choice == 'border':
+        a = 0.05
+        xs = [-0.4]
+        ys = [-0.7]
+        orient = [[-np.pi/6], [-np.pi/4], [-np.pi/3], [-np.pi/2]] 
+        N = 1
+        sim_border = True
+        T = 0.9
+        v0 = 1
+        Nx = 0.5
+        Ny = 1
+        for i, pi in enumerate(orient):
+            filename = 'sim_num_' + str(i)
+            print(filename)
+            interact = InteractingSquirmers(N, xs, ys, pi, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border)
+            history = interact.loop_time()
+
+            plot_sim_nsquirmers(history, Nx, Ny, N, a, border_plot, sim_border, filename=filename, dir='graphs/border')
+    elif choice == 'Eo_sim':
+        #amplitude of orientational interactions
+        #Eo[0] = Eoinitial, E[1] = Eobrumley, E[2] = Eolauga
+        Eo = [(((3./10.)*v0/a), "Eo_init"), ((16/10)*mu*np.pi*a**2, "Eo_brumley"), ((-3./2.)*(v0/a), "Eo_lauga"),
+            (((-3./10.)*v0/a), "mEo_init"), (-5, "m5"), (0.005, "m0_005"), (-2, "m2"), (-0.5, "m0_5"),
+            (0.5, "0_5")]
+        betas = [(0, "beta0"), (-7.5, "betainf"), (7.5, "betasup")]
+        while True:
+            output_type = input("Which type of simulation? (plot/video): ").strip().lower()
+            if output_type in ['plot', 'video']:
+                break
+            else:
+                print("Invalid input. Please enter 'plot' or 'video'.")
+        xseo = [-a, 2*a/1.5]
+        yseo = [0, 0]
+        orient1 = np.pi/2
+        orient2 = [(np.pi/2, "pi_2_"), (-np.pi/2, "mpi_2_"), (3*np.pi/4, "3pi_4_"), (-3*np.pi/4, "m3pi_4_"), (np.pi, "pi_"), (2*np.pi, "2pi_"), (np.pi/4, "pi_4_"), (-np.pi/4, "mpi_4_")]
+        for (betaeo, labelbeta) in betas:
+            for (Eos, labeleo) in Eo:
+                for (pi, labelpi) in orient2:
+                    filenameeo = labelpi + labeleo
+                    orientseo = [orient1, pi]
+                    interact = InteractingSquirmers(N, xseo, yseo, orientseo, a, betaeo, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, Eos, lnEps_cr, D, n, no, border)
+                    history = interact.loop_time()
+                    if output_type == 'plot':
+                        direo = 'graphs/Eo_analysis/' + labelbeta + '/' + labelpi
+                        plot_sim_nsquirmers(history, 1, 1, 2, a, border_plot, False, filename=filenameeo, dir=direo)
+                    else:
+                        direo = 'videos/Eo_analysis/' + labelbeta + '/' + labelpi
+                        create_video_from_history(history, 1, 1, 2, a, filename=filenameeo, dir=direo)
