@@ -56,7 +56,17 @@ def sim_Eo_param(Eo, a, v0, dt, dt_out, T, Es, ds, mu, lnEps_cr, Do, no, border,
             direo = 'videos/Eo_analysis/' + betas[0][1] + '/' + orient2[2][1]
             sim_vid_interact_sq(2, xseo, yseo, orienteo, a, betas[0][0], v0, 1, 1, dt, dt_out, T, Es, ds, mu, Eos, lnEps_cr, Do, no, border, filenameeo, dir=direo)
 
-def sim_vicsek(N, R, L, v0, beta, radius, T, dt, no, nb_step):
+def sim_vicsek():
+    N = 20
+    R = 0.25
+    L = 10.0
+    v0 = 1.0
+    beta = 0.5
+    radius = 0.1
+    T = 1
+    dt = 0.1
+    no = 1e-4
+    nb_step = 5
 
     vicsek_model = Vicsek_continous(N, R, L, v0, beta, radius, T, dt, no)
 
