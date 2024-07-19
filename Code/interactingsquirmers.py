@@ -53,7 +53,8 @@ class InteractingSquirmers:
         return luminance > 0.7
 
     def polar_order_parameter(self):
-        #Returns the polar order parameter
+        """Uses the orientations of all of
+        the squirmers to return the polar order parameter"""
         sum1 = 1./self.N*np.sum(np.cos(self.orientations))
         sum2 =  1./self.N*np.sum(np.sin(self.orientations))
         summ_final = np.sqrt(sum1**2 + sum2**2)
@@ -69,25 +70,17 @@ class InteractingSquirmers:
             raise ValueError("Squirmers must be inside the square")
         return True
     
-    def distance_sq(self, squirmer1, squirmer2):
-        #return distance between the two squirmers
-        Dx = squirmer2.x - squirmer1.x
-        Dy = squirmer2.y - squirmer1.y
-        return Dx, Dy, np.sqrt(Dx**2 + Dy**2)
-    
     def distance_all(self):
+        """Returns the distance between all of the squirmers"""
         Dxs = self.xs[:, None] - self.xs
         Dys = self.ys[:, None] - self.ys
         dists = np.sqrt(Dxs**2 + Dys**2)
         return Dxs, Dys, dists
-    
-    def distance_center(self, squirmer):
-        #Compute the distance between the squirmers and the center (0,0)
-        dist = np.sqrt(squirmer.x**2 + squirmer.y**2)
-        return dist
 
     def forcesSteric(self, Dxs, Dys, dists):
-        #Compute the steric forces between two particles
+        """Uses the distances, mu, a and Es to compute and return
+        Fs_x : the steric forces in the x axis
+        Fs_y : the steric forces in the y axis"""
         a = self.radius
 
         Vc = np.minimum(a/dists, 0.5)
@@ -98,7 +91,10 @@ class InteractingSquirmers:
         return Fs_x, Fs_y
     
     def torquesLubrification(self, Dx, Dy, dist, theta):
-        #Computes the lubrification torques produced by two interacting squirmers
+        """Uses the distances, the orientations, B1, B2, a, mu and lnEps_cr
+        to compute and return the lubrification torques
+        val are the torques exerted on the ith squirmer by its own flow
+        val2 are the torques exerted on the jth squirmer by the flow of the ith one"""
         B1 = self.B1
         B2 = self.B2
         a = self.radius
@@ -108,7 +104,6 @@ class InteractingSquirmers:
 
         sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
         somme = B1 * sinalpha + B2 * cosalpha*sinalpha
-        #-B1 * sinalpha - B2 * cosalpha*sinalpha
 
         lnEps = np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
                 
@@ -118,7 +113,9 @@ class InteractingSquirmers:
         return val, val2
         
     def forcesLubrification(self, Dx, Dy, dist, theta):
-        #Computes the lubrification forces between two particles
+        """Uses the distances, orientations, B1, B2, mu, and a to compute and return
+        F_x : the lubrification forces in the x axis
+        F_y : the lubrification forces in the y axis"""
         B1 = self.B1
         B2 = self.B2
         a = self.radius
@@ -139,16 +136,23 @@ class InteractingSquirmers:
         return F_x, F_y
     
     def compute_force_squirmer_border_x(self, xs, ys):
+        """Uses the distances between the squirmers and the wall, a and mu
+        to compute and return the steric forces exerted on the squirmers in the x axis"""
         RRi = np.sqrt((xs - self.Nx)**2 + (ys - self.Ny)**2)
         tmp = -((self.Es*(self.Nx - xs))/(np.pi*self.mu*self.radius**2*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
         return tmp*xs
     
     def compute_force_squirmer_border_y(self, xs, ys):
+        """Uses the distances between the squirmers and the wall, a and mu
+        to compute and return the steric forces exerted on the squirmers in the y axis"""
         RRi = np.sqrt((xs - self.Nx)**2 + (ys - self.Ny)**2)
         tmp = -((self.Es*(self.Ny - ys))/(np.pi*self.mu*self.radius**2*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
         return tmp*ys
     
     def force_torque_lubrification_border_x(self, xs, theta, border):
+        """Uses the distances between the squirmers and the wall, a, B1, B2 and mu
+        to compute and return the lubrification forces and torques
+        exerted on the squirmers in the x axis"""
         B1 = self.B1
         B2 = self.B2
         a = self.radius
@@ -175,6 +179,9 @@ class InteractingSquirmers:
         return F_x, gamma_w
     
     def force_torque_lubrification_border_y(self, ys, theta, border):
+        """Uses the distances between the squirmers and the wall, a, B1, B2 and mu
+        to compute and return the lubrification forces and torques
+        exerted on the squirmers in the y axis"""
         B1 = self.B1
         B2 = self.B2
         a = self.radius
@@ -202,6 +209,8 @@ class InteractingSquirmers:
 
     #Reflective boundary condition
     def ref_border_x(self, xs, orientation, boundary):
+        """takes the distance between the squirmers and the xs-wall
+        and returns x value they should have in the rectangle"""
         orientation = np.pi - orientation
         if boundary == 1:
             #1 for the right border
@@ -214,6 +223,8 @@ class InteractingSquirmers:
         return xs, orientation
     
     def ref_border_y(self, ys, orientation, boundary):
+        """takes the distance between the squirmers and the ys-wall
+        and returns y value they should have in the rectangle"""
         orientation = -orientation
         if boundary == 1:
             #1 for the up boundary
@@ -226,6 +237,7 @@ class InteractingSquirmers:
         return ys, orientation
 
     def perio_border_x(self, xs, boundary):
+        """returns the xs that simulates a periodic border"""
         if boundary == 1:
             #1 for right boundary
             xs -= 2*self.Nx
@@ -234,6 +246,9 @@ class InteractingSquirmers:
         return xs
 
     def loop_time(self):
+        """simulates the behaviors of the squirmers
+        for T time with a time-step dt and puts the informations
+        in a list with a time-step dt_out, it returns the list"""
         self.vector_dists_min = []
         tout = self.dt_out
         a = self.radius
@@ -402,6 +417,32 @@ class InteractingSquirmers:
         return history
 
 def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border, filename, border_plot=False):
+    """
+    Runs the simulations depending on the 'choice' parameter
+    choice: 'plot' to plot the graph of the behaviors of the squirmers in the 'graphs' directory
+            'video' to create a video of the behaviors of the squirmers in the 'videos' directory
+            'Eo_sim', not used anymore, to test every Eo parameter and plot or make a video
+            'border', to simulate the behaviors of a squirmer near a wall, only plot possible
+    N: number of squirmers
+    a: radius of the squirmers
+    beta: beta of the squirmers
+    v0: velocity of the squirmers
+    Nx, Ny: length and height of the rectangle
+    dt, dt_out: time-step of simulation, time-step of information
+    T: final time of simulation
+    Es: amplitude of steric forces
+    ds: distance of steric interactions
+    mu: dynamic viscosity
+    R: Distance where other squirmers seen as neighbour
+    lnEps_cr: cut-off for -log
+    D: Translational diffusivity
+    n: Translational noise
+    no: angular noise
+    border: False to simulate a chanel and True to simulate a box
+    filename: used only with 'plot' and 'video' choices, name of the file
+              in which the videos or plots will be saved
+    border_plot: used only with 'plot', False to not plot the borders and True to plot them
+    """
     if choice == 'video':
         #coordinates and orientations
         orients = np.zeros(N, dtype=float)

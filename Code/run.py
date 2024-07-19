@@ -35,16 +35,15 @@ def main(simulation, N, filename):
     ds = 2**(7./6)*a
     #Translational diffusivity
     D = 0
-    #noise
+    #Translational noise
     n = 1e-2
-    #angular noise
+    #Angular noise
     no = 1e-2
     #Distance of particle seen as "Neighbour"
     R = 0.07
-
-    #border to simulate chanel or box
+    #border defines the simulation, in a chanel(False) or a box(True)
     border = False
-    #border_plot to plot the borders when plotting or not
+    #border_plot defines if the borders are plotted or not when using 'plot_sim_nsquirmers'
     border_plot = False
 
     if simulation == 'video':
