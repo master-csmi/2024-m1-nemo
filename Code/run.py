@@ -16,7 +16,7 @@ def main(simulation, N, filename):
     Nx = Lx/2
     Ny = Ly/2
     #squirmers' radius
-    a = 0.05
+    a = 0.02
     #betas
     beta = 0
     #time-step
@@ -24,9 +24,9 @@ def main(simulation, N, filename):
     #cut-off for -log
     lnEps_cr = a*0.001
     #amplitude of steric interactions
-    Es = 0.1
+    Es = 0.05
     #simulation time
-    T = 10
+    T = 2
     #periodicity of outputs
     dt_out = 0.01
     #viscovity parameter
@@ -42,7 +42,7 @@ def main(simulation, N, filename):
     #Distance of particle seen as "Neighbour"
     R = 0.07
     #border defines the simulation, in a chanel(False) or a box(True)
-    border = False
+    border = True
     #border_plot defines if the borders are plotted or not when using 'plot_sim_nsquirmers'
     border_plot = False
 
