@@ -14,7 +14,7 @@ def test_interact():
     Nx = Lx/2
     Ny = Ly/2
     #squirmers' radius
-    a = 0.05
+    a = 0.02
     #betas
     beta = 0
     #time-step
@@ -60,4 +60,5 @@ def test_interact():
 
     interact = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border)
     interact.loop_time()
-    assert np.all(interact.vector_dists_min > 0)
+    vector = np.array(interact.vector_dists_min)
+    assert np.all(vector > 0)
