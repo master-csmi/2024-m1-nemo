@@ -71,7 +71,7 @@ class InteractingSquirmers:
         return True
     
     def distance_all(self):
-        """Returns the distance between all of the squirmers"""
+        """Returns the distance (xj - xi) between all of the squirmers"""
         Dxs = self.xs[:, None] - self.xs
         Dys = self.ys[:, None] - self.ys
         dists = np.sqrt(Dxs**2 + Dys**2)
@@ -209,8 +209,8 @@ class InteractingSquirmers:
 
     #Reflective boundary condition
     def ref_border_x(self, xs, orientation, boundary):
-        """takes the distance between the squirmers and the xs-wall
-        and returns x value they should have in the rectangle"""
+        """takes the distance between the squirmers and the x-wall
+        and returns x-wall - distance"""
         orientation = np.pi - orientation
         if boundary == 1:
             #1 for the right border
@@ -223,8 +223,8 @@ class InteractingSquirmers:
         return xs, orientation
     
     def ref_border_y(self, ys, orientation, boundary):
-        """takes the distance between the squirmers and the ys-wall
-        and returns y value they should have in the rectangle"""
+        """takes the distance between the squirmers and the y-wall
+        and returns y-wall - distance"""
         orientation = -orientation
         if boundary == 1:
             #1 for the up boundary
@@ -247,7 +247,7 @@ class InteractingSquirmers:
 
     def loop_time(self):
         """simulates the behaviors of the squirmers
-        for T time with a time-step dt and puts the informations
+        for T final time with a time-step dt and puts the informations
         in a list with a time-step dt_out, it returns the list"""
         self.vector_dists_min = []
         tout = self.dt_out
@@ -272,6 +272,7 @@ class InteractingSquirmers:
 
             Dxs, Dys, dists = self.distance_all()
 
+            #Minimum distance between all of the squirmers
             dist = np.array(dists)
             dist_nz = dist[dist!=0]
             if dist_nz.size > 0:
@@ -290,13 +291,11 @@ class InteractingSquirmers:
             n_neigh = np.sum(dist_neigh, axis=1)
             self.list_cluster_param.append((1/(self.N*self.N/2))*sum(n_neigh))
 
-
+            #Steric Forces
             dist_steric = (dists<self.ds)&(dists!=0)
             dist_lubrification = (dists<=3*a)&(dists!=0)
             j_dist_steric = np.where(dist_steric)
             j_dist_lubr = np.where(dist_lubrification)
-
-            #Steric Forces
             # print(f"Dxs = {Dxs}\n Dys = {Dys}\n dists = {dists}")
             Fs_x, Fs_y = self.forcesSteric(Dxs[dist_steric], Dys[dist_steric], dists[dist_steric])
             # print(f"Fs_x = {Fs_x} and shape = {Fs_x.shape}")
@@ -406,7 +405,7 @@ class InteractingSquirmers:
             self.list_polar.append(self.polar_order_parameter())
             
             if t >= tout:
-                print(tout)
+                print(f"{(tout/self.T)*100} %")
                 data = [self.xs.tolist(), self.ys.tolist(), self.orientations.tolist(),
                         self.Fs_x.tolist(), self.Fs_y.tolist(), self.Fl_x.tolist(), self.Fl_y.tolist(),
                         self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist(), tout]
