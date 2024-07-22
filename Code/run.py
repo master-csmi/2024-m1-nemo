@@ -20,31 +20,30 @@ def main(simulation, N, filename):
     #betas
     beta = 0
     #time-step
-    dt = 1e-3
+    dt = 1e-4
     #cut-off for -log
     lnEps_cr = a*0.001
     #amplitude of steric interactions
     Es = 0.1
     #simulation time
-    T = 2
+    T = 10
     #periodicity of outputs
     dt_out = 0.01
     #viscovity parameter
     mu = 0.1
     #distance of steric interactions
-    ds = 2**(7./6)*a
+    ds = 2*a*2**(1./6)
     #Translational diffusivity
     D = 0
-    #noise
+    #Translational noise
     n = 1e-2
-    #angular noise
+    #Angular noise
     no = 1e-2
     #Distance of particle seen as "Neighbour"
     R = 0.07
-
-    #border to simulate chanel or box
+    #border defines the simulation, in a chanel(False) or a box(True)
     border = False
-    #border_plot to plot the borders when plotting or not
+    #border_plot defines if the borders are plotted or not when using 'plot_sim_nsquirmers'
     border_plot = False
 
     if simulation == 'video':
@@ -58,7 +57,7 @@ def main(simulation, N, filename):
     elif simulation == 'vicsek':
         sim_vicsek()
     end_time = time.time()
-    print(f"Simulation time : {end_time - start_time}")
+    print(f"Simulation time : {(end_time - start_time)/60}min")
 
 
 if __name__ == "__main__":
