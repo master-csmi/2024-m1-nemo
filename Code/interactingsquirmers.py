@@ -85,7 +85,7 @@ class InteractingSquirmers:
 
         Vc = np.minimum(a/dists, 0.5)
 
-        tmp = -(self.Es/(np.pi*self.mu*a**2))*(2*(2*Vc)**13-(2*Vc)**7)/dists
+        tmp = -(self.Es/(np.pi*self.mu*a**2))*((2*Vc)**13-(1/2)*(2*Vc)**7)*(1/dists)
         Fs_x = tmp*Dxs
         Fs_y = tmp*Dys
         return Fs_x, Fs_y
@@ -160,9 +160,11 @@ class InteractingSquirmers:
         if border == 1:
             #border = 1 for right border
             Dx = self.Nx - xs
+            R = self.Nx
         else:
             #else for left border
             Dx = -self.Nx - xs
+            R = -self.Nx
         Dy = 0
         dist = np.sqrt(Dx**2 + Dy**2)
 
@@ -171,11 +173,12 @@ class InteractingSquirmers:
 
         sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
         somme = B1 * sinalpha + B2 * cosalpha*sinalpha
-        lnEps = np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
+        lnEps_force = np.log(np.maximum(self.lnEps_cr,(dist-a)/a))
+        lnEps_torque = np.log(np.maximum(self.lnEps_cr,(R-dist-a)/a))
         
         #lambda=1
-        F_x = -(4/5) * np.pi * self.mu * a * eieijt * somme * lnEps * Dx
-        gamma_w = (16/5)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
+        F_x = -(4/5) * np.pi * self.mu * a * eieijt * somme * lnEps_force * Dx
+        gamma_w = (16/5)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps_torque
         return F_x, gamma_w
     
     def force_torque_lubrification_border_y(self, ys, theta, border):
@@ -188,9 +191,11 @@ class InteractingSquirmers:
         if border == 1:
             #border = 1 for upper wall
             Dy = self.Ny - ys
+            R = self.Ny
         else:
             #else for lower wall
             Dy = -self.Ny - ys
+            R = -self.Ny
         Dx = 0
         dist = np.sqrt(Dx**2 + Dy**2)
 
@@ -200,11 +205,12 @@ class InteractingSquirmers:
         sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
         somme = B1 * sinalpha + B2 * cosalpha*sinalpha
         sommeFz = B1 * sinalpha * cosalpha + (1/2)*B1 * cosalpha * eieijt**2 + B2 * sinalpha * cosalpha**2 + (1/2)*B2 * (2*cosalpha**2-1) * eieijt**2
-        lnEps = np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
+        lnEps_force = np.log(np.maximum(self.lnEps_cr,(dist-a)/a))
+        lnEps_torque = np.log(np.maximum(self.lnEps_cr,(R-dist-a)/a))
         
         #lambda=1
-        F_y = -9 * self.mu * np.pi*a*sommeFz* lnEps * Dy
-        gamma_w = (16/5)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
+        F_y = -9 * self.mu * np.pi*a*sommeFz* lnEps_force * Dy
+        gamma_w = (16/5)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps_torque
         return F_y, gamma_w
 
     #Reflective boundary condition
@@ -278,13 +284,13 @@ class InteractingSquirmers:
             if dist_nz.size > 0:
                 min_dist = np.min(dist_nz - 2*a)
                 self.vector_dists_min.append(min_dist)
-                # if min_dist < 0:
-                    # print(f"min_dist = {min_dist}")
-                    # print(f"t_min_dist <0 = {t}")
-                    # indices_min = np.argwhere((dist - 2 * a) == min_dist)
+                if min_dist < 0:
+                    print(f"min_dist = {min_dist}")
+                    print(f"t_min_dist <0 = {t}")
+                    indices_min = np.argwhere((dist - 2 * a) == min_dist)
 
-                    # print(f"Squirmer1: x={self.xs[indices_min[0][0]]}, y={self.ys[indices_min[0][1]]}")
-                    # print(f"Squirmer2: x={self.xs[indices_min[1][0]]}, y={self.ys[indices_min[1][1]]}")
+                    print(f"Squirmer1: x={self.xs[indices_min[0][0]]}, y={self.ys[indices_min[0][1]]}")
+                    print(f"Squirmer2: x={self.xs[indices_min[1][0]]}, y={self.ys[indices_min[1][1]]}")
             
             #Clustering order parameter
             dist_neigh = (dists<self.R)&(dists!=0)
