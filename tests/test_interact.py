@@ -47,7 +47,6 @@ def test_interact():
     orients = np.random.uniform(0, 2*np.pi, size=N)
     xs = np.empty(N)
     ys = np.empty(N)
-    dir = 'graphs'
 
     for k in range(N):
         while True:
