@@ -558,16 +558,17 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
             else:
                 print("Invalid input. Please enter 'plot' or 'video'.")
         T = 0.8
-        xs = [-a, 2*a/1.5]
+        xs = [-a, 2*a/1.9]
         ys = [0, 0]
         orient1 = np.pi/2
         orient2 = [(np.pi/2, "pi_2_"), (-np.pi/2, "mpi_2_"), (3*np.pi/4, "3pi_4_"), (-3*np.pi/4, "m3pi_4_"), (np.pi, "pi_"), (2*np.pi, "2pi_"), (np.pi/4, "pi_4_"), (-np.pi/4, "mpi_4_")]
-        for (beta, labelbeta) in betas:
+        for (betasim, labelbeta) in betas:
             for (pi, labelpi) in orient2:
                 filename = labelpi
                 orients = [orient1, pi]
-                interact = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border)
+                interact = InteractingSquirmers(N, xs, ys, orients, a, betasim, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border)
                 history = interact.loop_time()
+                print(interact.B2)
                 if output_type == 'plot':
                     dir = 'graphs/simulations/' + labelbeta
                     plot_sim_nsquirmers(history, 1, 1, 2, a, False, False, filename=filename, dir=dir)
