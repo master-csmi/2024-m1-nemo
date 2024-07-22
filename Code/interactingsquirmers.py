@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
-from Code.squirmer import Squirmer
-from Code.plot import plot_sim_nsquirmers, create_video_from_history, plot_time
+from squirmer import Squirmer
+from plot import plot_sim_nsquirmers, create_video_from_history, plot_time
 
 class InteractingSquirmers:
 
