@@ -16,7 +16,7 @@ def main(simulation, N, filename):
     Nx = Lx/2
     Ny = Ly/2
     #squirmers' radius
-    a = 0.02
+    a = 0.05
     #betas
     beta = 0
     #time-step
@@ -26,7 +26,7 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 0.1
     #simulation time
-    T = 10
+    T = 2
     #periodicity of outputs
     dt_out = 0.01
     #viscovity parameter
@@ -42,7 +42,7 @@ def main(simulation, N, filename):
     #Distance of particle seen as "Neighbour"
     R = 0.07
     #border defines the simulation, in a chanel(False) or a box(True)
-    border = False
+    border = True
     #border_plot defines if the borders are plotted or not when using 'plot_sim_nsquirmers'
     border_plot = False
 
@@ -54,6 +54,8 @@ def main(simulation, N, filename):
         run('border', N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border, filename, border_plot)
     elif simulation == 'Eo_sim':
         run('Eo_sim', N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border, filename, border_plot)
+    elif simulation == 'sim_2_sq':
+        run('sim_2_sq', N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border, filename, border_plot)
     elif simulation == 'vicsek':
         sim_vicsek()
     end_time = time.time()
@@ -63,7 +65,7 @@ def main(simulation, N, filename):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run squirmer simulations.")
 
-    parser.add_argument('simulation', choices=['video', 'plot', 'Eo_sim','border', 'vicsek'],
+    parser.add_argument('simulation', choices=['video', 'plot', 'Eo_sim', 'border', 'vicsek', 'sim_2_sq'],
                         help="Choose which simulation to run")
     parser.add_argument('N', type=int, help="Number of squirmer")
     parser.add_argument('filename', type=str, help="Filename for saving the results")

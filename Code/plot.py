@@ -50,12 +50,28 @@ def plot_sim_nsquirmers(histories, Nx, Ny, N, a, border_plot, sim_border, filena
 
     nb_pixl_fig = fig.get_size_inches()[1]*fig.dpi
     radius_scatter = nb_pixl_fig/(2*Ny/a)
-    if sim_border == True:
+    if sim_border == True or border_plot == False:
         s = radius_scatter**2
     else:
         s = radius_scatter
     scale_arrow = 15
     w = 0.005
+
+    if N == 2:
+        hypo_xs = [[], []]
+        hypo_ys = [[], []]
+        dt = histories[1][-1] - histories[0][-1]  # Assuming constant time step
+        for i in range(N):
+            x, y, orient = xs[0][i], ys[0][i], orientations[0][i]
+            for t in range(len(histories)):
+                hypo_xs[i].append(x)
+                hypo_ys[i].append(y)
+                x += np.cos(orient) * dt
+                y += np.sin(orient) * dt
+
+        # Plot hypothetical trajectories in grey
+        for i in range(N):
+            plt.plot(hypo_xs[i], hypo_ys[i], color='grey', linestyle='--')
 
     for i in range(N):
         plt.plot(squirmer_xs[i], squirmer_ys[i], color=colors[i % len(colors)])
