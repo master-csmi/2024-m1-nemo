@@ -7,7 +7,7 @@ def main(simulation, N, filename):
     start_time = time.time()
     # Define parameters
     #velocity #F*dt < v0
-    v0 = 0.3
+    v0 = 1
     #length x and y axis
     lbda = 2
     Ly = 3
@@ -26,7 +26,7 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 0.1
     #simulation time
-    T = 2
+    T = 5
     #periodicity of outputs
     dt_out = 0.01
     #viscovity parameter

@@ -95,19 +95,12 @@ class InteractingSquirmers:
         to compute and return the lubrification torques
         val are the torques exerted on the ith squirmer by its own flow
         val2 are the torques exerted on the jth squirmer by the flow of the ith one"""
-        B1 = self.B1
-        B2 = self.B2
         a = self.radius
-
-        eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
-        cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
-
-        sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
-        somme = B1 * sinalpha + B2 * cosalpha*sinalpha
-
+        eieijt = -(np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
+        eieij = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
         lnEps = np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
                 
-        val = (8/5)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps
+        val = (3/10)*(self.v0/a)*eieijt*(1 + self.beta * eieij)*lnEps
         val2 = (1/4)*val
         
         return val, val2
@@ -116,22 +109,17 @@ class InteractingSquirmers:
         """Uses the distances, orientations, B1, B2, mu, and a to compute and return
         F_x : the lubrification forces in the x axis
         F_y : the lubrification forces in the y axis"""
-        B1 = self.B1
-        B2 = self.B2
         a = self.radius
 
-        eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
-        cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
-
-        sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
-        somme = B1 * sinalpha + B2 * cosalpha*sinalpha
-        sommeFz = B1 * sinalpha * cosalpha + (1/2)*B1 * cosalpha * eieijt**2 + B2 * sinalpha * cosalpha**2 + (1/2)*B2 * (2*cosalpha**2-1) * eieijt**2
+        eieijt = -(np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
+        eieij = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
+        sommeFz = eieij * (1 + self.beta * eieij) - (1/2) * self.beta * (eieijt)**2
 
         lnEps = np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
         
         #lambda=1
-        F_x = -np.pi * self.mu * a * eieijt * somme * lnEps * Dx
-        F_y = -9 * self.mu * np.pi*a*(1/4)*sommeFz* lnEps * Dy
+        F_x = (1/4) * self.v0 * eieijt * (1 + self.beta*eieij) * lnEps * Dx
+        F_y = (9/16) * self.v0 * sommeFz* lnEps * Dy
 
         return F_x, F_y
     
@@ -153,64 +141,54 @@ class InteractingSquirmers:
         """Uses the distances between the squirmers and the wall, a, B1, B2 and mu
         to compute and return the lubrification forces and torques
         exerted on the squirmers in the x axis"""
-        B1 = self.B1
-        B2 = self.B2
         a = self.radius
 
         if border == 1:
             #border = 1 for right border
             Dx = self.Nx - xs
-            R = self.Nx
         else:
             #else for left border
             Dx = -self.Nx - xs
-            R = -self.Nx
         Dy = 0
+        R = self.Nx
         dist = np.sqrt(Dx**2 + Dy**2)
 
-        eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
-        cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
+        eieijt = -(np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
+        eieij = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
 
-        sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
-        somme = B1 * sinalpha + B2 * cosalpha*sinalpha
         lnEps_force = np.log(np.maximum(self.lnEps_cr,(dist-a)/a))
         lnEps_torque = np.log(np.maximum(self.lnEps_cr,(R-dist-a)/a))
         
         #lambda=1
-        F_x = -(4/5) * np.pi * self.mu * a * eieijt * somme * lnEps_force * Dx
-        gamma_w = (16/5)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps_torque
+        F_x = (1/5) * self.v0 * eieijt * (1 + self.beta * eieij) * lnEps_force * Dx
+        gamma_w = (3/5) * (self.v0/a) * eieijt * (1 + self.beta * eieij) * lnEps_torque
         return F_x, gamma_w
     
     def force_torque_lubrification_border_y(self, ys, theta, border):
         """Uses the distances between the squirmers and the wall, a, B1, B2 and mu
         to compute and return the lubrification forces and torques
         exerted on the squirmers in the y axis"""
-        B1 = self.B1
-        B2 = self.B2
         a = self.radius
         if border == 1:
             #border = 1 for upper wall
             Dy = self.Ny - ys
-            R = self.Ny
         else:
             #else for lower wall
             Dy = -self.Ny - ys
-            R = -self.Ny
         Dx = 0
+        R = self.Ny
         dist = np.sqrt(Dx**2 + Dy**2)
 
-        eieijt = (np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
-        cosalpha = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
+        eieijt = -(np.cos(theta)*Dy - np.sin(theta)*Dx)/dist
+        eieij = (np.cos(theta)*Dx + np.sin(theta)*Dy)/dist
 
-        sinalpha = np.sqrt(np.maximum((1 - cosalpha * cosalpha), 0))
-        somme = B1 * sinalpha + B2 * cosalpha*sinalpha
-        sommeFz = B1 * sinalpha * cosalpha + (1/2)*B1 * cosalpha * eieijt**2 + B2 * sinalpha * cosalpha**2 + (1/2)*B2 * (2*cosalpha**2-1) * eieijt**2
+        sommeFz = eieij * (1 + self.beta * eieij) - (1/2) * self.beta * (eieijt)**2
         lnEps_force = np.log(np.maximum(self.lnEps_cr,(dist-a)/a))
         lnEps_torque = np.log(np.maximum(self.lnEps_cr,(R-dist-a)/a))
         
         #lambda=1
-        F_y = -9 * self.mu * np.pi*a*sommeFz* lnEps_force * Dy
-        gamma_w = (16/5)*self.mu*np.pi*(a**2)*eieijt*somme*lnEps_torque
+        F_y = (1/5) * self.v0 * sommeFz * lnEps_force * Dy
+        gamma_w = (3/5) * (self.v0/a) * eieijt * (1 + self.beta * eieij) * lnEps_torque
         return F_y, gamma_w
 
     #Reflective boundary condition
@@ -568,7 +546,6 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
                 orients = [orient1, pi]
                 interact = InteractingSquirmers(N, xs, ys, orients, a, betasim, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border)
                 history = interact.loop_time()
-                print(interact.B2)
                 if output_type == 'plot':
                     dir = 'graphs/simulations/' + labelbeta
                     plot_sim_nsquirmers(history, 1, 1, 2, a, False, False, filename=filename, dir=dir)
