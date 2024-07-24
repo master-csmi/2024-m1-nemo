@@ -85,7 +85,7 @@ class InteractingSquirmers:
 
         Vc = np.minimum(a/dists, 0.5)
 
-        tmp = -(self.Es/(np.pi*self.mu*a**2))*((2*Vc)**13-(1/2)*(2*Vc)**7)*(1/dists)
+        tmp = -(self.Es/(2*np.pi*self.mu*a**2))*(2*(2*Vc)**13-(2*Vc)**7)*(1/dists)
         Fs_x = tmp*Dxs
         Fs_y = tmp*Dys
         return Fs_x, Fs_y
