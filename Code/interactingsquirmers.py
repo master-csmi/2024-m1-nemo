@@ -85,7 +85,7 @@ class InteractingSquirmers:
 
         Vc = np.minimum(a/dists, 0.5)
 
-        tmp = -(self.Es/(np.pi*self.mu*a**2))*((2*Vc)**13-(1/2)*(2*Vc)**7)*(1/dists)
+        tmp = -(self.Es/(2*np.pi*self.mu*a**2))*(2*(2*Vc)**13-(2*Vc)**7)*(1/dists)
         Fs_x = tmp*Dxs
         Fs_y = tmp*Dys
         return Fs_x, Fs_y
@@ -479,22 +479,25 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
         plot_sim_nsquirmers(history, Nx, Ny, N, a, border_plot, False, filename=filename, dir=dir)
     elif choice == 'border':
         a = 0.05
+        betas = [(0, "beta0"), (-1.5, "betam3_2"), (1.5, "beta3_2"), (-3, "betam3"), (3, "beta3")]
         xs = [-0.4]
         ys = [-0.7]
-        orient = [[-np.pi/6], [-np.pi/4], [-np.pi/3], [-np.pi/2]] 
+        orient = [(-np.pi/6, "mpi_6"), (-np.pi/4, "mpi_4"), (-np.pi/3, "mpi_3"), (-np.pi/2, "mpi_2")] 
         N = 1
         sim_border = True
         T = 0.9
         v0 = 1
         Nx = 0.5
         Ny = 1
-        for i, pi in enumerate(orient):
-            filename = 'sim_num_' + str(i)
-            print(filename)
-            interact = InteractingSquirmers(N, xs, ys, pi, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border)
-            history = interact.loop_time()
+        for beta, labelbeta in betas:
+            for pi, labelpi in orient:
+                filename = labelpi
+                interact = InteractingSquirmers(N, xs, ys, [pi], a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border)
+                history = interact.loop_time()
 
-            plot_sim_nsquirmers(history, Nx, Ny, N, a, border_plot, sim_border, filename=filename, dir='graphs/border')
+                dir = 'graphs/border/' + labelbeta
+
+                plot_sim_nsquirmers(history, Nx, Ny, N, a, border_plot, sim_border, filename=filename, dir=dir)
     elif choice == 'Eo_sim':
         #amplitude of orientational interactions
         #Eo[0] = Eoinitial, E[1] = Eobrumley, E[2] = Eolauga
@@ -528,7 +531,7 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
                         create_video_from_history(history, 1, 1, 2, a, filename=filenameeo, dir=direo)
 
     elif choice == 'sim_2_sq':
-        betas = [(0, "beta0"), (-7.5, "betainf"), (7.5, "betasup")]
+        betas = [(0, "beta0"), (-1.5, "betam3_2"), (1.5, "beta3_2"), (-3, "betam3"), (3, "beta3")]
         while True:
             output_type = input("Which type of simulation? (plot/video): ").strip().lower()
             if output_type in ['plot', 'video']:
@@ -547,8 +550,8 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
                 interact = InteractingSquirmers(N, xs, ys, orients, a, betasim, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border)
                 history = interact.loop_time()
                 if output_type == 'plot':
-                    dir = 'graphs/simulations/' + labelbeta
+                    dir = 'graphs/simulations/sim_sq_sq/' + labelbeta
                     plot_sim_nsquirmers(history, 1, 1, 2, a, False, False, filename=filename, dir=dir)
                 else:
-                    dir = 'videos/simulations/' + labelbeta
+                    dir = 'videos/simulations/sim_sq_sq' + labelbeta
                     create_video_from_history(history, 1, 1, 2, a, filename=filename, dir=dir)

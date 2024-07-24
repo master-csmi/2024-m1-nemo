@@ -22,7 +22,7 @@ def test_interact():
     #cut-off for -log
     lnEps_cr = a*0.001
     #amplitude of steric interactions
-    Es = 0.1
+    Es = 0.05
     #simulation time
     T = 2
     #periodicity of outputs
