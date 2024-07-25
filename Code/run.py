@@ -18,7 +18,7 @@ def main(simulation, N, filename):
     #squirmers' radius
     a = 0.02
     #betas
-    beta = 0
+    beta = 1.5
     #time-step
     dt = 1e-4
     #cut-off for -log
@@ -26,7 +26,7 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 0.05
     #simulation time
-    T = 5
+    T = 50
     #periodicity of outputs
     dt_out = 0.01
     #viscovity parameter
@@ -34,7 +34,7 @@ def main(simulation, N, filename):
     #distance of steric interactions
     ds = 2*a*2**(1./6)
     #Translational diffusivity
-    D = [(0.5, "D0_5"), (1, "D1"), (3, "D3")]
+    D = 0
     #Translational noise
     n = 1e-2
     #Angular noise

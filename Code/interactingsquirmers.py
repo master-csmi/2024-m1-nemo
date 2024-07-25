@@ -1,8 +1,9 @@
 import numpy as np
 import matplotlib
+import gc
 matplotlib.use('Agg')
 from squirmer import Squirmer
-from plot import plot_sim_nsquirmers, create_video_from_history, plot_time
+from plot import plot_sim_nsquirmers, create_video_from_history, plot_time, plot_polars
 
 class InteractingSquirmers:
 
@@ -241,6 +242,18 @@ class InteractingSquirmers:
         self.list_polar = []
         self.list_cluster_param = []
 
+        Dxs, Dys, dists = self.distance_all()
+
+        #Minimum distance between all of the squirmers
+        dist = np.array(dists)
+        dist_nz = dist[dist!=0]
+        if dist_nz.size > 0:
+            min_dist = np.min(dist_nz - 2*a)
+            self.vector_dists_min.append(min_dist)
+        
+        #Polar order parameter
+        self.list_polar.append(self.polar_order_parameter())
+
         for t in np.arange(0, self.T, self.dt):
             self.Fs_x.fill(0)
             self.Fs_y.fill(0)
@@ -252,13 +265,6 @@ class InteractingSquirmers:
             self.nos.fill(0)
 
             Dxs, Dys, dists = self.distance_all()
-
-            #Minimum distance between all of the squirmers
-            dist = np.array(dists)
-            dist_nz = dist[dist!=0]
-            if dist_nz.size > 0:
-                min_dist = np.min(dist_nz - 2*a)
-                self.vector_dists_min.append(min_dist)
             
             #Clustering order parameter
             dist_neigh = (dists<self.R)&(dists!=0)
@@ -365,15 +371,22 @@ class InteractingSquirmers:
             if np.any(mask_y2):
                 self.ys[mask_y2], self.orientations[mask_y2] = self.ref_border_y(self.ys[mask_y2], self.orientations[mask_y2], 2)
             
-            #Polar order parameter
-            self.list_polar.append(self.polar_order_parameter())
-            
             if t >= tout:
                 print(f"{(tout/self.T)*100} %")
                 data = [self.xs.tolist(), self.ys.tolist(), self.orientations.tolist(),
                         self.Fs_x.tolist(), self.Fs_y.tolist(), self.Fl_x.tolist(), self.Fl_y.tolist(),
                         self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist(), tout]
                 history.append(data)
+
+                #Minimum distance between all of the squirmers
+                dist = np.array(dists)
+                dist_nz = dist[dist!=0]
+                if dist_nz.size > 0:
+                    min_dist = np.min(dist_nz - 2*a)
+                    self.vector_dists_min.append(min_dist)
+                
+                #Polar order parameter
+                self.list_polar.append(self.polar_order_parameter())
                 tout += self.dt_out
 
         self.history = history
@@ -543,7 +556,9 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
         orients = np.random.uniform(0, 2*np.pi, size=N)
         xs = np.empty(N)
         ys = np.empty(N)
-        dir = 'videos'
+        polars = []
+        D = [(0.5, "D0_5"), (1, "D1"), (3, "D3")]
+        dir = 'videos/simulations/sim_D'
 
         for k in range(N):
             while True:
@@ -557,8 +572,16 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
             interact = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, d, n, no, border)
             history = interact.loop_time()
             filename = labeld
-            dir = 'videos/simulations/sim_D'
             plot_time(interact, interact.vector_dists_min, "min_dist_" + filename, 'minimal distance', dir=dir)
             plot_time(interact, interact.list_polar, "polar_" + filename, 'polar parameter', dir=dir)
+            polars.append(interact.list_polar)
+
+            del interact.vector_dists_min
+            del interact.list_polar
+            del history
+            gc.collect()
+
             print(f"Simulation {labeld} done")
             # create_video_from_history(history, Nx, Ny, N, a, filename=filename, dir=dir)
+        plot_polars(interact, polars, D, dir=dir)
+        
