@@ -307,17 +307,17 @@ In addition, we need to compute $\partial_{R_i} V_i$ to obtain the force applied
 
 \begin{align*}
     \frac{\partial V_i}{\partial X} &= \frac{\partial}{\partial X} \left( \frac{E_s}{6\pi\mu r} \left[ \left( \frac{r}{\lvert R - R_i \rvert} \right)^{12} - \left( \frac{r}{\lvert R - R_i \rvert} \right) ^6 \right] \right) \\
-    &= \frac{\partial}{\partial X} \left( \frac{E_s}{6\pi\mu r} \left[ \left( \frac{r}{\sqrt{( X-X_{box})^2 + (Y-Y_{box})^2)}} \right)^{12} - \left( \frac{r}{\sqrt{( X-X_{box})^2 + (Y-Y_{box})^2)}} \right) ^6 \right] \right) \\
+    &= \frac{\partial}{\partial X} \left( \frac{E_s}{6\pi\mu r} \left[ \left( \frac{r}{\sqrt{( X_{box}-X)^2 + (Y_{box}-Y)^2}} \right)^{12} - \left( \frac{r}{\sqrt{( X_{box}-X)^2 + (Y_{box}-Y)^2}} \right) ^6 \right] \right) \\
     &= \frac{E_s}{6\pi\mu r}\left[ 12(X_{box}-X)\frac{r^{12}}{\lvert R - R_i\rvert^{14}} - 6(X_{box}-X)\frac{r^6}{\lvert R-R_i\rvert^8} \right] \\
-    &= -\frac{E_s (X-X_{box})}{\pi\mu r^2 \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right] 
+    &= -\frac{E_s (X_{box}-X)}{\pi\mu r^2 \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right] 
 \end{align*}
-Equivalently, we have : $\frac{\partial V_i}{\partial Y}$ = $ - \frac{E_s (Y-Y_{box})}{\pi\mu r^2 \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right]$
+Equivalently, we have : $\frac{\partial V_i}{\partial Y}$ = $ - \frac{E_s (Y_{box}-Y)}{\pi\mu r^2 \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right]$
 
 We have : 
 \begin{equation*}
     \boxed{\nabla_{R_i} V_i = \begin{pmatrix}
-        - \frac{E_s (X-X_{box})}{\pi\mu r^2 \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right] \\
-        - \frac{E_s (Y-Y_{box})}{\pi\mu r^2 \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right]
+        - \frac{E_s (X_{box}-X)}{\pi\mu r^2 \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right] \\
+        - \frac{E_s (Y_{box}-Y)}{\pi\mu r^2 \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right]
     \end{pmatrix}}
 \end{equation*}
 
@@ -471,7 +471,8 @@ Similarly as for the forces, the torques produced by the walls can be calculated
 
 
 \section{Implementation}
-In this section we will detail the files of the \texttt{\href{https://github.com/master-csmi/2024-m1-nemo/tree/main/Code}{Code}} directory.
+In this section we will detail the files of the \texttt{\href{https://github.com/master-csmi/2024-m1-nemo/tree/main/Code}{Code}} directory,
+it is detailed with comments within the code itself.
 \subsection{vicsek}
 \subsubsection*{Parameters}
 \begin{itemize}
@@ -551,30 +552,43 @@ This file contains two functions:
 \subsubsection*{Parameters}
 This file implements the \texttt{Interactingsquirmers} class which takes:
 \begin{itemize}
-   \item two \texttt{Squirmer}
-   \item \texttt{R}, half of the length of one side of the square in which the two \texttt{Squirmer} will move
+   \item \texttt{N}, the number of squirmers
+   \item \texttt{xs}, \texttt{ys} and \texttt{orientations} the positions and orientations of the squirmers
+   \item \texttt{radius}, the radius of the squirmers
+   \item \texttt{beta}, the $\beta$ parameter
+   \item \texttt{v0}, the velocity $v_0$
+   \item \texttt{Nx} and \texttt{Ny}, the length and width of the rectangle
    \item \texttt{dt}, the time step and \texttt{dt\_out} the time step for output
    \item \texttt{T}, the final time of simulation
    \item \texttt{Es}, the amplitude (intensity) of steric interactions
    \item \texttt{ds}, the distance where the steric interactions become significative
    \item \texttt{mu}, the viscosity
-   \item \texttt{Eo}, the amplitude of lubrication torque interactions
+   \item \texttt{R}, the distance which defines if a particle is seen as a neighbour for the clustering order parameter
    \item \texttt{lnEps\_cr}, threshold value for \( -\log(\epsilon) \)
+   \item \texttt{D}, the translational diffusivity $D$
+   \item \texttt{n} and \texttt{no} the noises associated with the forces and torques
+   \item \texttt{border}, a boolean which defines if the simulation is made in a box(\texttt{True}) or a chanel(\texttt{False})
 \end{itemize}
 
 \subsubsection*{Methods}
 This class has many functions:
 \begin{itemize}
-   \item \texttt{is\_in\_square()} and \texttt{check\_squirmers\_square()} verify if the $Squirmers$ 
-    are initially in the square.
-   \item \texttt{distance\_sq()} returns $(Dx, Dy)$ the directional vector of $R_{i}$ to $R_{j}$ 
-   and the distance between the two.
-   \item \texttt{forcesSteric(Dx, Dy, dist)} returns the steric forces $(Fs_x, Fs_y)$ computed with the directional vector and the distance calculated with \texttt{distance\_sq()}.
-   \item \texttt{forcesLubrification()} and \texttt{torquesLubrification()} each accepts an argument $choice$ (1 for squirmer1 and 2 for squirmer2)
-   and returns the according lubrification forces and torques.
-   \item \texttt{loop\_time()} is the primary function which updates the positions and orientations of each $Squirmer$
-   for each time step \texttt{dt} based on the steric forces and the lubrification forces and torques computed by \texttt{forcesLubrification()}, 
-   \texttt{torquesLubrification()} and \texttt{forcesSteric()}, then puts all of the relevant information in a list
+   \item \texttt{is\_in\_rectangle()} and \texttt{check\_squirmers\_rectangle()} verify if the squirmers 
+    are initially in the rectangle.
+   \item \texttt{polar\_order\_parameter()} returns the polar order parameter $v_a$.
+   \item \texttt{distance\_all()} returns \texttt{(Dx, Dy, dists)} the directional vector of $R_{i}$ to $R_{j}$ 
+   and the distance between each squirmer.
+   \item \texttt{forcesSteric(Dxs, Dys, dists)} returns the steric forces \texttt{(Fs\_x, Fs\_y)} computed with the directional vector and the distance calculated with \texttt{distance\_all()}.
+   \item \texttt{forcesLubrification(Dx, Dy, dist, theta)} and \texttt{torquesLubrification(Dx, Dy, dist, theta)}
+   returns the lubrification forces and torques.
+   \item \texttt{compute\_force\_squirmer\_border\_x(self, xs, ys)} and \texttt{compute\_force\_squirmer\_border\_y(self, xs, ys)}
+   computes and returns the steric forces between the squirmers and the according walls.
+   \item \texttt{force\_torque\_lubrification\_border\_x(self, xs, theta, border)} and \texttt{force\_torque\_lubrification\_border\_y(self, ys, theta, border)}
+   computes and returns the lubrification forces and torques between the squirmers and the according walls.
+   \item \texttt{ref\_border\_x(self, xs, orientation, boundary)} and \texttt{ref\_border\_y(self, xs, orientation, boundary)} simulates reflective borders
+   and are used when a squirmer 
+   \item \texttt{loop\_time()} is the primary function which updates the positions and orientations of each squirmer
+   for each time step \texttt{dt} based on the steric forces and the lubrification forces and torques, then puts all of the relevant information in a list
    at each time step \texttt{dt\_out}. The function then returns the list.
    \item \texttt{run()} takes three file name as inputs, for the csv file, position graph and distance graph name, 
    then executes \texttt{check\_squirmers\_square()} and \texttt{loop\_time()},

@@ -60,13 +60,13 @@ class InteractingSquirmers:
         summ_final = np.sqrt(sum1**2 + sum2**2)
         return summ_final
     
-    def is_in_square(self):
+    def is_in_rectangle(self):
         #return True if the squirmers are in the square
         return np.all(abs(self.xs) <= (self.Nx - self.radius)) & np.all(abs(self.ys) <= (self.Ny - self.radius))
 
-    def check_squirmers_square(self):
+    def check_squirmers_rectangle(self):
         #return True if the squirmers have been successfully initialized
-        if (self.is_in_square() == False):
+        if (self.is_in_rectangle() == False):
             raise ValueError("Squirmers must be inside the square")
         return True
     
