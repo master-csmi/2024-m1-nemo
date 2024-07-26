@@ -1,8 +1,9 @@
 import numpy as np
 import matplotlib
+import gc
 matplotlib.use('Agg')
 from squirmer import Squirmer
-from plot import plot_sim_nsquirmers, create_video_from_history, plot_time
+from plot import plot_sim_nsquirmers, create_video_from_history, plot_time, plot_polars
 
 class InteractingSquirmers:
 
@@ -39,12 +40,9 @@ class InteractingSquirmers:
         np.random.shuffle(colors)
         self.colors = colors[:N]
         
-        self.squirmers = np.empty(N, dtype=object)
-
-        for i in range(N):
-            self.squirmers[i] = Squirmer(self.xs[i], self.ys[i], self.orientations[i], radius, beta, v0)
-        self.B1 = self.squirmers[0].B1
-        self.B2 = self.squirmers[0].B2
+        squirmers = Squirmer(self.xs[0], self.ys[0], self.orientations[0], radius, beta, v0)
+        self.B1 = squirmers.B1
+        self.B2 = squirmers.B2
 
     def is_light_color(self, hex_color):
         #Define what a color too bright is
@@ -126,15 +124,15 @@ class InteractingSquirmers:
     def compute_force_squirmer_border_x(self, xs, ys):
         """Uses the distances between the squirmers and the wall, a and mu
         to compute and return the steric forces exerted on the squirmers in the x axis"""
-        RRi = np.sqrt((xs - self.Nx)**2 + (ys - self.Ny)**2)
-        tmp = -((self.Es*(self.Nx - xs))/(np.pi*self.mu*self.radius**2*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
+        RRi = np.sqrt((abs(xs) - self.Nx)**2 + (abs(ys) - self.Ny)**2)
+        tmp = -((self.Es*(self.Nx - abs(xs)))/(np.pi*self.mu*self.radius**2*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
         return tmp*xs
     
     def compute_force_squirmer_border_y(self, xs, ys):
         """Uses the distances between the squirmers and the wall, a and mu
         to compute and return the steric forces exerted on the squirmers in the y axis"""
-        RRi = np.sqrt((xs - self.Nx)**2 + (ys - self.Ny)**2)
-        tmp = -((self.Es*(self.Ny - ys))/(np.pi*self.mu*self.radius**2*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
+        RRi = np.sqrt((abs(xs) - self.Nx)**2 + (abs(ys) - self.Ny)**2)
+        tmp = -((self.Es*(self.Ny - abs(ys)))/(np.pi*self.mu*self.radius**2*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
         return tmp*ys
     
     def force_torque_lubrification_border_x(self, xs, theta, border):
@@ -244,6 +242,23 @@ class InteractingSquirmers:
         self.list_polar = []
         self.list_cluster_param = []
 
+        Dxs, Dys, dists = self.distance_all()
+
+        #Minimum distance between all of the squirmers
+        dist = np.array(dists)
+        dist_nz = dist[dist!=0]
+        if dist_nz.size > 0:
+            min_dist = np.min(dist_nz - 2*a)
+            self.vector_dists_min.append(min_dist)
+        
+        #Polar order parameter
+        self.list_polar.append(self.polar_order_parameter())
+
+        #Clustering order parameter
+        dist_neigh = (dists<self.R)&(dists!=0)
+        n_neigh = np.sum(dist_neigh, axis=1)
+        self.list_cluster_param.append((1/(self.N*6))*sum(n_neigh))
+
         for t in np.arange(0, self.T, self.dt):
             self.Fs_x.fill(0)
             self.Fs_y.fill(0)
@@ -256,37 +271,13 @@ class InteractingSquirmers:
 
             Dxs, Dys, dists = self.distance_all()
 
-            #Minimum distance between all of the squirmers
-            dist = np.array(dists)
-            dist_nz = dist[dist!=0]
-            if dist_nz.size > 0:
-                min_dist = np.min(dist_nz - 2*a)
-                self.vector_dists_min.append(min_dist)
-                if min_dist < 0:
-                    print(f"min_dist = {min_dist}")
-                    print(f"t_min_dist <0 = {t}")
-                    indices_min = np.argwhere((dist - 2 * a) == min_dist)
-
-                    print(f"Squirmer1: x={self.xs[indices_min[0][0]]}, y={self.ys[indices_min[0][1]]}")
-                    print(f"Squirmer2: x={self.xs[indices_min[1][0]]}, y={self.ys[indices_min[1][1]]}")
-            
-            #Clustering order parameter
-            dist_neigh = (dists<self.R)&(dists!=0)
-            n_neigh = np.sum(dist_neigh, axis=1)
-            self.list_cluster_param.append((1/(self.N*self.N/2))*sum(n_neigh))
-
             #Steric Forces
             dist_steric = (dists<self.ds)&(dists!=0)
             dist_lubrification = (dists<=3*a)&(dists!=0)
             j_dist_steric = np.where(dist_steric)
             j_dist_lubr = np.where(dist_lubrification)
-            # print(f"Dxs = {Dxs}\n Dys = {Dys}\n dists = {dists}")
             Fs_x, Fs_y = self.forcesSteric(Dxs[dist_steric], Dys[dist_steric], dists[dist_steric])
-            # print(f"Fs_x = {Fs_x} and shape = {Fs_x.shape}")
-            # print(f"self_Fs_x = {self.Fs_x[j_dist_steric[0]]}")
             self.Fs_x[j_dist_steric[0]] += (Fs_x)
-            # print(f"self.Fs_x après = {self.Fs_x[j_dist_steric[0]]} and shape = {self.Fs_x[j_dist_steric[0]].shape}")
-            # print("\n")
             self.Fs_y[j_dist_steric[0]] += (Fs_y)
 
             #Lubrification Forces and Torques
@@ -298,8 +289,6 @@ class InteractingSquirmers:
             self.Fl_y[j_dist_lubr[1]] -= Fl_y
             self.val[j_dist_lubr[0]] += val1
             self.val[j_dist_lubr[1]] += val2
-            # print(f"Fl_x = {self.Fl_x}")
-            # print(f"Fl_y = {self.Fl_y}\n")
 
             #Noises
             self.ns = np.random.uniform(-self.n/2, self.n/2, size=self.N)
@@ -314,7 +303,9 @@ class InteractingSquirmers:
 
             #If we simulate in a box
             if self.border:
+                #Steric forces
                 i_dist_force_x = np.where(dist_forces_x)[0]
+                #Lubrification forces and torques
                 i_dist_lub_x = np.where(dist_lub_x)[0]
                 
                 self.Fs_pw[0][i_dist_force_x] += self.compute_force_squirmer_border_x(self.xs[i_dist_force_x], self.ys[i_dist_force_x])
@@ -330,9 +321,12 @@ class InteractingSquirmers:
                 self.gamma_w[i_dist_lub_x_r] += gamma_wr
                 self.gamma_w[i_dist_lub_x_l] += gamma_wl
 
+            #Steric forces
             i_dist_force_y = np.where(dist_forces_y)[0]
+            #Lubrification forces and torques
             i_dist_lub_y = np.where(dist_lub_y)[0]
 
+            self.Fs_pw[1][i_dist_force_y] += self.compute_force_squirmer_border_y(self.xs[i_dist_force_y], self.ys[i_dist_force_y])
             self.Fs_pw[1][i_dist_force_y] += self.compute_force_squirmer_border_y(self.xs[i_dist_force_y], self.ys[i_dist_force_y])
             
             i_dist_lub_y_u = i_dist_lub_y[self.ys[i_dist_lub_y] > 0]
@@ -345,8 +339,6 @@ class InteractingSquirmers:
             self.Fl_y[i_dist_lub_y_d] += Fl_yd
             self.gamma_w[i_dist_lub_y_u] += gamma_wu
             self.gamma_w[i_dist_lub_y_d] += gamma_wd
-
-            # print(self.val)
 
             #Evolution of position
             self.orientations += self.dt*(self.val + self.gamma_w) + np.sqrt(2*self.dt*self.Do)*self.nos
@@ -379,14 +371,6 @@ class InteractingSquirmers:
                 self.ys[mask_y1], self.orientations[mask_y1] = self.ref_border_y(self.ys[mask_y1], self.orientations[mask_y1], 1)
             if np.any(mask_y2):
                 self.ys[mask_y2], self.orientations[mask_y2] = self.ref_border_y(self.ys[mask_y2], self.orientations[mask_y2], 2)
-
-            for i, s in enumerate(self.squirmers):
-                s.x = self.xs[i]
-                s.y = self.ys[i]
-                s.orientation = self.orientations[i]
-            
-            #Polar order parameter
-            self.list_polar.append(self.polar_order_parameter())
             
             if t >= tout:
                 print(f"{(tout/self.T)*100} %")
@@ -394,6 +378,21 @@ class InteractingSquirmers:
                         self.Fs_x.tolist(), self.Fs_y.tolist(), self.Fl_x.tolist(), self.Fl_y.tolist(),
                         self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist(), tout]
                 history.append(data)
+
+                #Clustering order parameter
+                dist_neigh = (dists<self.R)&(dists!=0)
+                n_neigh = np.sum(dist_neigh, axis=1)
+                self.list_cluster_param.append((1/(self.N*6))*sum(n_neigh))
+
+                #Minimum distance between all of the squirmers
+                dist = np.array(dists)
+                dist_nz = dist[dist!=0]
+                if dist_nz.size > 0:
+                    min_dist = np.min(dist_nz - 2*a)
+                    self.vector_dists_min.append(min_dist)
+                
+                #Polar order parameter
+                self.list_polar.append(self.polar_order_parameter())
                 tout += self.dt_out
 
         self.history = history
@@ -405,7 +404,8 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
     choice: 'plot' to plot the graph of the behaviors of the squirmers in the 'graphs' directory
             'video' to create a video of the behaviors of the squirmers in the 'videos' directory
             'Eo_sim', not used anymore, to test every Eo parameter and plot or make a video
-            'border', to simulate the behaviors of a squirmer near a wall, only plot possible
+            'border', to simulate the behaviors of a squirmer near a wall, can only plot
+            'sim_2_sq', to simulate the behaviors of two squirmers near each other, plot and video possible
     N: number of squirmers
     a: radius of the squirmers
     beta: beta of the squirmers
@@ -555,3 +555,39 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
                 else:
                     dir = 'videos/simulations/sim_sq_sq' + labelbeta
                     create_video_from_history(history, 1, 1, 2, a, filename=filename, dir=dir)
+
+    elif 'sim_D':
+        #coordinates and orientations
+        orients = np.zeros(N, dtype=float)
+        orients = np.random.uniform(0, 2*np.pi, size=N)
+        xs = np.empty(N)
+        ys = np.empty(N)
+        polars = []
+        D = [(0.5, "D0_5"), (1, "D1"), (3, "D3")]
+        dir = 'videos/simulations/sim_D'
+
+        for k in range(N):
+            while True:
+                x = np.random.uniform(-(Nx-2*a), (Nx-2*a))
+                y = np.random.uniform(-(Ny-2*a), (Ny-2*a))
+                if k == 0 or np.all(np.sqrt((xs[:k] - x)**2 + (ys[:k] - y)**2) > 2*a):
+                    xs[k] = x
+                    ys[k] = y
+                    break
+        for (d, labeld) in D:
+            interact = InteractingSquirmers(N, xs, ys, orients, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, d, n, no, border)
+            history = interact.loop_time()
+            filename = labeld
+            plot_time(interact, interact.vector_dists_min, "min_dist_" + filename, 'minimal distance', dir=dir)
+            plot_time(interact, interact.list_polar, "polar_" + filename, 'polar parameter', dir=dir)
+            polars.append(interact.list_polar)
+
+            del interact.vector_dists_min
+            del interact.list_polar
+            del history
+            gc.collect()
+
+            print(f"Simulation {labeld} done")
+            # create_video_from_history(history, Nx, Ny, N, a, filename=filename, dir=dir)
+        plot_polars(interact, polars, D, dir=dir)
+        

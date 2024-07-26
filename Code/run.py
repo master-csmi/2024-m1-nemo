@@ -18,7 +18,7 @@ def main(simulation, N, filename):
     #squirmers' radius
     a = 0.02
     #betas
-    beta = 0
+    beta = 1.5
     #time-step
     dt = 1e-4
     #cut-off for -log
@@ -26,7 +26,7 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 0.05
     #simulation time
-    T = 10
+    T = 5
     #periodicity of outputs
     dt_out = 0.01
     #viscovity parameter
@@ -56,6 +56,8 @@ def main(simulation, N, filename):
         run('Eo_sim', N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border, filename, border_plot)
     elif simulation == 'sim_2_sq':
         run('sim_2_sq', N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border, filename, border_plot)
+    elif simulation == 'sim_D':
+        run('sim_D', N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border, filename, border_plot)
     elif simulation == 'vicsek':
         sim_vicsek()
     end_time = time.time()
@@ -65,7 +67,7 @@ def main(simulation, N, filename):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run squirmer simulations.")
 
-    parser.add_argument('simulation', choices=['video', 'plot', 'Eo_sim', 'border', 'vicsek', 'sim_2_sq'],
+    parser.add_argument('simulation', choices=['video', 'plot', 'Eo_sim', 'border', 'vicsek', 'sim_2_sq', 'sim_D'],
                         help="Choose which simulation to run")
     parser.add_argument('N', type=int, help="Number of squirmer")
     parser.add_argument('filename', type=str, help="Filename for saving the results")

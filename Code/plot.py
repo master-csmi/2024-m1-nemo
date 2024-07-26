@@ -111,7 +111,7 @@ def plot_sim_nsquirmers(histories, Nx, Ny, N, a, border_plot, sim_border, filena
 
 def plot_time(interact, list_plot, filename, label, dir='graphs'):
     plt.figure()
-    t = np.arange(0, interact.T, interact.dt)
+    t = np.arange(0, interact.T, interact.dt_out)
     plt.plot(t, list_plot)
     plt.xlabel('Time step')
     plt.ylabel(label)
@@ -120,6 +120,22 @@ def plot_time(interact, list_plot, filename, label, dir='graphs'):
     if not os.path.exists(dir):
         os.makedirs(dir)
     save_path = os.path.join(dir, filename + '.png')
+    plt.savefig(save_path)
+    plt.close()
+
+def plot_polars(interact, list_polars, D, dir='graphs'):
+    plt.figure()
+    t = np.arange(0, interact.T, interact.dt_out)
+    for i in range(len(list_polars)):
+        plt.plot(t, list_polars[i], label=D[i][1])
+    plt.xlabel('Time step')
+    plt.ylabel('Polar order')
+    plt.legend()
+    plt.grid(True)
+
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+    save_path = os.path.join(dir, 'combined_polars.png')
     plt.savefig(save_path)
     plt.close()
 
