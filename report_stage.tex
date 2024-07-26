@@ -446,7 +446,7 @@ $\Gamma_{i(j)\rightarrow i}$ = $\frac{16 \lambda}{5(\lambda +1)} \mu \pi r^2 p_i
     = \frac{8}{5}\mu\pi r^2p_i\hat{R}_{ij}^{\perp}\frac{3}{2}v_0(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))
 \end{align*}
 \begin{equation*}
-    \boxed{\Gamma_{i(j)->i} = \frac{3}{10}\frac{v_0}{r}p_i\hat{R}_{ij}^{\perp}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))}
+    \boxed{\Gamma_{i(j)\rightarrow i} = \frac{3}{10}\frac{v_0}{r}p_i\hat{R}_{ij}^{\perp}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))}
 \end{equation*}
 
 The torques acting on the squirmer $j$ can be calculated explicitly by : \\
@@ -585,16 +585,21 @@ This class has many functions:
    computes and returns the steric forces between the squirmers and the according walls.
    \item \texttt{force\_torque\_lubrification\_border\_x(self, xs, theta, border)} and \texttt{force\_torque\_lubrification\_border\_y(self, ys, theta, border)}
    computes and returns the lubrification forces and torques between the squirmers and the according walls.
-   \item \texttt{ref\_border\_x(self, xs, orientation, boundary)} and \texttt{ref\_border\_y(self, xs, orientation, boundary)} simulates reflective borders
-   and are used when a squirmer 
+   \item \texttt{ref\_border\_x(self, xs, orientation, boundary)} and \texttt{ref\_border\_y(self, xs, orientation, boundary)} simulates reflective borders when \texttt{border} is \texttt{True}.
+   \item \texttt{perio\_border\_x(self, xs, boundary)} simulates periodic borders when \texttt{border} is \texttt{False}.
    \item \texttt{loop\_time()} is the primary function which updates the positions and orientations of each squirmer
-   for each time step \texttt{dt} based on the steric forces and the lubrification forces and torques, then puts all of the relevant information in a list
-   at each time step \texttt{dt\_out}. The function then returns the list.
-   \item \texttt{run()} takes three file name as inputs, for the csv file, position graph and distance graph name, 
-   then executes \texttt{check\_squirmers\_square()} and \texttt{loop\_time()},
-   exports the data into a csv file in the \texttt{csv\_files} directory with \texttt{export\_data\_csv(filename\_csv, data)} 
-   , then plots the positions and distances of the $Squirmers$ in the \texttt{graphs} with \texttt{plot\_squirmers\_position(history, filename\_pos, dir)}
-   and \texttt{plot\_dist\_sq(history, filename\_dist, dir)}.
+   for each time step \texttt{dt} based on the steric forces and the lubrification forces and torques, then updates four list, \texttt{self.vector\_min\_dist} for the minimal 
+   distance between the squirmers, \texttt{self.list\_polar} for the polar order parameter, \texttt{self.list\_cluster\_param} for 
+   the clustering order parameter and \texttt{history} for the positions, orientations,
+   forces and torques at each time step \texttt{dt\_out}. The function then returns \texttt{history}.
+   \item \texttt{run(choice, N, a, beta, v0, Nx, Ny, dt, dt\_out, T, Es, ds, mu, R, lnEps\_cr, D, n, no, border, filename, border\_plot)}
+   is used to run the simulation, it takes the argument \texttt{choice} that can be:
+   \begin{itemize}
+    \item 'plot' to plot the graph of the behaviors of the squirmers in the 'graphs' directory
+    \item 'video' to create a video of the behaviors of the squirmers in the 'videos' directory
+    \item 'Eo\_sim', not used anymore, to test every Eo parameter and plot or make a video
+    \item 'border', to simulate the behaviors of a squirmer near a wall, only plot possible
+   \end{itemize}
 \end{itemize}
 
 \subsection{simulation}
@@ -643,9 +648,9 @@ and modify the \texttt{Code/run.py} file with the parameters one wants to test,
 \subsubsection{Evolution of orientation}
 The evolution of the orientation of one squirmer is given by : 
 $$
-\frac{d \theta_i}{dt} = \sum \Gamma_{ij->i} + \sum \Gamma_{ji->i} +  \Gamma_{i}^W.
+\frac{d \theta_i}{dt} = \sum \Gamma_{i(j)\rightarrow i} + \sum \Gamma_{j(i)\rightarrow i} +  \Gamma_{i}^W.
 $$
-$\Gamma_{ij->k}$ is the torque exerted on the $k^\mathrm{th}$ particle by the flow associated to the $i^\mathrm{th}$ particle, but perturbed by the presence of the $j^\mathrm{th}$ particle.\\
+$\Gamma_{ij\rightarrow k}$ is the torque exerted on the $k^\mathrm{th}$ particle by the flow associated to the $i^\mathrm{th}$ particle, but perturbed by the presence of the $j^\mathrm{th}$ particle.\\
 
 \vspace{0.5cm}
 
