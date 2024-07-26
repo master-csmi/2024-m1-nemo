@@ -269,7 +269,7 @@ class InteractingSquirmers:
             #Clustering order parameter
             dist_neigh = (dists<self.R)&(dists!=0)
             n_neigh = np.sum(dist_neigh, axis=1)
-            self.list_cluster_param.append((1/(self.N*self.N/2))*sum(n_neigh))
+            self.list_cluster_param.append((1/(self.N*6))*sum(n_neigh))
 
             #Steric Forces
             dist_steric = (dists<self.ds)&(dists!=0)
