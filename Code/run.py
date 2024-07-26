@@ -26,7 +26,7 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 0.05
     #simulation time
-    T = 50
+    T = 5
     #periodicity of outputs
     dt_out = 0.01
     #viscovity parameter
@@ -42,7 +42,7 @@ def main(simulation, N, filename):
     #Distance of particle seen as "Neighbour"
     R = 0.07
     #border defines the simulation, in a chanel(False) or a box(True)
-    border = False
+    border = True
     #border_plot defines if the borders are plotted or not when using 'plot_sim_nsquirmers'
     border_plot = False
 

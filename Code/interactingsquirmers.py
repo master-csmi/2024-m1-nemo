@@ -124,15 +124,15 @@ class InteractingSquirmers:
     def compute_force_squirmer_border_x(self, xs, ys):
         """Uses the distances between the squirmers and the wall, a and mu
         to compute and return the steric forces exerted on the squirmers in the x axis"""
-        RRi = np.sqrt((xs - self.Nx)**2 + (ys - self.Ny)**2)
-        tmp = -((self.Es*(self.Nx - xs))/(np.pi*self.mu*self.radius**2*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
+        RRi = np.sqrt((abs(xs) - self.Nx)**2 + (abs(ys) - self.Ny)**2)
+        tmp = -((self.Es*(self.Nx - abs(xs)))/(np.pi*self.mu*self.radius**2*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
         return tmp*xs
     
     def compute_force_squirmer_border_y(self, xs, ys):
         """Uses the distances between the squirmers and the wall, a and mu
         to compute and return the steric forces exerted on the squirmers in the y axis"""
-        RRi = np.sqrt((xs - self.Nx)**2 + (ys - self.Ny)**2)
-        tmp = -((self.Es*(self.Ny - ys))/(np.pi*self.mu*self.radius**2*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
+        RRi = np.sqrt((abs(xs) - self.Nx)**2 + (abs(ys) - self.Ny)**2)
+        tmp = -((self.Es*(self.Ny - abs(ys)))/(np.pi*self.mu*self.radius**2*RRi))*(2*(self.radius/RRi)**13-(self.radius/RRi)**7)
         return tmp*ys
     
     def force_torque_lubrification_border_x(self, xs, theta, border):
@@ -254,6 +254,11 @@ class InteractingSquirmers:
         #Polar order parameter
         self.list_polar.append(self.polar_order_parameter())
 
+        #Clustering order parameter
+        dist_neigh = (dists<self.R)&(dists!=0)
+        n_neigh = np.sum(dist_neigh, axis=1)
+        self.list_cluster_param.append((1/(self.N*6))*sum(n_neigh))
+
         for t in np.arange(0, self.T, self.dt):
             self.Fs_x.fill(0)
             self.Fs_y.fill(0)
@@ -265,11 +270,6 @@ class InteractingSquirmers:
             self.nos.fill(0)
 
             Dxs, Dys, dists = self.distance_all()
-            
-            #Clustering order parameter
-            dist_neigh = (dists<self.R)&(dists!=0)
-            n_neigh = np.sum(dist_neigh, axis=1)
-            self.list_cluster_param.append((1/(self.N*6))*sum(n_neigh))
 
             #Steric Forces
             dist_steric = (dists<self.ds)&(dists!=0)
@@ -327,6 +327,7 @@ class InteractingSquirmers:
             i_dist_lub_y = np.where(dist_lub_y)[0]
 
             self.Fs_pw[1][i_dist_force_y] += self.compute_force_squirmer_border_y(self.xs[i_dist_force_y], self.ys[i_dist_force_y])
+            self.Fs_pw[1][i_dist_force_y] += self.compute_force_squirmer_border_y(self.xs[i_dist_force_y], self.ys[i_dist_force_y])
             
             i_dist_lub_y_u = i_dist_lub_y[self.ys[i_dist_lub_y] > 0]
             i_dist_lub_y_d = i_dist_lub_y[self.ys[i_dist_lub_y] < 0]
@@ -377,6 +378,11 @@ class InteractingSquirmers:
                         self.Fs_x.tolist(), self.Fs_y.tolist(), self.Fl_x.tolist(), self.Fl_y.tolist(),
                         self.val.tolist(), self.gamma_w.tolist(), self.Fs_pw.tolist(), tout]
                 history.append(data)
+
+                #Clustering order parameter
+                dist_neigh = (dists<self.R)&(dists!=0)
+                n_neigh = np.sum(dist_neigh, axis=1)
+                self.list_cluster_param.append((1/(self.N*6))*sum(n_neigh))
 
                 #Minimum distance between all of the squirmers
                 dist = np.array(dists)
