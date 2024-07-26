@@ -51,7 +51,7 @@ The main goal is to model the dynamics of a group of squirmers within confined e
 
  
 
-\section{Vicsek Model}
+\section{Vicsek model}
 \begin{center}
     \begin{tikzpicture}
         \draw[color=green, very thick](0,0) circle (2);
@@ -117,37 +117,6 @@ For the y-boundary:
 $$|y_i(t + \Delta t)| = 2L_y - |y_i(t + \Delta t)|,$$
 $$\theta_i(t + \Delta t) = -\theta_i(t + \Delta t).$$
 These conditions ensures that the particles reflect off the boundaries.
-
-\subsection{Implementation}
-The Vicsek model is implemented in the file \texttt{Code/vicsek.py} as a class.
-\subsubsection*{Parameters}
-\begin{itemize}
-    \item $N$ the number of particles in the system
-    \item $R$ the range of interaction of the particles
-    \item $L$ the length of the square
-    \item $v0$ the constant velocity of the particles
-    \item $radius$ the radius of the particles
-    \item $T$ the time of simulation
-    \item $dt$ the time step
-    \item $noise$ the $\eta$ parameter, used to counteract the alignment of the particles
-\end{itemize}
-The class initializes $N$ particles with random position and orientation within the square. The square has reflective boundary conditions.
-\subsubsection*{Methods}
-\begin{itemize}
-    \item \texttt{distance(p1, p2)} returns the distance between \texttt{p1} and \texttt{p2}.
-    \item \texttt{dist\_particles(particle)} returns a list which contains the distances between the particle and all other particles of the system.
-    \item \texttt{how\_many\_in\_square()} prints and returns the percentage of particles inside the square. It is
-    used to test if the code contains errors.
-    \item \texttt{ploar\_order\_parameter()} computes and returns $v_a$ the polar order parameter.
-    \item \texttt{ref\_border\_x(particle, boundary)} and \texttt{ref\_border\_y(particle, boundary)}
-    simulates the reflective borders.
-    \item \texttt{vector\_x(p1, p2)} and \texttt{vector\_y(p1, p2)} return respectively the vector in the x and y direction of \texttt{p1} and \texttt{p2}.
-    \item \texttt{average\_orient(particle)} returns the average orientation of the particles in a range $R$ of the particle in argument (including itself).
-    \item \texttt{update\_orient()} computes the orientation $\theta_i(t + \Delta t)$ using \texttt{average\_orient}.
-    \item \texttt{update\_position()} computes the position $r_i(t + \Delta t)$ using the reflective boundaries if necessary
-    \item \texttt{loop\_time()} uses \texttt{update\_orientation()} and \texttt{update\_position()} for each time iteration.
-    \item \texttt{plot(ax)} plots the square and the particles.
-\end{itemize}
 
 \newpage
 \section{Squirmer model}
@@ -296,7 +265,7 @@ By the second law of Newton, the acceleration is given by:
 $$m\vec{a} = \sum\limits_i \vec{F}_i.\cite{Newton}$$
 The force of viscosity on a small sphere moving through a viscous fluid is given by the Stokes-Einstein relation:
 $$F_d = 6\mu\pi r.\cite{Stokes}$$
-In our case the squirmers don't have inertia, so $\vec{a} = 0$, such as:
+The squirmers have no inertia, so $\vec{a} = 0$, such as:
 $$0 = -F_d\frac{dR_i}{dt} + \sum\limits_{i \ne d} F_i,$$
 we have:
 $$\frac{dR_i}{dt} = \frac{1}{6\mu\pi r}\sum\limits_{i \ne d} F_i.$$
@@ -418,7 +387,7 @@ We have $B_1 = \frac{3}{2}v_0$, $B_2 = B_1\cdot\beta$ and $\lambda=1$, so:
 \begin{align*}
 \footnotesize
 6\mu\pi rF_{i(j)\rightarrow i}^{y} = -9 \mu \pi r \frac{\lambda ^2}{(\lambda +1)^2} \left[ -B_1 p_i\hat{R}_{ij} -B_2 (p_i\hat{R}_{ij})^2 + \frac{1}{2} B_2(p_i\hat{R}^{\perp}_{ij})^2\right](ln \epsilon + O(1))\\
-= -9 \mu \pi r \frac{1}{4}\frac{3}{2}v_0\left[ -p_i\hat{R}_{ij} -\beta (p_i\hat{R}_{ij})^2 + \frac{1}{2} \beta(p_i\hat{R}^{\perp}_{ij})^2\right](ln \epsilon + O(1))
+= -9 \mu \pi r \frac{1}{4}\cdot\frac{3}{2}v_0\left[ -p_i\hat{R}_{ij} -\beta (p_i\hat{R}_{ij})^2 + \frac{1}{2} \beta(p_i\hat{R}^{\perp}_{ij})^2\right](ln \epsilon + O(1))
 \end{align*}
 \begin{equation*}
 \boxed{
@@ -430,62 +399,108 @@ We have $B_1 = \frac{3}{2}v_0$, $B_2 = B_1\cdot\beta$ and $\lambda=1$, so:
 \vspace{0.5cm}
 
 The normal forces acting on the two spheres can be calculated explicitly by: \\
- $F_x^{S_i}$ = $-\frac{4}{5} \mu \pi r \frac{\lambda(\lambda +4)}{(\lambda +1)^2} \sum_{n} B_n W_n(e_i.e_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
+ $F_{i(j)\rightarrow i}^{x}$ = $-\frac{4}{5} \mu \pi r \frac{\lambda(\lambda +4)}{(\lambda +1)^2} \sum_{n} B_n W_n(p_i\hat{R}_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
 \\ So :
+\begin{align*}
+    \footnotesize
+    6\mu\pi rF_{i(j)\rightarrow i}^{x} = -\frac{4}{5}\mu\pi r\frac{5}{4}p_i\hat{R}^{\perp}_{ij}(B_1 + B_2 p_i\hat{R}_{ij})(ln \epsilon + O(1))\\
+    = -\mu\pi r\frac{3}{2}v_0p_i\hat{R}^{\perp}_{ij}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))
+\end{align*}
 \begin{equation*}
     \footnotesize
-    \boxed{F_x^{S_i} = -\frac{4}{5} \mu \pi r \frac{\lambda(\lambda +4)}{(\lambda +1)^2} \left[ B_1\mathrm{sin}(\theta) +B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta)\right] (ln \epsilon + O(1))}
+    \boxed{F_{i(j)\rightarrow i}^{x} = -\frac{1}{4}v_0p_i\hat{R}^{\perp}_{ij}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))}
 \end{equation*}
 
 The effect of a wall can be calculated by replacing one of the spheres with one of infinite diameter:
 \begin{equation*}
     \footnotesize
-    \boxed{F_{zw}^{S_i} = -9 \mu \pi r \left[ B_1 \mathrm{sin}(\theta)\mathrm{cos}(\theta) + \frac{1}{2} B_1  \mathrm{cos}(\theta) (e_i.e^{\perp}_{ij})^2 +B_2 \mathrm{sin}(\theta)\mathrm{cos}^2(\theta) + \frac{1}{2} B_2(2\mathrm{cos}^2(\theta) - 1) (e_i.e^{\perp}_{ij})^2\right](ln \epsilon + O(1))}\\
+    \boxed{F_{w\rightarrow i}^{y} = \frac{9}{4} v_0
+    \left[(p_i\hat{R}_{ij})(1 + \beta p_i\hat{R}_{ij}) - \frac{1}{2}\beta(p_i\hat{R}^{\perp}_{ij})^2\right](ln \epsilon + O(1))}\\
 \end{equation*}
 \begin{equation*}
     \footnotesize
-    \boxed{F_{xw}^{S_i} = -\frac{4}{5} \mu \pi r \left[ B_1\mathrm{sin}(\theta) +B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta)\right] (ln \epsilon + O(1))}
+    \boxed{F_{w\rightarrow i}^{x} = -\frac{1}{5} v_0p_i\hat{R}^{\perp}_{ij}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))}
 \end{equation*}
 
 \subsection{The evolution of the orientation}
 The evolution of the orientation of one squirmer is given by : 
 $$
-\boxed{\frac{d \theta_i}{dt} = \sum \Gamma_{ij->i} + \sum \Gamma_{ji->i} +  \Gamma_{i}^W + \sqrt{2D_o} \eta_o^{(i)}}.
+\boxed{\frac{d \theta_i}{dt} = \sum\limits_{i\ne j} \left[\Gamma_{i(j)\rightarrow i} + \Gamma_{j(i)\rightarrow i}\right] + \sum\limits_{k\in w} \Gamma_{k\rightarrow i}^w + \sqrt{2D_o} \eta_o^{(i)}}.
 $$
 We have:
 \begin{itemize}
-    \item $\Gamma_{ij->k}$ the torque exerted on the $k^\mathrm{th}$ particle by the flow associated to the $i^\mathrm{th}$ particle, but perturbed by the presence of the $j^\mathrm{th}$ particle,
-    \item $\Gamma_{i}^W$ the torque exerted on the $i^\mathrm{th}$ particle by the interactions with the walls,
+    \item $\Gamma_{i(j)\rightarrow k}$ the torque exerted on the $k^{th}$ particle by the flow associated to the $i^{th}$ particle, but perturbed by the presence of the $j^{th}$ particle,
+    \item $\Gamma_{k\rightarrow i}^w$ the torque exerted on the $i^{th}$ particle by the interactions with the $k^{th}$ walls,
     \item $D_o$ the angular diffusivity is equal to $\frac{3D}{4r^2}$,
     \item $\eta_o^{(i)}$ the noises, independent of $\eta^{i}$.
 \end{itemize}
 \vspace{0.5cm}
-
-The torques acting on the squirmer $i$ can be calculated explicitly by : \\
-$\Gamma_{ij->i}$ = $\frac{16 \lambda}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\sum_{n} B_n W_n(e_i.e_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
+Similarly as with the forces, we have $\phi = 8\pi\mu r^3$ the rotation flow around a sphere\cite{Stokes}:
+$$\frac{d \theta_i}{dt} = \frac{1}{\phi}\sum\limits_{i \ne \phi}F_i\cite{Newton}.$$
+The torques acting on the squirmer $i$ can be calculated explicitly by: \\
+$\Gamma_{i(j)\rightarrow i}$ = $\frac{16 \lambda}{5(\lambda +1)} \mu \pi r^2 p_i\hat{R}_{ij}^{\perp}\sum_{n} B_n W_n(p_i\hat{R}_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
 \\ So :
+\begin{align*}
+    \footnotesize
+    \phi \Gamma_{i(j)\rightarrow i} = \frac{8}{5}\mu\pi r^2p_i\hat{R}_{ij}^{\perp}(B_1 + B_2 p_i\hat{R}_{ij})(ln \epsilon + O(1))\\
+    = \frac{8}{5}\mu\pi r^2p_i\hat{R}_{ij}^{\perp}\frac{3}{2}v_0(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))
+\end{align*}
 \begin{equation*}
-    \boxed{\Gamma_{ij->i} = \frac{16 \lambda}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\left[B_1\mathrm{sin}(\theta) +B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta) \right] (ln \epsilon + O(1))}
+    \boxed{\Gamma_{i(j)->i} = \frac{3}{10}\frac{v_0}{r}p_i\hat{R}_{ij}^{\perp}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))}
 \end{equation*}
 
 The torques acting on the squirmer $j$ can be calculated explicitly by : \\
-$\Gamma_{ji->i}$ = $\frac{4 \lambda^2}{5(\lambda +1)} \mu \pi r^2 e_i.e^{\perp}_{ij}\sum_{n} B_n W_n(e_i.e_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
+$\Gamma_{i(j)\rightarrow j}$ = $\frac{4 \lambda^2}{5(\lambda +1)} \mu \pi r^2 p_i\hat{R}_{ij}^{\perp}\sum_{n} B_n W_n(p_i\hat{R}_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
 \\ So :
+\begin{align*}
+    \footnotesize
+    \phi \Gamma_{i(j)\rightarrow j} = \frac{2}{5}\mu\pi r^2p_i\hat{R}_{ij}^{\perp}(B_1 + B_2 p_i\hat{R}_{ij})(ln \epsilon + O(1))\\
+    = \frac{2}{5}\mu\pi r^2p_i\hat{R}_{ij}^{\perp}\frac{3}{2}v_0(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))
+\end{align*}
 \begin{equation*}
-    \boxed{\Gamma_{ji->i} = \frac{4 \lambda^2}{5(\lambda +1)} \mu \pi r^2 e_j.e^{\perp}_{ji}\left[B_1\mathrm{sin}(\theta) +B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta) \right] (ln \epsilon + O(1))}
+    \boxed{\Gamma_{i(j)\rightarrow j} = \frac{3}{40}\frac{v_0}{r}p_i\hat{R}_{ij}^{\perp}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))}
 \end{equation*}
-One can note that for two squirmers having the same radius $r$, $\lambda = 0$ and:
-$$\Gamma_{ji->i} = \frac{1}{4}\Gamma_{ij->i}$$
+One can note that for two squirmers having the same radius $r$, $\lambda = 1$ and:
+$$\Gamma_{i(j)\rightarrow j} = \frac{1}{4}\Gamma_{i(j)\rightarrow i}$$
 
 Similarly as for the forces, the torques produced by the walls can be calculated by replacing one of the spheres with one of infinite diameter:
 \begin{equation*}
-    \boxed{\Gamma_{w->i} = \frac{16}{5} \mu \pi r^2 e_i.e^{\perp}_{ij}\left[B_1\mathrm{sin}(\theta) +B_2\mathrm{cos}(\theta)\mathrm{sin}(\theta) \right] (ln \epsilon + O(1))}
+    \boxed{\Gamma_{w\rightarrow i} = \frac{3}{5} \frac{v_0}{r}p_i\hat{R}_{ij}^{\perp}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))}
 \end{equation*}
 
 
 
 \section{Implementation}
 In this section we will detail the files of the \texttt{\href{https://github.com/master-csmi/2024-m1-nemo/tree/main/Code}{Code}} directory.
+\subsection{vicsek}
+\subsubsection*{Parameters}
+\begin{itemize}
+    \item $N$ the number of particles in the system
+    \item $R$ the range of interaction of the particles
+    \item $L$ the length of the square
+    \item $v0$ the constant velocity of the particles
+    \item $radius$ the radius of the particles
+    \item $T$ the time of simulation
+    \item $dt$ the time step
+    \item $noise$ the $\eta$ parameter, used to counteract the alignment of the particles
+\end{itemize}
+The class initializes $N$ particles with random position and orientation within the square. The square has reflective boundary conditions.
+\subsubsection*{Methods}
+\begin{itemize}
+    \item \texttt{distance(p1, p2)} returns the distance between \texttt{p1} and \texttt{p2}.
+    \item \texttt{dist\_particles(particle)} returns a list which contains the distances between the particle and all other particles of the system.
+    \item \texttt{how\_many\_in\_square()} prints and returns the percentage of particles inside the square. It is
+    used to test if the code contains errors.
+    \item \texttt{ploar\_order\_parameter()} computes and returns $v_a$ the polar order parameter.
+    \item \texttt{ref\_border\_x(particle, boundary)} and \texttt{ref\_border\_y(particle, boundary)}
+    simulates the reflective borders.
+    \item \texttt{vector\_x(p1, p2)} and \texttt{vector\_y(p1, p2)} return respectively the vector in the x and y direction of \texttt{p1} and \texttt{p2}.
+    \item \texttt{average\_orient(particle)} returns the average orientation of the particles in a range $R$ of the particle in argument (including itself).
+    \item \texttt{update\_orient()} computes the orientation $\theta_i(t + \Delta t)$ using \texttt{average\_orient}.
+    \item \texttt{update\_position()} computes the position $r_i(t + \Delta t)$ using the reflective boundaries if necessary
+    \item \texttt{loop\_time()} uses \texttt{update\_orientation()} and \texttt{update\_position()} for each time iteration.
+    \item \texttt{plot(ax)} plots the square and the particles.
+\end{itemize}
 
 \subsection{codemat}
 This file is the original matlab code that was the base of the study.
@@ -510,18 +525,14 @@ This file contains two functions:
 
 \subsection{plot}
 \begin{itemize}
-   \item \texttt{plot\_squirmers\_position(R, history, filename, dir)}
-   takes \texttt{R} half of the length of the square, \texttt{history} the list of \texttt{loop\_time}, 
-   a file name and a directory name, 
-   it plots the position and orientation of the squirmers over time.
    \item \texttt{plot\_sim\_nsquirmers(histories, Nx, Ny, N, a, border, sim\_border, filename, dir)} takes \texttt{histories}
    the liste returned by \texttt{loop\_time}, \texttt{Nx} and 
    \texttt{Ny} the length and width of the rectangle, \texttt{N} the number of squirmers, \texttt{a} the radius of the squirmers,
    \texttt{border} a boolean which determines if the borders are plotted or not, \texttt{sim\_border} a boolean which is only \texttt{True}
     when a simulation with a single border and a single squirmer is done, \texttt{filename} and \texttt{dir} the names 
     of the file and directory in which the graph is saved.\\
-   It then plots the evolution of each squirmer's position over time, an arrow is plotted every two times the orientation 
-   is modified and a circle is plotted every four time the orientation is modified,
+   It then plots the evolution of each squirmer's position over time, a circle is plotted at the initial position, at
+   half of the time of the simulation and at the end of the simulation,
    the radius of the circle plotted is proportional to the radius of the squirmers.\\
    This function is used for simulations with a small number of Squirmers and a low simulation time.
    \item \texttt{plot\_time(interact, list\_plot, filename, label, dir)} takes \texttt{interact} an \texttt{Interactingsquirmers}

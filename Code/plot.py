@@ -11,52 +11,6 @@ def is_light_color(hex_color):
     luminance = 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]
     return luminance > 0.7
 
-def plot_squirmers_positions(R, history, filename, dir='graphs'):
-    #Plot the position of each squirmers
-    plt.figure(figsize=(8, 8))
-    plt.plot([-R, R], [-R, -R], 'k-', linewidth=2)
-    plt.plot([-R, R], [R, R], 'k-', linewidth=2)
-    plt.plot([-R, -R], [-R, R], 'k-', linewidth=2)
-    plt.plot([R, R], [-R, R], 'k-', linewidth=2)
-
-    squirmer1_x = []
-    squirmer1_y = []
-    squirmer1_orient = []
-    squirmer2_x = []
-    squirmer2_y = []
-    squirmer2_orient = []
-    time = []
-
-    for step in history:
-        squirmer1_x.append(step[0])
-        squirmer1_y.append(step[1])
-        squirmer1_orient.append(step[4])
-        squirmer2_x.append(step[2])
-        squirmer2_y.append(step[3])
-        squirmer2_orient.append(step[5])
-        time.append(step[-1])
-    
-    #Squirmers
-    plt.scatter(squirmer1_x, squirmer1_y, color='blue', s=10, label = 'Squirmer 1')
-    plt.scatter(squirmer2_x, squirmer2_y, color='red', s=10, label= 'Squirmer 2')
-    
-    for i in range(len(squirmer2_orient)):
-        #Orientation
-        plt.quiver(squirmer2_x[i], squirmer2_y[i], np.cos(squirmer2_orient[i]), np.sin(squirmer2_orient[i]), color='red', scale=20, width=0.002)
-        plt.quiver(squirmer1_x[i], squirmer1_y[i], np.cos(squirmer1_orient[i]), np.sin(squirmer1_orient[i]), color='blue', scale=20, width=0.002)
-
-    plt.axis('equal')
-    plt.xlabel('X')
-    plt.ylabel('Y')
-    plt.title('Positions and Orientations of Squirmers')
-    plt.legend()
-    plt.grid(True)
-    
-    if not os.path.exists(dir):
-        os.makedirs(dir)
-    save_path = os.path.join(dir, filename + '.png')
-    plt.savefig(save_path)
-
 def plot_sim_nsquirmers(histories, Nx, Ny, N, a, border, sim_border, filename, dir='graphs'):
     #The simulation with a border is only with one squirmer
     if sim_border:
