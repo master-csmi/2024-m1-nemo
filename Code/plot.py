@@ -11,7 +11,7 @@ def is_light_color(hex_color):
     luminance = 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]
     return luminance > 0.7
 
-def plot_sim_nsquirmers(histories, Nx, Ny, N, a, border, sim_border, filename, dir='graphs'):
+def plot_sim_nsquirmers(histories, Nx, Ny, N, a, border_plot, sim_border, filename, dir='graphs'):
     #The simulation with a border is only with one squirmer
     if sim_border:
         assert N == 1
@@ -19,9 +19,10 @@ def plot_sim_nsquirmers(histories, Nx, Ny, N, a, border, sim_border, filename, d
     #a : radius of the squirmer
     fig = plt.figure(figsize=(8, 8))
 
-    if border == True:
+    if sim_border == True:
         plt.plot([-Nx, Nx], [-Ny, -Ny], 'k-', linewidth=2)
-    if sim_border != True:
+    if (border_plot == True) and (sim_border == False):
+        plt.plot([-Nx, Nx], [-Ny, -Ny], 'k-', linewidth=2)
         plt.plot([-Nx, Nx], [Ny, Ny], 'k-', linewidth=2)
         plt.plot([-Nx, -Nx], [-Ny, Ny], 'k-', linewidth=2)
         plt.plot([Nx, Nx], [-Ny, Ny], 'k-', linewidth=2)
@@ -49,29 +50,43 @@ def plot_sim_nsquirmers(histories, Nx, Ny, N, a, border, sim_border, filename, d
 
     nb_pixl_fig = fig.get_size_inches()[1]*fig.dpi
     radius_scatter = nb_pixl_fig/(2*Ny/a)
-    s = radius_scatter
+    if sim_border == True or border_plot == False:
+        s = radius_scatter**2
+    else:
+        s = radius_scatter
     scale_arrow = 15
     w = 0.005
+
+    if N == 2:
+        hypo_xs = [[], []]
+        hypo_ys = [[], []]
+        dt = histories[1][-1] - histories[0][-1]
+        for i in range(N):
+            x, y, orient = xs[0][i], ys[0][i], orientations[0][i]
+            for _ in range(len(histories)):
+                hypo_xs[i].append(x)
+                hypo_ys[i].append(y)
+                x += np.cos(orient) * dt
+                y += np.sin(orient) * dt
+
+        #Plot hypothetical trajectories in grey
+        for i in range(N):
+            plt.plot(hypo_xs[i], hypo_ys[i], color='grey', linestyle='--')
 
     for i in range(N):
         plt.plot(squirmer_xs[i], squirmer_ys[i], color=colors[i % len(colors)])
         last_orient = squirmer_orients[i][0]
-        plot_circle = 0
         reach_init_y = False
         for j in range(len(squirmer_orients[i])):
-            new_orient = squirmer_orients[i][j]
-            if new_orient != last_orient:
-                plt.quiver(squirmer_xs[i][j], squirmer_ys[i][j], np.cos(new_orient), np.sin(new_orient), color=colors[i % len(colors)], scale=scale_arrow, width=w)
-                last_orient = new_orient
-                plot_circle += 1
-                if plot_circle == 4:
-                    plt.scatter(squirmer_xs[i][j], squirmer_ys[i][j], color=colors[i % len(colors)], s=s)
-                    plot_circle = 0
             if j>0 and sim_border and not reach_init_y and squirmer_ys[i][j] >= initial_position:
                 reach_init_y = True
                 plt.scatter(squirmer_xs[i][j], squirmer_ys[i][j], color='red', s=s)
                 plt.text(squirmer_xs[i][j] + 0.1, squirmer_ys[i][j], f'Time: {time[j]:.2f}', fontsize=12, color='red')
 
+    half_time_index = len(histories) // 2
+    for i in range(N):
+        plt.scatter(squirmer_xs[i][half_time_index], squirmer_ys[i][half_time_index], color=colors[i % len(colors)], s=s)
+        plt.scatter(squirmer_xs[i][-1], squirmer_ys[i][-1], color=colors[i % len(colors)], s=s)
     #Plot initial orientations
     xs = histories[0][0]
     ys = histories[0][1]
@@ -101,7 +116,6 @@ def plot_time(interact, list_plot, filename, label, dir='graphs'):
     plt.plot(t, list_plot)
     plt.xlabel('Time step')
     plt.ylabel(label)
-    plt.title('Evolution of minimum distance over time')
     plt.grid(True)
 
     if not os.path.exists(dir):
