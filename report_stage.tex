@@ -640,19 +640,49 @@ with \texttt{N} the number of squirmers and \texttt{filename} the name of the fi
 \end{itemize}
 
 \subsection{Tests}
-Two tests are implemented to validate a simulation, one is in \texttt{loop\_time()} in the class \texttt{Interactingsquirmers},
-at each time step, the value of the forces are verified by passing the test:
+Two tests are implemented to validate a simulation. The first test is in the \texttt{loop\_time()} of the \texttt{Interactingsquirmers} class.
+At each time step, the value of the forces verify:
 $$F\cdot dt < v_0,$$
-with $F$ the steric and lubrification forces.
-The second test is executed when a push or a pull request is done, it does a simulation with $375$ squirmers in a box
-and  
+where $F$ represents the steric and lubrification forces.\\
+The second test is executed upon a push or a pull request. This test performs a simulation with $375$ squirmers in a box
+with reflective borders and test if at any point during the simulation a negative distance has been registered.
+
 \newpage
 \section{Numerical Experiments}
 \subsection{Simulation of two interacting squirmers}
-In this section fourty simulations are done between two squirmers near one another, the parameters of one squirmer remain
-fixed for every simulation except for its $\beta$ value while the other squirmer's initial orientation and $\beta$ value are modified.\\
-The five $\beta$ values used are:
-$$\beta_0 = 0, \beta_1 = 1.5, \beta_2 = 3, \beta_3 = -1.5, \beta_4 = -3$$ 
+In this section, forty simulations are conducted involving two closely positioned squirmers. 
+The parameters of one squirmer remain fixed throughout all simulations except for its $\beta$ value, while 
+the initial orientation and $\beta$ value of the other squirmer are varied. The five $\beta$ values used are:
+$$\beta_0 = 0, \beta_1 = 1.5, \beta_2 = 3, \beta_3 = -1.5, \beta_4 = -3.$$ 
+The left squirmer is fixed with a radius of $a=0.05$ placed at $(-a, 0)$, a velocity of $v_0=1$ and an initial orientation
+of $\theta_1 = \frac{\pi}{2}$ and a $\beta$ value varying among $\beta_0$, $\beta_1$, $\beta_2$, $\beta_3$ and $\beta_4$.\\
+The right squirmer, with the same radius $a$ and velocity $v_0$, is placed at $(\frac{2a}{1.9})$. Its orientation $\theta_2$
+varies across the principal orientations of the unit circle and its $\beta$ value also varies among $\beta_0$, $\beta_1$, $\beta_2$, $\beta_3$ and $\beta_4$.
+We then compare our results to those of a previous study.
+\begin{center}
+    Behavior observed in a previous study.
+    \includegraphics[width=1\textwidth]{Presentation/images/stark_behavior.png}\\
+    \cite{Stark}\\
+    $u_i$ and $u_j$ the current orientational vector and the rotation due to interaction shown in red.  
+ \end{center}
+\newpage
+ \begin{figure}[h]
+    \centering
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1\textwidth]{graphs/simulations/sim_sq_sq/beta0/pi_2_.png}
+        \caption{\footnotesize Simulation parameters: $a=0.05$, $v_0=1$, $\beta_0=0$\\
+        position and orientation of squirmer1: $(x1,y1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$\\
+        position and orientation of squirmer2: $(x2,y2)=(\frac{2a}{1.9},0)$, $\theta_2=\frac{\pi}{2}$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1\textwidth]{graphs/simulations/sim_sq_sq/beta1_5/pi_2_.png}
+        \caption{\footnotesize Simulation parameters: $a=0.05$, $v_0=1$, $\beta_1=1.5$\\
+        position and orientation of squirmer1: $(x1,y1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$\\
+        position and orientation of squirmer2: $(x2,y2)=(\frac{2a}{1.9},0)$, $\theta_2=\frac{\pi}{2}$}
+    \end{minipage}
+ \end{figure}
+
+
 \subsection{$E_0$ parameter}
 The first thing done during the internship was to study the effect of the $E_0$ parameter on the alignment of the squirmers.\\
 One can see the simulations done and their resulting graphs in the \texttt{graphs/Eo\_analysis} and \texttt{videos/Eo\_analysis} directories.\\
