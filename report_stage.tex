@@ -503,6 +503,13 @@ The class initializes $N$ particles with random position and orientation within 
     \item \texttt{plot(ax)} plots the square and the particles.
 \end{itemize}
 
+\subsection{simulation}
+\begin{itemize}
+   \item \texttt{sim\_vicsek(N)} used to simulate the behaviors of \texttt{N} particles in a square with the Vicsek model. \texttt{loop\_time} is 
+   used and a graph is made with
+   the positions and orientations of the particles for each \texttt{step} in \texttt{nb\_step}
+\end{itemize}
+
 \subsection{codemat}
 This file is the original matlab code that was the base of the study.
 
@@ -593,45 +600,44 @@ This class has many functions:
    the clustering order parameter and \texttt{history} for the positions, orientations,
    forces and torques at each time step \texttt{dt\_out}. The function then returns \texttt{history}.
    \item \texttt{run(choice, N, a, beta, v0, Nx, Ny, dt, dt\_out, T, Es, ds, mu, R, lnEps\_cr, D, n, no, border, filename, border\_plot)}
-   is used to run the simulation, it takes the argument \texttt{choice} that can be:
+   is used to run a simulation, it takes the argument \texttt{choice} that can be:
    \begin{itemize}
-    \item 'plot' to plot the graph of the behaviors of the squirmers in the 'graphs' directory
-    \item 'video' to create a video of the behaviors of the squirmers in the 'videos' directory
-    \item 'Eo\_sim', not used anymore, to test every Eo parameter and plot or make a video
+    \item 'plot' to plot the graph of the behaviors of the squirmers in the 'graphs' directory, used for a small number of squirmers and a low simulation time,
+    \item 'video' to create a video of the behaviors of the squirmers in the 'videos' directory, used for a large number of squirmers or a high simulation time,
+    \item 'Eo\_sim', not used anymore, to test the Eo parameter,
     \item 'border', to simulate the behaviors of a squirmer near a wall, only plot possible
+    \item 'sim\_2\_sq', to simulate the behaviors of two squirmers near each other, plot and video possible
+    \item 'sim\_D', to simulate the influence of the D parameter on the squirmers' behaviors, only video possible.
    \end{itemize}
 \end{itemize}
 
-\subsection{simulation}
-\begin{itemize}
-   \item \texttt{sim\_interacting\_sq(x1, y1, x2, y2, orient1, orient2, a, beta0, betainf, betasup, v0,  R, dt, dt\_out, T, Es, ds, mu, Eo, lnEps\_cr, file, dir)}
-   initializes two squirmers for each orientation in \texttt{orient2} and computes their 
-   interactions with \texttt{loop\_time}, then it uses \texttt{plot\_sim\_6squirmers} to plot each simulation, the resulting
-    graphs are stored in the \texttt{dir} directory.
-   \item \texttt{sim\_squirmer\_border(x\_positions, y\_positions, orientations, a, betas, v0, R, dt, dt\_out, T, Es, ds, mu, Eo, lnEps\_cr, filename, dir)}
-   takes \texttt{x\_positions}, \texttt{y\_positions} and \texttt{orientations} that are lists of the position and orientation of each squirmers,
-    it then compute the interactions between each pair of squirmers and uses \texttt{plot\_sim\_squirmer\_border} to plot the
-    simulations, it stores the graphs in the \texttt{dir} directory.
-   \item \texttt{sim\_vid\_interact\_sq(x1, y1, x2, y2, orient1, orient2, a, beta, v0, R, dt, dt\_out, T, Es, ds, mu, Eo, lnEps\_cr, filename, dir)}
-   initializes two squirmers and computes their interactions with \texttt{loop\_time}, it then uses \texttt{create\_video\_from\_history}
-    to create a video from the simulation and stores it in the \texttt{dir} directory.
-\end{itemize}
-
 \subsection{Reproducibility-\texttt{run.py}}
-The file \texttt{run.py} is utilized to simulate the squirmers' behaviors, their parameters are defined
- and eight simulations are conducted.\\
+The file \texttt{run.py} is utilized to define the parameters and to choose the simulation to make.\\
  To execute the simulations, run the following command:
  \begin{verbatim}
-   python Code/run.py sim_choice filename
+   python Code/run.py sim_choice N filename
 \end{verbatim} 
+with \texttt{N} the number of squirmers and \texttt{filename} the name of the file in which the resulting graph or video will be stored.
 \texttt{sim\_choice} can be:
 \begin{itemize}
-   \item \texttt{interact\_sq} which runs \texttt{sim\_interacting\_sq}
-   \item \texttt{vid\_interact\_sq} which runs \texttt{sim\_vid\_interact\_sq}
-   \item \texttt{sq\_border} which runs \texttt{sim\_sq\_border}
+   \item \texttt{vicsek} to simulate the behaviors of \texttt{N} particles using the Vicsek model.
+   \item \texttt{video} to run a simulation with \texttt{N} squirmers and to store the resulting video of the squirmers behaviors and the graphs of the 
+   minimum distance between squirmers, the polar order parameter and the clustering order parameter over time
+    in the \texttt{videos} directory.
+   \item \texttt{plot} to run a simulation with \texttt{N} squirmers and to store the resulting graphs of the squirmers behaviors, the
+   minimum distance between squirmers, the polar order parameter and the clustering order parameter over time
+    in the \texttt{graphs} directory.
+   \item \texttt{Eo\_sim} used at the start of the internship to study the impact of the \texttt{Eo} parameter on the behaviors,
+   not used anymore.
+   \item \texttt{border} to run twenty simulations between a squirmer and a wall, four simulations is made per \texttt{beta} in the \texttt{betas}
+   list in the \texttt{run} function in the \texttt{interactingsquirmers} file. The graphs are stored in the \texttt{graphs/simulations/border/betalabel}
+   directory with \texttt{betalabel} the label of \texttt{beta}.
+   \item \texttt{sim\_2\_sq} to simulate the behaviors of two squirmers near each other for five $\beta$ values. The
+   resulting graphs or videos are stored in the \texttt{graphs/simualtions/sim\_sq\_sq/labelbeta} or the \texttt{videos/simualtions/sim\_sq\_sq/labelbeta}
+   directory.
+   \item \texttt{sim\_D} to simulate the behaviors of \texttt{N} squirmers for different \texttt{D} values, the resulting graphs
+   and videos are stored in the \texttt{videos/simulations/sim\_D} directory.
 \end{itemize}
- The resulting graphs and videos are stored in the 
- \texttt{graphs} and \texttt{videos} directory.
 
 \subsection{$E_0$ parameter}
 The first thing done during the internship was to study the effect of the $E_0$ parameter on the alignment of the squirmers.\\

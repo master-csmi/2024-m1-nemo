@@ -231,6 +231,7 @@ class InteractingSquirmers:
         """simulates the behaviors of the squirmers
         for T final time with a time-step dt and puts the informations
         in a list with a time-step dt_out, it returns the list"""
+        self.check_squirmers_rectangle()
         self.vector_dists_min = []
         tout = self.dt_out
         a = self.radius
@@ -345,6 +346,20 @@ class InteractingSquirmers:
             self.xs += self.dt*(self.v0*np.cos(self.orientations) - self.Fs_x - self.Fs_pw[0] + self.Fl_x) + np.sqrt(2*self.dt*self.D)*self.ns
             self.ys += self.dt*(self.v0*np.sin(self.orientations) - self.Fs_y - self.Fs_pw[1] + self.Fl_y) + np.sqrt(2*self.dt*self.D)*self.ns
 
+            #Test if forces*dt<v0
+            if self.Fs_x.any() * self.dt > self.v0:
+                raise ValueError("Steric forces * time step > v0")
+            if self.Fs_y.any() * self.dt > self.v0:
+                raise ValueError("Steric forces * time step > v0")
+            if self.Fl_x.any() * self.dt > self.v0:
+                raise ValueError("Lubrification forces * time step > v0")
+            if self.Fl_y.any() * self.dt > self.v0:
+                raise ValueError("Lubrification forces * time step > v0")
+            if self.Fs_pw[0].any() * self.dt > self.v0:
+                raise ValueError("Steric forces * time step > v0")
+            if self.Fs_pw[1].any() * self.dt > self.v0:
+                raise ValueError("Steric forces * time step > v0")
+
             #Borders
             mask_x1 = (self.xs + a) > self.Nx
             mask_x2 = (self.xs - a) < -self.Nx
@@ -406,6 +421,7 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
             'Eo_sim', not used anymore, to test every Eo parameter and plot or make a video
             'border', to simulate the behaviors of a squirmer near a wall, can only plot
             'sim_2_sq', to simulate the behaviors of two squirmers near each other, plot and video possible
+            'sim_D', to simulate the influence of the D parameter on the squirmers' behaviors
     N: number of squirmers
     a: radius of the squirmers
     beta: beta of the squirmers
@@ -495,7 +511,7 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
                 interact = InteractingSquirmers(N, xs, ys, [pi], a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border)
                 history = interact.loop_time()
 
-                dir = 'graphs/border/' + labelbeta
+                dir = 'graphs/simulations/border/' + labelbeta
 
                 plot_sim_nsquirmers(history, Nx, Ny, N, a, border_plot, sim_border, filename=filename, dir=dir)
     elif choice == 'Eo_sim':
