@@ -547,7 +547,7 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
                         create_video_from_history(history, 1, 1, 2, a, filename=filenameeo, dir=direo)
 
     elif choice == 'sim_2_sq':
-        betas = [(0, "beta0"), (-1.5, "betam3_2"), (1.5, "beta3_2"), (-3, "betam3"), (3, "beta3")]
+        betas = [(0, "beta0"), (-1.5, "betam1_5"), (1.5, "beta1_5"), (-3, "betam3"), (3, "beta3")]
         while True:
             output_type = input("Which type of simulation? (plot/video): ").strip().lower()
             if output_type in ['plot', 'video']:

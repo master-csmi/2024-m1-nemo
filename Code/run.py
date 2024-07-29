@@ -16,7 +16,7 @@ def main(simulation, N, filename):
     Nx = Lx/2
     Ny = Ly/2
     #squirmers' radius
-    a = 0.02
+    a = 0.05
     #betas
     beta = 1.5
     #time-step

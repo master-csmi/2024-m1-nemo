@@ -639,6 +639,20 @@ with \texttt{N} the number of squirmers and \texttt{filename} the name of the fi
    and videos are stored in the \texttt{videos/simulations/sim\_D} directory.
 \end{itemize}
 
+\subsection{Tests}
+Two tests are implemented to validate a simulation, one is in \texttt{loop\_time()} in the class \texttt{Interactingsquirmers},
+at each time step, the value of the forces are verified by passing the test:
+$$F\cdot dt < v_0,$$
+with $F$ the steric and lubrification forces.
+The second test is executed when a push or a pull request is done, it does a simulation with $375$ squirmers in a box
+and  
+\newpage
+\section{Numerical Experiments}
+\subsection{Simulation of two interacting squirmers}
+In this section fourty simulations are done between two squirmers near one another, the parameters of one squirmer remain
+fixed for every simulation except for its $\beta$ value while the other squirmer's initial orientation and $\beta$ value are modified.\\
+The five $\beta$ values used are:
+$$\beta_0 = 0, \beta_1 = 1.5, \beta_2 = 3, \beta_3 = -1.5, \beta_4 = -3$$ 
 \subsection{$E_0$ parameter}
 The first thing done during the internship was to study the effect of the $E_0$ parameter on the alignment of the squirmers.\\
 One can see the simulations done and their resulting graphs in the \texttt{graphs/Eo\_analysis} and \texttt{videos/Eo\_analysis} directories.\\
