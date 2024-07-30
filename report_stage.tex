@@ -665,23 +665,303 @@ We then compare our results to those of a previous study.
     \cite{Stark}\\
     $u_i$ and $u_j$ the current orientational vector and the rotation due to interaction shown in red.  
  \end{center}
+ One can execute these simulations by running the command:
+ \begin{verbatim}
+    python Code/run.py sim_2_sq 2 filename
+ \end{verbatim}
+ The parameters can be changed in the \texttt{Code/run.py} and \texttt{Code/interactingsquirmers.py} files.\\
+ We show the trajectories of the two squirmers as well as their initial orientation. The grey lines 
+ represent the trajectories of the squirmers without any applied forces. Circles are plotted at the start, 
+ middle, and end of the simulation, with their radii proportional to the squirmers' sizes.
 \newpage
- \begin{figure}[h]
+ \begin{figure}[H]
     \centering
+    \textbf{$\theta_2 = \frac{\pi}{2}$}\par\medskip
     \begin{minipage}{0.49\textwidth}
-        \includegraphics[width=1\textwidth]{graphs/simulations/sim_sq_sq/beta0/pi_2_.png}
-        \caption{\footnotesize Simulation parameters: $a=0.05$, $v_0=1$, $\beta_0=0$\\
-        position and orientation of squirmer1: $(x1,y1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$\\
-        position and orientation of squirmer2: $(x2,y2)=(\frac{2a}{1.9},0)$, $\theta_2=\frac{\pi}{2}$}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/beta3/pi_2_.png}
+        \caption{\footnotesize $\beta = 3$}
     \end{minipage}\hfill
     \begin{minipage}{0.49\textwidth}
-        \includegraphics[width=1\textwidth]{graphs/simulations/sim_sq_sq/beta1_5/pi_2_.png}
-        \caption{\footnotesize Simulation parameters: $a=0.05$, $v_0=1$, $\beta_1=1.5$\\
-        position and orientation of squirmer1: $(x1,y1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$\\
-        position and orientation of squirmer2: $(x2,y2)=(\frac{2a}{1.9},0)$, $\theta_2=\frac{\pi}{2}$}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/betam3/pi_2_.png}
+        \caption{\footnotesize $\beta = -3$}
     \end{minipage}
+    \includegraphics[width=0.55\textwidth]{graphs/simulations/sim_sq_sq/beta0/pi_2_.png}
+    \caption{\footnotesize $\beta = 0$}
+    Simulation parameters: radius $a=0.05$, velocity $v_0=1$, simulation time $T=0.8$\\
+        position and orientation of squirmer1: $(x_1,y_1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$,\\
+        position and orientation of squirmer2: $(x_2,y_2)=(\frac{2a}{1.9},0)$, $\theta_2=\frac{\pi}{2}$
  \end{figure}
+One can observe that their orientation changes due to the lubrification and steric forces which are applied on them. 
+Those forces allow avoiding the overlapping of the two particles.\\
+Each squirmer gradually distances itself from the other, consistent with the study \cite{Stark}.
+For $\beta = 3$ the squirmers end the simulation at $x_1 = -0.35$ and $x_2 = 0.35$.
+For $\beta = -3$ the squirmers end the simulation at $x_1 = -0.22$ and $x_2 = 0.22$.
+ For $\beta = 0$ the squirmers end the simulation at $x_1 = -0.28$ and $x_2 = 0.28$.
+ It is noteworthy that larger values of $\beta$ result in stronger forces and torques that push the
+ squirmers further apart when both squirmers have an orientation $\theta = \frac{\pi}{2}$.
+ \begin{figure}[H]
+    \centering
+    \textbf{$\theta_2 = \frac{3\pi}{4}$}\par\medskip
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/beta1_5/3pi_4_.png}
+        \caption{\footnotesize $\beta = 1.5$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/beta3/3pi_4_.png}
+        \caption{\footnotesize $\beta = 3$}
+    \end{minipage}
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/betam1_5/3pi_4_.png}
+        \caption{\footnotesize $\beta = -1.5$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/betam3/3pi_4_.png}
+        \caption{\footnotesize $\beta = -3$}
+    \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{graphs/simulations/sim_sq_sq/beta0/3pi_4_.png}
+    \caption{\footnotesize $\beta = 0$}
+\end{figure}
+\begin{center}
+    Simulation parameters: radius $a=0.05$, velocity $v_0=1$, simulation time $T=0.8$\\
+        position and orientation of squirmer1: $(x_1,y_1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$,\\
+        position and orientation of squirmer2: $(x_2,y_2)=(\frac{2a}{1.9},0)$, $\theta_2=\frac{3\pi}{4}$
+\end{center}
+Our results are consistent with the previous study\cite{Stark} for $\beta = 0$. However, for $\beta > 0$ the right 
+squirmer is attracted towards the left one,
+ which is not consistent with the previous study. For $\beta < 0$ the torques on the right squirmer push
+it away from the left one, also deviating with the previous study.\\
+It is observed that for $\beta = 3$ the forces and torques pull the right squirmer towards the left one more strongly than for $\beta=1.5$.
+Conversely, for $\beta = -3$ the right squirmer is pushed further away from the left one compared to $\beta = -1.5$.\\
+In summary, for $\theta_2 = \frac{3\pi}{4}$, as $\beta$ increases, the right squirmer is more strongly pulled towards the left one. Conversely, as
+$\beta$ decreases, the right squirmer is more strongly pushed away from the left one.
 
+
+\begin{figure}[H]
+    \centering
+    \textbf{$\theta_2 = \pi$}\par\medskip
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/betam3/pi_.png}
+        \caption{\footnotesize $\beta = -3$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/beta3/pi_.png}
+        \caption{\footnotesize $\beta = 3$}
+    \end{minipage}
+    \includegraphics[width=0.55\textwidth]{graphs/simulations/sim_sq_sq/beta0/pi_.png}
+    \caption{\footnotesize $\beta = 0$}
+    Simulation parameters: radius $a=0.05$, velocity $v_0=1$, simulation time $T=0.8$\\
+        position and orientation of squirmer1: $(x_1,y_1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$,\\
+        position and orientation of squirmer2: $(x_2,y_2)=(\frac{2a}{1.9},0)$, $\theta_2=\pi$
+\end{figure}
+Our results are not consistent with the previous study\cite{Stark}. Our results shows that the right squirmer's position
+and orientation are altered by the forces and torques for any $\beta$ while the previous study showed that the right squirmer's
+orientation is not supposed to change.
+
+\begin{figure}
+    \centering
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/betam1_5/pi_.png}
+        \caption{\footnotesize $\beta = -1.5$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/betam3/pi_.png}
+        \caption{\footnotesize $\beta = -3$}
+    \end{minipage}
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/beta1_5/pi_.png}
+        \caption{\footnotesize $\beta = 1.5$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/beta3/pi_.png}
+        \caption{\footnotesize $\beta = 3$}
+    \end{minipage}
+    Simulation parameters: radius $a=0.05$, velocity $v_0=1$, simulation time $T=0.8$\\
+        position and orientation of squirmer1: $(x_1,y_1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$,\\
+        position and orientation of squirmer2: $(x_2,y_2)=(\frac{2a}{1.9},0)$, $\theta_2=\pi$
+\end{figure}
+For $\beta = -3$, the orientation at the end of the simulation is less altered compared to $\beta = -1.5$.
+For $\beta = 3$, the right squirmer ands up behind the left one, whereas for $\beta = 1.5$, the right
+squirmer is pushed away.
+Our results indicate that for $\theta_2 = \pi$, as $\beta$ increases, the right squirmer is more strongly pulled 
+towards the left one, while as $\beta$ decreases, the torques acting on the left squirmer also decrease.
+
+\begin{figure}[H]
+    \centering
+    \textbf{$\theta_2 = -\frac{3\pi}{4}$}\par\medskip
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/betam3/m3pi_4_.png}
+        \caption{\footnotesize $\beta = -3$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/beta3/m3pi_4_.png}
+        \caption{\footnotesize $\beta = 3$}
+    \end{minipage}
+    \includegraphics[width=0.55\textwidth]{graphs/simulations/sim_sq_sq/beta0/m3pi_4_.png}
+    \caption{\footnotesize $\beta = 0$}
+\end{figure}
+\begin{center}
+    Simulation parameters: radius $a=0.05$, velocity $v_0=1$, simulation time $T=0.8$\\
+        position and orientation of squirmer1: $(x_1,y_1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$,\\
+        position and orientation of squirmer2: $(x_2,y_2)=(\frac{2a}{1.9},0)$, $\theta_2=-\frac{3\pi}{4}$
+\end{center}
+Our results are consistent with the previous study\cite{Stark} for $\beta \ge 0$ as the torques acting on the right squirmer
+are weaker than the ones acting on the left one. On the contrary, for $\beta < 0$ the torques acting on the right squirmer are larger
+than the ones acting on the left one.
+
+\begin{figure}[H]
+    \centering
+    \textbf{$\theta_2 = -\frac{\pi}{2}$}\par\medskip
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/betam3/mpi_2_.png}
+        \caption{\footnotesize $\beta = -3$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/beta3/mpi_2_.png}
+        \caption{\footnotesize $\beta = 3$}
+    \end{minipage}
+    \includegraphics[width=0.55\textwidth]{graphs/simulations/sim_sq_sq/beta0/mpi_2_.png}
+    \caption{\footnotesize $\beta = 0$}
+\end{figure}
+\begin{center}
+    Simulation parameters: radius $a=0.05$, velocity $v_0=1$, simulation time $T=0.8$\\
+        position and orientation of squirmer1: $(x_1,y_1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$,\\
+        position and orientation of squirmer2: $(x_2,y_2)=(\frac{2a}{1.9},0)$, $\theta_2=-\frac{\pi}{2}$
+\end{center}
+Our results are consistent with the previous study\cite{Stark} as the torques acting on the right squirmer are equal to
+those acting on the left squirmer for all values of $\beta$.
+
+\begin{figure}[H]
+    \centering
+    \textbf{$\theta_2 = -\frac{\pi}{4}$}\par\medskip
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/betam3/mpi_4_.png}
+        \caption{\footnotesize $\beta = -3$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/beta3/mpi_4_.png}
+        \caption{\footnotesize $\beta = 3$}
+    \end{minipage}
+    \includegraphics[width=0.55\textwidth]{graphs/simulations/sim_sq_sq/beta0/mpi_4_.png}
+    \caption{\footnotesize $\beta = 0$}
+\end{figure}
+\begin{center}
+    Simulation parameters: radius $a=0.05$, velocity $v_0=1$, simulation time $T=0.8$\\
+        position and orientation of squirmer1: $(x_1,y_1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$,\\
+        position and orientation of squirmer2: $(x_2,y_2)=(\frac{2a}{1.9},0)$, $\theta_2=-\frac{\pi}{4}$
+\end{center}
+Our results are consistent with the previous study\cite{Stark} for $\beta = 0$ as the torques acting on the right 
+squirmer are weaker to those acting on the left squirmer. For $\beta = 3$ the torques acting on the right squirmer are
+equal to the those acting on the left squirmer which does not align with the previous study.
+For $\beta = -3$ the rotation vector does not align with the previous study.
+\\
+\\
+\begin{figure}[H]
+    \centering
+    \textbf{$\theta_2 = \frac{\pi}{4}$}\par\medskip
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/betam3/pi_4_.png}
+        \caption{\footnotesize $\beta = -3$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/beta3/pi_4_.png}
+        \caption{\footnotesize $\beta = 3$}
+    \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{graphs/simulations/sim_sq_sq/beta0/pi_4_.png}
+    \caption{\footnotesize $\beta = 0$}
+\end{figure}
+\begin{center}
+    Simulation parameters: radius $a=0.05$, velocity $v_0=1$, simulation time $T=0.8$\\
+        position and orientation of squirmer1: $(x_1,y_1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$,\\
+        position and orientation of squirmer2: $(x_2,y_2)=(\frac{2a}{1.9},0)$, $\theta_2=\frac{\pi}{4}$
+\end{center}
+Our results are consistent with the previous study\cite{Stark} for $\beta = 0$ as the torques acting on the right 
+squirmer are weaker to those acting on the left squirmer. For $\beta = 3$ the torques acting on the right squirmer are
+greater to the those acting on the left squirmer, which does not align with the previous study.
+For $\beta = -3$ the rotation vector does not align with the previous study.
+
+\subsection{Simulation of squirmer-border interacting}
+In this section twenty simulation of a squirmer near a border are conducted. The parameters of the simulations are fixed
+except for the orientation and $\beta$ parameter. The squirmer is placed at $(x,y) = (-0.4,-0.7)$, has a radius of $a=0.05$,
+a velocity $v_0=1$, an initial orientation $\theta$ varying among $-\frac{\pi}{6}$, $-\frac{\pi}{4}$, $-\frac{\pi}{3}$
+and $-\frac{\pi}{2}$ and a $\beta$ value varying among $\beta_0 = 0, \beta_1 = 1.5, \beta_2 = 3, \beta_3 = -1.5, \beta_4 = -3$.\\
+One can execute these simulations by running the command:
+ \begin{verbatim}
+    python Code/run.py border 1 filename
+ \end{verbatim}
+ The parameters can be changed in the \texttt{Code/run.py} and \texttt{Code/interactingsquirmers.py} files.\\
+ We show the trajectory of the squirmer as well as his initial orientation. A red circle and the corresponding time are marked when the squirmer
+ reaches or exceeds the original height. Circles are plotted at the start, 
+ middle, and end of the simulation, with their radii proportional to the squirmer's size.
+ \begin{figure}[H]
+    \centering
+    \textbf{$\theta = -\frac{\pi}{6}$}\par\medskip
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/border/beta1_5/mpi_6.png}
+        \caption{\footnotesize $\beta = 1.5$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/border/beta3/mpi_6.png}
+        \caption{\footnotesize $\beta = 3$}
+    \end{minipage}
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/border/betam1_5/mpi_6.png}
+        \caption{\footnotesize $\beta = -1.5$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/border/betam3/mpi_6.png}
+        \caption{\footnotesize $\beta = -3$}
+    \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{graphs/simulations/border/beta0/mpi_6.png}
+    \caption{\footnotesize $\beta = 0$}
+    Simulation parameters: radius $a=0.05$, velocity $v_0=1$, simulation time $T=0.9$\\
+        position and orientation of squirmer: $(x_1,y_1)=(-0.4,-0.7)$, $\theta=-\frac{\pi}{6}$
+\end{figure}
+Our results shows that for $\theta = -\frac{\pi}{6}$, as $\beta$ increases, the squirmer's orientation upon interaction becomes parallel to the border.
+On the contrary, as $\beta$ decreases, the squirmer's orientation upon interaction becomes tangential to the border.\\
+The fact that the orientation after interaction is tangential does not necessarily mean that the particle reaches the initial 
+height more quickly, as observed when $\beta = -3$ compared to when $\beta = -1.5$.
+
+\begin{figure}[H]
+    \centering
+    \textbf{$\theta = -\frac{\pi}{4}$}\par\medskip
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/border/beta1_5/mpi_4.png}
+        \caption{\footnotesize $\beta = 1.5$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/border/beta3/mpi_4.png}
+        \caption{\footnotesize $\beta = 3$}
+    \end{minipage}
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/border/betam1_5/mpi_4.png}
+        \caption{\footnotesize $\beta = -1.5$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/border/betam3/mpi_4.png}
+        \caption{\footnotesize $\beta = -3$}
+    \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{graphs/simulations/border/beta0/mpi_4.png}
+    \caption{\footnotesize $\beta = 0$}
+    Simulation parameters: radius $a=0.05$, velocity $v_0=1$, simulation time $T=0.9$\\
+        position and orientation of squirmer: $(x_1,y_1)=(-0.4,-0.7)$, $\theta=-\frac{\pi}{4}$
+\end{figure}
+Our results shows that for $\theta = -\frac{\pi}{4}$, as $\beta$ increases, the squirmer's orientation upon interaction becomes parallel to the border.
+Conversely, as $\beta$ decreases, the squirmer's orientation upon interaction becomes tangential to the border.\\
+One can note that the initial orientation has an impact on the orientation after interaction with the border as for $\theta = -\frac{\pi}{4}$ and 
+$\beta = 1.5$, the squirmer reaches and exceeds the original height during the simulation time. In contrast, for $\theta = -\frac{\pi}{6}$ and 
+$\beta = 1.5$, the squirmer does not reach the initial height.
 
 \subsection{$E_0$ parameter}
 The first thing done during the internship was to study the effect of the $E_0$ parameter on the alignment of the squirmers.\\

@@ -18,7 +18,7 @@ def main(simulation, N, filename):
     #squirmers' radius
     a = 0.02
     #betas
-    beta = -1.5
+    beta = 3
     #time-step
     dt = 1e-4
     #cut-off for -log
