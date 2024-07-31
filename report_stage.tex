@@ -7,51 +7,61 @@
 \usepackage{subcaption}
 \usepackage{float}
 \usepackage{trimclip}
-
+\usepackage{amsfonts}
 \begin{document}
-\title{Collective motion of squirmers in confined environments}
-\author{Roth Robin\\
-\\
-Supervisors: Van Landeghem Céline, Giraldi Laetitia,\\ Agathe Chouippe}
-\date{May, 2024}
+\title{Collective motion of squirmers in confined environments\vspace{2cm}}
+\author{
+M1 CSMI\\
+\vspace{3cm}
+Roth Robin\\
+Supervisors: Van Landeghem Céline, Giraldi Laetitia,\\ Agathe Chouippe
+\vspace{2cm}}
+\date{August, 2024}
 \maketitle
 
+\newpage
 \tableofcontents
 \newpage
 \section{Introduction}
-This internship is the continuation of a project realised last semester. The main goal of the project was
-to develop numerical methods for modeling the dynamics of interacting squirmers. The squirmer is an active particle imitating the propulsion of bacteria.\\
+This internship is the continuation of a project realised last semester. The aim of the project was
+to develop numerical methods for modeling the dynamics of interacting squirmers. The squirmer is model for active particle imitating the propulsion of bacteria.\\
 A python code to simulate the behaviors of two interacting squirmers has been implemented during the project.\\
 These interactions are governed by steric and lubrification forces.
-
+Test cases were conducted to validate our model. Moving forward, we plan to adapt this model to 
+simulate interactions among a large number of squirmers.
 \section{Context}
 The collective behavior of active particles is well studied in the literature. 
-The Squirmer model is frequently used to model these active particles. \\
-The squirmer model, initially proposed by Lighthill in 1952, represents a spherical Stokesian swimmer with a surface that undergoes small-amplitude deformations to achieve propulsion. This model was enhanced by Blake, who adapted it to describe a spherical microswimmer covered with a dense array of beating cilia. Instead of representing individual cilia, the squirmer model simplifies this by using a continuous, deformable layer that propagates the wave.
-This model has been applied to a range of microswimmer dynamics in both biological and artificial contexts..\\
-The aim of this internship is to perform a study considering squirmers, 
-in various confined domains and to compare the collective motion of the squirmers with that of the active particles using the Squirmer model. 
-The motion of the squirmers is simulated using a continuous model that approximates lubrification and 
+Various models exist to simulate these active particles, such as the Vicsek model\cite{Vicsek} and the Squirmer model. \\
+This model, initially proposed by Lighthill in 1952\cite{Wikipedia}, represents a spherical Stokesian swimmer with a surface that undergoes 
+small-amplitude deformations to achieve propulsion. This model was enhanced by Blake\cite{Wikipedia}, who adapted it to describe a spherical microswimmer
+ covered with a dense array of beating cilia. Instead of representing individual cilia, the model uses a continuous, deformable layer 
+ that propagates the wave.
+This model has been applied to a range of microswimmer dynamics in both biological and artificial contexts.\\
+The aim of this internship is to study squirmers, 
+in a confined domain and to compare their collective motion with that of the active particles using the Vicsek model. 
+The motion of the squirmers is described by a continuous model that approximates lubrification and 
 steric forces\cite{Brumley}\cite{Lauga}.
 
 \section{Objectives}
 The main goal is to model the dynamics of a group of squirmers within confined environments and to
- study the influence of numerical parameters on their collective behavior such as alignment.\\
- To achieve this objective, the following tasks will be undertaken:
+ study the influence of numerical parameters on their collective behavior.\\
+ To achieve this objective, the following tasks will be carried out:
  \begin{itemize}
-     \item To validate the formulas of the steric and lubrification forces from the previous project,
-     \item To investigate the impact of altering the parameter $\beta$, which defines the
-    type of squirmers (pusher, puller, neutral swimmer), on the interaction between two squirmers,
-     \item To conduct a comparative analysis of the interaction between a squirmer and a 
+     \item Validate the formulas of the steric and lubrification forces from the previous project.
+     \item Investigate the impact of altering the parameter $\beta$, which defines the
+    type of squirmers (pusher, puller, neutral swimmer), on the interaction between two squirmers.
+     \item Conduct a comparative analysis of the interaction between a squirmer and a 
     boundary of the domain by varying the initial angle of the squirmer and the parameter $\beta$, 
-    to comprehensively understand their influence on the system dynamics,
-     \item To update and optimize the code to enable a simulation of a larger number of squirmers,
-     \item To examine the impact of numerical parameters on the collective behavior of squirmers.
+    to comprehensively understand their influence on the system dynamics.
+     \item Update and vectorize the code to enable a simulation of a larger number of squirmers.
+     \item Examine the impact of numerical parameters on the collective behavior of squirmers.
 \end{itemize}
-
+All of these steps are consolidated in the following roadmap:
+TODO
  
-
+\newpage
 \section{Vicsek model}
+In this section a detailed overview of the Vicsek model will be provided.
 \begin{center}
     \begin{tikzpicture}
         \draw[color=green, very thick](0,0) circle (2);
@@ -84,10 +94,10 @@ The main goal is to model the dynamics of a group of squirmers within confined e
     \end{tikzpicture}
 \end{center}
 
-The Vicsek model consists of $N$ particles with $r_i(t)$ and $\theta_i(t)$ 
+The Vicsek model consists of $N$ particles with $r_i(t)$ in $\mathbb{R}^2$ and $\theta_i(t) \in \left[0, 2\pi\right]$ 
 their mass center and orientations.\\
 All particles have the same velocity $v_0$ and radius.
-The evolution of the orientation $\theta_i(t)$ at each time step $\Delta t$ is:
+The evolution of the orientation $\theta_i(t)$ at each time step $\Delta t$ is given by:
 $$\theta_i(t + \Delta t) = \langle\theta_j(t)\rangle_{|r_i(t) - r_j(t)| < R} + \epsilon_i(t),$$
 with
 $$\langle\theta_j(t)\rangle = \arctan\left(\frac{\sin(\theta_j(t))}{\cos(\theta_j(t))}\right).$$
@@ -97,7 +107,7 @@ orientation of the particles in the range $R$ of
  It is a random number taken from a uniform probability distribution
 over $\left(-\frac{\eta}{2}, \frac{\eta}{2}\right)$ where $\eta$ is the main tool that counteracts the alignment of the particles.\\
 \\
-The evolution of the position $r_i(t)$ at each time step $\Delta t$ is:
+The evolution of the position $r_i(t)$ at each time step $\Delta t$ is described by:
 $$ r_i(t + \nabla t) = r_i(t) + v_0\Delta t \begin{pmatrix}
     \cos(\theta_i(t))\\
     \sin(\theta_i(t))
@@ -107,19 +117,37 @@ $$\vec{v}_i(t) = v_0\begin{pmatrix}
     \cos\theta_i(t)\\
     \sin\theta_i(t)
 \end{pmatrix}.$$
-The behavior of the particles are quantified by the polar order parameter $v_a$ which is given by:
-$$v_a = \frac{1}{Nv_0}\left|\sum^{N}_{i=1}\vec{v}_i\right|$$.
-The boundary conditions are reflective, if a particle is outside of the domain after computing $r_i(t + \Delta t)$, the new coordinates and orientations are given by:\\
+The collective behavior of the particles are quantified by the polar order parameter $v_a$ which is given by:
+$$v_a = \frac{1}{Nv_0}\left|\sum^{N}_{i=1}\vec{v}_i\right|.$$
+The boundary conditions are reflective, if a particle is outside of the domain after computing $r_i(t + \Delta t)$, the new 
+coordinates and orientations of the particle are given by:\\
 For the x-boundary:
 $$|x_i(t + \Delta t)| = 2L_x - |x_i(t + \Delta t)|,$$
 $$\theta_{i}(t + \Delta t) = \pi - \theta_i(t + \Delta t).$$
 For the y-boundary:
 $$|y_i(t + \Delta t)| = 2L_y - |y_i(t + \Delta t)|,$$
 $$\theta_i(t + \Delta t) = -\theta_i(t + \Delta t).$$
+Where $L_x$ represents the length of the domain, and $L_y$ represents the width of the domain.
+\begin{center}
+    \begin{tikzpicture}
+        \draw[thick] (0,0) -- (4,0) -- (4,2) -- (0,2) -- cycle;
+        \draw[<->,thick] (-0.2,0) -- (-0.2,2) node[midway,left] {$L_y$};
+        \draw[<->,thick] (0,-0.2) -- (4,-0.2) node[midway,below] {$L_x$};
+        \filldraw[color=green, fill=green, very thick](0.5,0.2) circle(0.05);
+        \filldraw[color=green, fill=green, very thick](1.5,0.8) circle(0.05);
+        \filldraw[color=green, fill=green, very thick](1.7,1.2) circle(0.05);
+    \end{tikzpicture}
+\end{center}
 These conditions ensures that the particles reflect off the boundaries.
+We will compare our results with those obtained using a similar model.
 
 \newpage
 \section{Squirmer model}
+I will continue by detailing the squirmer model as well as the interactions 
+between such active particles. This model uses lubrification forces 
+and torques to describe particle behavior, while the Vicsek model focuses more
+on collective behavior to model particle movement.
+
 \begin{center}
    \begin{tikzpicture}
       \small
@@ -129,8 +157,6 @@ These conditions ensures that the particles reflect off the boundaries.
       \draw[color=black, very thick](2.5,2.5) circle (0.01);
       
       \node  at (2.5-0.3,2.5-0.3) {{$(x^{cm},y^{cm})$}};
-      
-      \node  at (0.5,0.7) {{$Squirmer$}};
       
       \draw[thick, ->] (2.5,2.5) -- (4,2.5);
       \node  at (3.5,2.2) {{$e$}};
@@ -155,7 +181,7 @@ in polar coordinates by :
    \end{array}\right.\ \cite{Lauga};
 \end{align*}
 
-By setting $\beta=\frac{B_2}{B_1}$, we have :
+With $R$ denoting the particle's radius, and $B_1$ and $B_2$ being constants. By setting $\beta=\frac{B_2}{B_1}$, we have :
 $$
 u_\theta(R,\theta) = B_1(\mathrm{sin}(\theta) + \beta \mathrm{sin}(\theta)\mathrm{cos}(\theta)),
 $$
@@ -192,11 +218,11 @@ and $B_1$ describes the swimming velocity $v_0 = \frac{2 B_1}{3}$.
 We define $e_r$ the unit vector pointing from the center to the surface 
 $$
 e_r = \begin{pmatrix}
-   \frac{x - x^{cm}}{r}  \\
-   \frac{y - y^{cm}}{r} 
+   \frac{x - x^{cm}}{R}  \\
+   \frac{y - y^{cm}}{R} 
 \end{pmatrix} = \begin{pmatrix}
-   \mathrm{cos}(\theta) \\
-   \mathrm{sin}(\theta)
+   \mathrm{cos}(\phi) \\
+   \mathrm{sin}(\phi)
 \end{pmatrix}$$ 
 
 and $e$ = 
@@ -245,26 +271,28 @@ Thus, $u$ in cartesian coordinates is given by :
 
 
 \section{Dynamics of two interacting squirmers}
-\subsection{The evolution of the mass center $R_i$}
-The evolution of the mass center $R_i$ = $(X_i, Y_i)$ of one squirmer $i$ in presence of 
-another squirmer $j$ and rigid boundaries, is given by :
+\subsection{The evolution of the mass center}
+The evolution of the mass center $r_i$ = $(X_i, Y_i)$ of one squirmer $i$ in presence of 
+another squirmer $j$ and rigid boundaries, is given by the Langevin equation:
 \begin{center}
-$\boxed{\frac{dR_i}{dt}$ = $v_0 p_i -  \sum\limits_{i \ne j}\nabla_{R_{ij}} V_{ij} - \sum\limits_{i}\nabla_{R_i} V_i + \sum\limits_{i\ne j}\left[F_{i(j)\rightarrow i} + F_{j(i)\rightarrow i}\right]+ \sum\limits_{k \in w}F_{k\rightarrow i}^w + \sqrt{2D}\eta_i(t)}$
+$\boxed{\frac{dr_i}{dt}$ = $v_0 p_i -  \sum\limits_{i \ne j}\nabla_{R_{ij}} V_{ij} - \sum\limits_{i}\nabla_{R_i} V_i + \sum\limits_{i\ne j}\left[F_{i(j)\rightarrow i} + F_{j(i)\rightarrow i}\right]+ \sum\limits_{k \in w}F_{k\rightarrow i}^w + \sqrt{2D}\eta_i(t)}$
 \end{center}
 We have : \begin{itemize}
-    \item $v_0$ the particle swimming velocity,
-    \item $p_i$ = $(\mathrm{cos}(\theta),\mathrm{sin}(\theta))$ orientation,
-    \item $F_{i(j)\rightarrow k}$ the lubrification forces felt by the $k^{th}$ squirmer and generated by the $i^{th}$ squirmer in presence of the $j^{th}$ one \cite{Brumley},
-    \item $F^w_{k\rightarrow i}$ the lubrification forces felt by the $i^{th}$ squirmer and generated by the $k^{th}$ wall\cite{Brumley},
-    \item $V_{ij}$ and $V_i$, Weeks-Chandler-Andersen potential : repulsive steric force avoiding the overlapping of two squirmers or of one squirmer and a rigid boundary. The force is activated when the distance between two surfaces is small,
-    \item $D$ the translational diffusivity
-    \item $\eta_i$'s are independent noises. 
+    \item $v_0$ the particle velocity,
+    \item $p_i$ = $(\mathrm{cos}(\theta),\mathrm{sin}(\theta))^T$ orientation,
+    \item $F_{i(j)\rightarrow k}$ the lubrification forces applied on the $k^{th}$ squirmer and generated by the $i^{th}$ squirmer in presence of the $j^{th}$ one \cite{Brumley},
+    \item $F^w_{k\rightarrow i}$ the lubrification forces exerted on the $i^{th}$ squirmer due to the presence of the $k^{th}$ wall\cite{Brumley},
+    \item $V_{ij}$ and $V_i$ are the Weeks-Chandler-Andersen potential use to define a repulsive steric force avoiding 
+    the overlapping of two squirmers or of one squirmer and a rigid boundary. 
+    The force is activated when the distance between two surfaces is small,
+    \item $D$ the translational diffusivity,
+    \item $\eta_i$ are independent noises. 
 \end{itemize} 
 \vspace{0,5cm}
-By the second law of Newton, the acceleration is given by:
-$$m\vec{a} = \sum\limits_i \vec{F}_i.\cite{Newton}$$
-The force of viscosity on a small sphere moving through a viscous fluid is given by the Stokes-Einstein relation:
-$$F_d = 6\mu\pi r.\cite{Stokes}$$
+The second law of Newton states:
+$$m\vec{a} = \sum\limits_i \vec{F}_i.$$
+The force of viscosity on a small sphere moving through a viscous fluid is given by the Stokes-Einstein relation\cite{Stokes}:
+$$F_d = 6\mu\pi rv_0.$$
 The squirmers have no inertia, so $\vec{a} = 0$, such as:
 $$0 = -F_d\frac{dR_i}{dt} + \sum\limits_{i \ne d} F_i,$$
 we have:
@@ -654,7 +682,7 @@ In this section, forty simulations are conducted involving two closely positione
 The parameters of one squirmer remain fixed throughout all simulations except for its $\beta$ value, while 
 the initial orientation and $\beta$ value of the other squirmer are varied. The five $\beta$ values used are:
 $$\beta_0 = 0, \beta_1 = 1.5, \beta_2 = 3, \beta_3 = -1.5, \beta_4 = -3.$$ 
-The left squirmer is fixed with a radius of $a=0.05$ placed at $(-a, 0)$, a velocity of $v_0=1$ and an initial orientation
+The left squirmer is fixed with a radius of $a=0.05$ placed at $(-a, 0)$, a velocity of $v_0=1$, a translational diffusivity $D=0$ and an initial orientation
 of $\theta_1 = \frac{\pi}{2}$ and a $\beta$ value varying among $\beta_0$, $\beta_1$, $\beta_2$, $\beta_3$ and $\beta_4$.\\
 The right squirmer, with the same radius $a$ and velocity $v_0$, is placed at $(\frac{2a}{1.9})$. Its orientation $\theta_2$
 varies across the principal orientations of the unit circle and its $\beta$ value also varies among $\beta_0$, $\beta_1$, $\beta_2$, $\beta_3$ and $\beta_4$.
@@ -729,7 +757,7 @@ For $\beta = -3$ the squirmers end the simulation at $x_1 = -0.22$ and $x_2 = 0.
         position and orientation of squirmer1: $(x_1,y_1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$,\\
         position and orientation of squirmer2: $(x_2,y_2)=(\frac{2a}{1.9},0)$, $\theta_2=\frac{3\pi}{4}$
 \end{center}
-Our results are consistent with the previous study\cite{Stark} for $\beta = 0$. However, for $\beta > 0$ the right 
+These results are consistent with the previous study\cite{Stark} for $\beta = 0$. However, for $\beta > 0$ the right 
 squirmer is attracted towards the left one,
  which is not consistent with the previous study. For $\beta < 0$ the torques on the right squirmer push
 it away from the left one, also deviating with the previous study.\\
@@ -756,7 +784,7 @@ $\beta$ decreases, the right squirmer is more strongly pushed away from the left
         position and orientation of squirmer1: $(x_1,y_1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$,\\
         position and orientation of squirmer2: $(x_2,y_2)=(\frac{2a}{1.9},0)$, $\theta_2=\pi$
 \end{figure}
-Our results are not consistent with the previous study\cite{Stark}. Our results shows that the right squirmer's position
+These results are not consistent with the previous study\cite{Stark}. These results show that the right squirmer's position
 and orientation are altered by the forces and torques for any $\beta$ while the previous study showed that the right squirmer's
 orientation is not supposed to change.
 
@@ -785,7 +813,7 @@ orientation is not supposed to change.
 For $\beta = -3$, the orientation at the end of the simulation is less altered compared to $\beta = -1.5$.
 For $\beta = 3$, the right squirmer ands up behind the left one, whereas for $\beta = 1.5$, the right
 squirmer is pushed away.
-Our results indicate that for $\theta_2 = \pi$, as $\beta$ increases, the right squirmer is more strongly pulled 
+These results indicate that for $\theta_2 = \pi$, as $\beta$ increases, the right squirmer is more strongly pulled 
 towards the left one, while as $\beta$ decreases, the torques acting on the left squirmer also decrease.
 
 \begin{figure}[H]
@@ -807,7 +835,7 @@ towards the left one, while as $\beta$ decreases, the torques acting on the left
         position and orientation of squirmer1: $(x_1,y_1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$,\\
         position and orientation of squirmer2: $(x_2,y_2)=(\frac{2a}{1.9},0)$, $\theta_2=-\frac{3\pi}{4}$
 \end{center}
-Our results are consistent with the previous study\cite{Stark} for $\beta \ge 0$ as the torques acting on the right squirmer
+These results are consistent with the previous study\cite{Stark} for $\beta \ge 0$ as the torques acting on the right squirmer
 are weaker than the ones acting on the left one. On the contrary, for $\beta < 0$ the torques acting on the right squirmer are larger
 than the ones acting on the left one.
 
@@ -830,7 +858,7 @@ than the ones acting on the left one.
         position and orientation of squirmer1: $(x_1,y_1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$,\\
         position and orientation of squirmer2: $(x_2,y_2)=(\frac{2a}{1.9},0)$, $\theta_2=-\frac{\pi}{2}$
 \end{center}
-Our results are consistent with the previous study\cite{Stark} as the torques acting on the right squirmer are equal to
+These results are consistent with the previous study\cite{Stark} as the torques acting on the right squirmer are equal to
 those acting on the left squirmer for all values of $\beta$.
 
 \begin{figure}[H]
@@ -852,7 +880,7 @@ those acting on the left squirmer for all values of $\beta$.
         position and orientation of squirmer1: $(x_1,y_1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$,\\
         position and orientation of squirmer2: $(x_2,y_2)=(\frac{2a}{1.9},0)$, $\theta_2=-\frac{\pi}{4}$
 \end{center}
-Our results are consistent with the previous study\cite{Stark} for $\beta = 0$ as the torques acting on the right 
+These results are consistent with the previous study\cite{Stark} for $\beta = 0$ as the torques acting on the right 
 squirmer are weaker to those acting on the left squirmer. For $\beta = 3$ the torques acting on the right squirmer are
 equal to the those acting on the left squirmer which does not align with the previous study.
 For $\beta = -3$ the rotation vector does not align with the previous study.
@@ -880,15 +908,15 @@ For $\beta = -3$ the rotation vector does not align with the previous study.
         position and orientation of squirmer1: $(x_1,y_1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$,\\
         position and orientation of squirmer2: $(x_2,y_2)=(\frac{2a}{1.9},0)$, $\theta_2=\frac{\pi}{4}$
 \end{center}
-Our results are consistent with the previous study\cite{Stark} for $\beta = 0$ as the torques acting on the right 
+These results are consistent with the previous study\cite{Stark} for $\beta = 0$ as the torques acting on the right 
 squirmer are weaker to those acting on the left squirmer. For $\beta = 3$ the torques acting on the right squirmer are
 greater to the those acting on the left squirmer, which does not align with the previous study.
 For $\beta = -3$ the rotation vector does not align with the previous study.
 
 \subsection{Simulation of squirmer-border interacting}
-In this section twenty simulation of a squirmer near a border are conducted. The parameters of the simulations are fixed
+In this section twenty simulation of a squirmer near a reflective border are conducted. The parameters of the simulations are fixed
 except for the orientation and $\beta$ parameter. The squirmer is placed at $(x,y) = (-0.4,-0.7)$, has a radius of $a=0.05$,
-a velocity $v_0=1$, an initial orientation $\theta$ varying among $-\frac{\pi}{6}$, $-\frac{\pi}{4}$, $-\frac{\pi}{3}$
+a velocity $v_0=1$, a translational diffusivity $D=0$, an initial orientation $\theta$ varying among $-\frac{\pi}{6}$, $-\frac{\pi}{4}$, $-\frac{\pi}{3}$
 and $-\frac{\pi}{2}$ and a $\beta$ value varying among $\beta_0 = 0, \beta_1 = 1.5, \beta_2 = 3, \beta_3 = -1.5, \beta_4 = -3$.\\
 One can execute these simulations by running the command:
  \begin{verbatim}
@@ -923,9 +951,9 @@ One can execute these simulations by running the command:
     \includegraphics[width=0.55\textwidth]{graphs/simulations/border/beta0/mpi_6.png}
     \caption{\footnotesize $\beta = 0$}
     Simulation parameters: radius $a=0.05$, velocity $v_0=1$, simulation time $T=0.9$\\
-        position and orientation of squirmer: $(x_1,y_1)=(-0.4,-0.7)$, $\theta=-\frac{\pi}{6}$
+        position and orientation of squirmer: $(x,y)=(-0.4,-0.7)$, $\theta=-\frac{\pi}{6}$
 \end{figure}
-Our results shows that for $\theta = -\frac{\pi}{6}$, as $\beta$ increases, the squirmer's orientation upon interaction becomes parallel to the border.
+These results show that for $\theta = -\frac{\pi}{6}$, as $\beta$ increases, the squirmer's orientation upon interaction becomes parallel to the border.
 On the contrary, as $\beta$ decreases, the squirmer's orientation upon interaction becomes tangential to the border.\\
 The fact that the orientation after interaction is tangential does not necessarily mean that the particle reaches the initial 
 height more quickly, as observed when $\beta = -3$ compared to when $\beta = -1.5$.
@@ -955,13 +983,93 @@ height more quickly, as observed when $\beta = -3$ compared to when $\beta = -1.
     \includegraphics[width=0.55\textwidth]{graphs/simulations/border/beta0/mpi_4.png}
     \caption{\footnotesize $\beta = 0$}
     Simulation parameters: radius $a=0.05$, velocity $v_0=1$, simulation time $T=0.9$\\
-        position and orientation of squirmer: $(x_1,y_1)=(-0.4,-0.7)$, $\theta=-\frac{\pi}{4}$
+        position and orientation of squirmer: $(x,y)=(-0.4,-0.7)$, $\theta=-\frac{\pi}{4}$
 \end{figure}
-Our results shows that for $\theta = -\frac{\pi}{4}$, as $\beta$ increases, the squirmer's orientation upon interaction becomes parallel to the border.
-Conversely, as $\beta$ decreases, the squirmer's orientation upon interaction becomes tangential to the border.\\
 One can note that the initial orientation has an impact on the orientation after interaction with the border as for $\theta = -\frac{\pi}{4}$ and 
 $\beta = 1.5$, the squirmer reaches and exceeds the original height during the simulation time. In contrast, for $\theta = -\frac{\pi}{6}$ and 
 $\beta = 1.5$, the squirmer does not reach the initial height.
+
+\begin{figure}[H]
+    \centering
+    \textbf{$\theta = -\frac{\pi}{3}$}\par\medskip
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/border/beta1_5/mpi_3.png}
+        \caption{\footnotesize $\beta = 1.5$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/border/beta3/mpi_3.png}
+        \caption{\footnotesize $\beta = 3$}
+    \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/border/betam1_5/mpi_3.png}
+        \caption{\footnotesize $\beta = -1.5$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/border/betam3/mpi_3.png}
+        \caption{\footnotesize $\beta = -3$}
+    \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{graphs/simulations/border/beta0/mpi_3.png}
+    \caption{\footnotesize $\beta = 0$}
+    Simulation parameters: radius $a=0.05$, velocity $v_0=1$, simulation time $T=0.9$\\
+        position and orientation of squirmer: $(x,y)=(-0.4,-0.7)$, $\theta=-\frac{\pi}{3}$
+\end{figure}
+For $\beta < 0$, the lubrification torques adjust the squirmer's orientation towards the border as it approaches, resulting
+in a more tangential orientation as $\beta$ decreases. Conversely, for $\beta > 0$, the lubrification torques adjust the squirmer's 
+orientation away from the border, leading to a more parallel orientation as $\beta$ increases.
+
+\begin{figure}[H]
+    \centering
+    \textbf{$\theta = -\frac{\pi}{2}$}\par\medskip
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/border/beta1_5/mpi_2.png}
+        \caption{\footnotesize $\beta = 1.5$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/border/beta3/mpi_2.png}
+        \caption{\footnotesize $\beta = 3$}
+    \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/border/betam1_5/mpi_2.png}
+        \caption{\footnotesize $\beta = -1.5$}
+    \end{minipage}\hfill
+    \begin{minipage}{0.49\textwidth}
+        \includegraphics[width=1.1\textwidth]{graphs/simulations/border/betam3/mpi_2.png}
+        \caption{\footnotesize $\beta = -3$}
+    \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\textwidth]{graphs/simulations/border/beta0/mpi_2.png}
+    \caption{\footnotesize $\beta = 0$}
+    Simulation parameters: radius $a=0.05$, velocity $v_0=1$, simulation time $T=0.9$\\
+        position and orientation of squirmer: $(x,y)=(-0.4,-0.7)$, $\theta=-\frac{\pi}{2}$
+\end{figure}
+For $\beta \le 0$, the results remain unchanged between $\beta = 0$ and $\beta < 0$ as the 
+squirmer's initial orientation is already tangential to the border.
+ For $\beta > 0$, the lubrification torques adjust the squirmer's orientation away from the border, 
+ leading to a more parallel orientation as $\beta$ increases.
+
+\subsection{Simulation of $375$ squirmers}
+In this section, four simulations of 375 squirmers are conducted in a rectangle with dimensions $L_y = 3$ and $L_x=6$, over 
+a simulation time of $T=10$. Two simulations are performed in a box with reflective boundaries, while the other two are conducted in
+ a channel with reflective y-boundaries and periodic x-boundaries.
+The squirmers have a radius of $a = 0.02$, a velocity of $v_0 = 1$, a translational diffusivity of $D=0$, and $\beta = 0$.
+ They are placed randomly within the rectangle, each with a random orientation. The minimum distance between 
+ squirmers, as well as the polar order parameter, are plotted at the end of each simulation.\\
+One can do a simulation by running:
+\begin{verbatim}
+    python Code/run.py video N filename
+\end{verbatim} 
+where \texttt{N} is the number of squirmers, and \texttt{filename} is the name of the output file.
 
 \subsection{$E_0$ parameter}
 The first thing done during the internship was to study the effect of the $E_0$ parameter on the alignment of the squirmers.\\
@@ -1034,9 +1142,6 @@ The focus is for $\theta_2 = \pi$ and $\theta_2 = \frac{3\pi}{4}$ as the interac
     position and orientation of squirmer2: $(x2,y2)=(\frac{2a}{1.5},0)$, $\theta_2=\pi$\\
     The arrows shows when the orientations of the squirmers are affected and a circle is plotted every four time the orientation of a squirmer is affected
 \end{figure}
-
-\subsection{N squirmers}
-The first step was to modify the code done during the initial project to simulate the behavior of $N$ squirmers.
 
 \newpage
 

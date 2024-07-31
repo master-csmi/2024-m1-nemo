@@ -598,12 +598,11 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
             plot_time(interact, interact.list_polar, "polar_" + filename, 'polar parameter', dir=dir)
             polars.append(interact.list_polar)
 
+            create_video_from_history(history, Nx, Ny, N, a, filename=filename, dir=dir)
+            print(f"Simulation {labeld} done")
             del interact.vector_dists_min
             del interact.list_polar
             del history
             gc.collect()
-
-            print(f"Simulation {labeld} done")
-            # create_video_from_history(history, Nx, Ny, N, a, filename=filename, dir=dir)
         plot_polars(interact, polars, D, dir=dir)
         
