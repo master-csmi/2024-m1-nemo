@@ -275,7 +275,7 @@ Thus, $u$ in cartesian coordinates is given by :
 The evolution of the mass center $r_i$ = $(X_i, Y_i)$ of one squirmer $i$ in presence of 
 another squirmer $j$ and rigid boundaries, is given by the Langevin equation:
 \begin{center}
-$\boxed{\frac{dr_i}{dt}$ = $v_0 p_i -  \sum\limits_{i \ne j}\nabla_{R_{ij}} V_{ij} - \sum\limits_{i}\nabla_{R_i} V_i + \sum\limits_{i\ne j}\left[F_{i(j)\rightarrow i} + F_{j(i)\rightarrow i}\right]+ \sum\limits_{k \in w}F_{k\rightarrow i}^w + \sqrt{2D}\eta_i(t)}$
+$\boxed{\frac{dr_i}{dt}$ = $v_0 p_i -  \sum\limits_{i \ne j}\nabla_{r_{ij}} V_{ij} - \sum\limits_{i}\nabla_{r_i} V_i + \sum\limits_{i\ne j}\left[F_{i(j)\rightarrow i} + F_{j(i)\rightarrow i}\right]+ \sum\limits_{k \in w}F_{k\rightarrow i}^w + \sqrt{2D}\eta_i(t)}$
 \end{center}
 We have : \begin{itemize}
     \item $v_0$ the particle velocity,
@@ -289,65 +289,66 @@ We have : \begin{itemize}
     \item $\eta_i$ are independent noises. 
 \end{itemize} 
 \vspace{0,5cm}
-The second law of Newton states:
+The second law of Newton states\cite{Newton}:
 $$m\vec{a} = \sum\limits_i \vec{F}_i.$$
 The force of viscosity on a small sphere moving through a viscous fluid is given by the Stokes-Einstein relation\cite{Stokes}:
-$$F_d = 6\mu\pi rv_0.$$
-The squirmers have no inertia, so $\vec{a} = 0$, such as:
-$$0 = -F_d\frac{dR_i}{dt} + \sum\limits_{i \ne d} F_i,$$
+$$F_d = 6\mu\pi rv_0\frac{dr_i}{dt}.$$
+We consider the squirmers propulsion in absence of inertia: $m\vec{a} = 0$. Hence one has:
+$$0 = -F_d + \sum\limits_{i \ne d} F_i,$$
 we have:
 $$\frac{dR_i}{dt} = \frac{1}{6\mu\pi r}\sum\limits_{i \ne d} F_i.$$
-The Weeks-Chandler-Andersen potential is then given by:
-$V_{ij}$ = $\frac{E_s}{6\pi\mu r}\left[\left(\frac{2r}{\lvert R_{ij}\rvert}\right)^{12} - \left(\frac{2r}{\lvert R_{ij}\rvert}\right)^6\right]$ and  $V_i$ = $\frac{E_s}{6\pi\mu r} \left[ \left( \frac{r}{\lvert R - R_i \rvert} \right)^{12} - \left( \frac{r}{\lvert R - R_i \rvert} \right) ^6 \right]$ 
+The Weeks-Chandler-Andersen potential is given by:
+$V_{ij}$ = $\frac{E_s}{6\pi\mu R}\left[\left(\frac{2R}{\lvert r_{ij}\rvert}\right)^{12} - \left(\frac{2R}{\lvert r_{ij}\rvert}\right)^6\right]$ and  $V_i$ = $\frac{E_s}{6\pi\mu R} \left[ \left( \frac{R}{\lvert r - r_i \rvert} \right)^{12} - \left( \frac{R}{\lvert r - r_i \rvert} \right) ^6 \right]$ 
 \vspace{0,3cm}
 \\With : \begin{itemize}
-    \item $R_{ij}$ = $\sqrt{D_x^2+D_y^2}$, $\lvert R_{ij} \rvert$ the distance between the centers of two squirmers,
-    \item $\lvert R - R_i\rvert$ the distance between the wall and the squirmer center,
+    \item $r_{ij}$ = $\sqrt{D_x^2+D_y^2}$, $\lvert r_{ij} \rvert$ the distance between the centers of two squirmers,
+    \item $\lvert r - r_i\rvert$ the distance between the wall and the squirmer center,
     \item $E_s$ a positive constant,
-    \item $r$ the radius of a squirmer,
+    \item $R$ the radius of a squirmer,
     \item $\mu$ the dynamic viscosity.
 \end{itemize}
 
 \vspace{0,5cm}
-We want to compute the steric force, given by $\nabla_{R_{ij}} V_{ij}$:
+We want to compute the steric force applied between two squirmers, given by $\nabla_{r_{ij}} V_{ij}$:
 
 \begin{align*}
-\frac{\partial V_{ij}}{\partial D_x} &= \frac{\partial}{\partial D_x}\frac{E_s}{6\pi\mu r}\left[\left(\frac{2r}{\lvert R_{ij}\rvert}\right)^{12} - \left(\frac{2r}{\lvert R_{ij}\rvert}\right)^6\right] \\
-&= \frac{E_s}{6\pi\mu r} \left[\frac{\partial}{\partial D_x}\left(\frac{2r}{\lvert R_{ij}\rvert}\right)^{12} - \frac{\partial}{\partial D_x} \left(\frac{2r}{\lvert R_{ij}\rvert}\right)^6\right] \\
-&= \frac{E_s}{6\pi\mu r} \left[ \frac{-12 D_x (2r)^{12}(R_{ij})^{10}}{(R_{ij})^{24}} - \frac{-6D_x(2r)^6(R_{ij})^4}{(R_{ij})^{12}}  \right] \\
-&= \frac{-12 E_s}{2r6\pi\mu r} \left[ \frac{D_x (2r)^{13}}{(R_{ij})^{14}} - \frac{D_x (2r)^{7}}{2(R_{ij})^8}\right] \\
-&= -\frac{E_s}{2r^2\pi\mu} \frac{D_x}{R_{ij}} \left[ \frac{2(2r)^{13}}{(R_{ij})^{13}} - \frac{(2r)^7}{(R_{ij})^{7}}\right]
+\frac{\partial V_{ij}}{\partial D_x} &= \frac{\partial}{\partial D_x}\frac{E_s}{6\pi\mu R}\left[\left(\frac{2R}{\lvert r_{ij}\rvert}\right)^{12} - \left(\frac{2R}{\lvert r_{ij}\rvert}\right)^6\right] \\
+&= \frac{E_s}{6\pi\mu R} \left[\frac{\partial}{\partial D_x}\left(\frac{2R}{\lvert r_{ij}\rvert}\right)^{12} - \frac{\partial}{\partial D_x} \left(\frac{2R}{\lvert r_{ij}\rvert}\right)^6\right] \\
+&= \frac{E_s}{6\pi\mu R} \left[ \frac{-12 D_x (2R)^{12}(r_{ij})^{10}}{(r_{ij})^{24}} - \frac{-6D_x(2R)^6(r_{ij})^4}{(r_{ij})^{12}}  \right] \\
+&= \frac{-12 E_s}{2r6\pi\mu R} \left[ \frac{D_x (2R)^{13}}{(r_{ij})^{14}} - \frac{D_x (2R)^{7}}{2(r_{ij})^8}\right] \\
+&= -\frac{E_s}{2R^2\pi\mu} \frac{D_x}{r_{ij}} \left[ \frac{2(2R)^{13}}{(r_{ij})^{13}} - \frac{(2R)^7}{(r_{ij})^{7}}\right].
 \end{align*}
 Equivalently, we have : 
-$\frac{\partial V_{ij}}{\partial D_y}$ = $-\frac{E_s}{2r^2\pi\mu} \frac{D_y}{R_{ij}}\left[ \frac{2(2r)^{13}}{(R_{ij})^{13}} - \frac{(2r)^7}{(R_{ij})^7} \right]$
+$\frac{\partial V_{ij}}{\partial D_y}$ = $-\frac{E_s}{2R^2\pi\mu} \frac{D_y}{r_{ij}}\left[ \frac{2(2R)^{13}}{(r_{ij})^{13}} - \frac{(2R)^7}{(r_{ij})^7} \right].$
 \\ We find : 
 \begin{equation*}
-    \boxed{\nabla_{R_{ij}} V_{ij} = 
+    \boxed{\nabla_{r_{ij}} V_{ij} = 
     \begin{pmatrix}
-        -\frac{E_s}{2r^2\pi\mu} \frac{D_x}{R_{ij}}\left[ \frac{2(2r)^{13}}{(R_{ij})^{13}} - \frac{(2r)^7}{(R_{ij})^7} \right] \\
-        -\frac{E_s}{2r^2\pi\mu} \frac{D_y}{R_{ij}}\left[ \frac{2(2r)^{13}}{(R_{ij})^{13}} - \frac{(2r)^7}{(R_{ij})^7} \right]
+        -\frac{E_s}{2R^2\pi\mu} \frac{D_x}{r_{ij}}\left[ \frac{2(2R)^{13}}{(r_{ij})^{13}} - \frac{(2R)^7}{(r_{ij})^7} \right] \\
+        -\frac{E_s}{2R^2\pi\mu} \frac{D_y}{r_{ij}}\left[ \frac{2(2R)^{13}}{(r_{ij})^{13}} - \frac{(2R)^7}{(r_{ij})^7} \right]
     \end{pmatrix}}
 \end{equation*}
 
 \vspace{0,5cm}
 
-In addition, we need to compute $\partial_{R_i} V_i$ to obtain the force applied between a squirmer and a rigid boundary.
+In addition, we need to compute $\partial_{r_i} V_i$ to obtain the force applied between a squirmer and a rigid boundary.
 
 \begin{align*}
-    \frac{\partial V_i}{\partial X} &= \frac{\partial}{\partial X} \left( \frac{E_s}{6\pi\mu r} \left[ \left( \frac{r}{\lvert R - R_i \rvert} \right)^{12} - \left( \frac{r}{\lvert R - R_i \rvert} \right) ^6 \right] \right) \\
-    &= \frac{\partial}{\partial X} \left( \frac{E_s}{6\pi\mu r} \left[ \left( \frac{r}{\sqrt{( X_{box}-X)^2 + (Y_{box}-Y)^2}} \right)^{12} - \left( \frac{r}{\sqrt{( X_{box}-X)^2 + (Y_{box}-Y)^2}} \right) ^6 \right] \right) \\
-    &= \frac{E_s}{6\pi\mu r}\left[ 12(X_{box}-X)\frac{r^{12}}{\lvert R - R_i\rvert^{14}} - 6(X_{box}-X)\frac{r^6}{\lvert R-R_i\rvert^8} \right] \\
-    &= -\frac{E_s (X_{box}-X)}{\pi\mu r^2 \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right] 
+    \frac{\partial V_i}{\partial X} &= \frac{\partial}{\partial X} \left( \frac{E_s}{6\pi\mu R} \left[ \left( \frac{R}{\lvert r - r_i \rvert} \right)^{12} - \left( \frac{R}{\lvert r - r_i \rvert} \right) ^6 \right] \right) \\
+    &= \frac{\partial}{\partial X} \left( \frac{E_s}{6\pi\mu R} \left[ \left( \frac{R}{\sqrt{( X_{box}-X)^2 + (Y_{box}-Y)^2}} \right)^{12} - \left( \frac{R}{\sqrt{( X_{box}-X)^2 + (Y_{box}-Y)^2}} \right) ^6 \right] \right) \\
+    &= \frac{E_s}{6\pi\mu R}\left[ 12(X_{box}-X)\frac{R^{12}}{\lvert r - r_i\rvert^{14}} - 6(X_{box}-X)\frac{R^6}{\lvert r-r_i\rvert^8} \right] \\
+    &= -\frac{E_s (X_{box}-X)}{\pi\mu R^2 \lvert r - r_i \rvert } \left[ 2 \left( \frac{R}{\lvert r-r_i\rvert} \right)^{13} - \left( \frac{R}{\lvert r-r_i\rvert}\right)^7 \right].
 \end{align*}
-Equivalently, we have : $\frac{\partial V_i}{\partial Y}$ = $ - \frac{E_s (Y_{box}-Y)}{\pi\mu r^2 \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right]$
+Equivalently, we have : $\frac{\partial V_i}{\partial Y}$ = $ - \frac{E_s (Y_{box}-Y)}{\pi\mu R^2 \lvert r - r_i \rvert } \left[ 2 \left( \frac{R}{\lvert r-r_i\rvert} \right)^{13} - \left( \frac{R}{\lvert r-r_i\rvert}\right)^7 \right].$
 
 We have : 
 \begin{equation*}
-    \boxed{\nabla_{R_i} V_i = \begin{pmatrix}
-        - \frac{E_s (X_{box}-X)}{\pi\mu r^2 \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right] \\
-        - \frac{E_s (Y_{box}-Y)}{\pi\mu r^2 \lvert R - R_i \rvert } \left[ 2 \left( \frac{r}{\lvert R-R_i\rvert} \right)^{13} - \left( \frac{r}{\lvert R-R_i\rvert}\right)^7 \right]
+    \boxed{\nabla_{r_i} V_i = \begin{pmatrix}
+        - \frac{E_s (X_{box}-X)}{\pi\mu R^2 \lvert r - r_i \rvert } \left[ 2 \left( \frac{R}{\lvert r-r_i\rvert} \right)^{13} - \left( \frac{R}{\lvert r-r_i\rvert}\right)^7 \right] \\
+        - \frac{E_s (Y_{box}-Y)}{\pi\mu r^2 \lvert r - r_i \rvert } \left[ 2 \left( \frac{R}{\lvert r-r_i\rvert} \right)^{13} - \left( \frac{R}{\lvert r-r_i\rvert}\right)^7 \right]
     \end{pmatrix}}
 \end{equation*}
+These steric forces are applied on two squirmers when $r_{ij} < R2^{\frac{7}{6}}$.
 
 \begin{center}
    \begin{tikzpicture}
@@ -358,8 +359,8 @@ We have :
    \draw[color=black, very thick](0,5) circle (0.01);
    \draw[color=black, very thick](5,5) circle (0.01);
    
-   \node  at (-0.3,5-0.2) {{$R_i$}};
-   \node  at (5+0.2,5-0.2) {{$R_j$}};
+   \node  at (-0.3,5-0.2) {{$r_i$}};
+   \node  at (5+0.2,5-0.2) {{$r_j$}};
    
    \node  at (-2,5) {{$S_i$}};
    \node  at (7,5) {{$S_j$}};
@@ -367,55 +368,62 @@ We have :
    \draw[thick, ->] (0,5) -- (1.7,5+0.6);
    \draw[thick, ->] (5,5) -- (5-1.7,5+0.6);
    
-   \node  at (1.9,5+0.6) {{$e_i$}};
-   \node  at (5-1.9,5+0.6) {{$e_j$}};
+   \node  at (1.9,5+0.6) {{$p_i$}};
+   \node  at (5-1.9,5+0.6) {{$p_j$}};
    
    \draw[thick] (0,5) -- ({-cos(45)*2}, {5+0.7*sin(45)});
-   \node  at (-0.8,5+0.5) {{$r$}};
+   \node  at (-0.8,5+0.5) {{$R$}};
    
    \draw[thick, ->] (0,5) -- (2,5);
    \draw[thick, ->] (5,5) -- (3,5);
    
-   \node  at (2,5-0.3) {{$e_{ij}$}};
-   \node  at (3,5-0.3) {{$e_{ji}$}};
+   \node  at (2,5-0.3) {{$\hat{R}_{ij}$}};
+   \node  at (3,5-0.3) {{$\hat{R}_{ji}$}};
    
-   \draw[thick, ->] (0,5) -- (0,3);
-   \node  at (-0.3,3-0.3) {$e^{\perp}_{ij}$};
+   \draw[thick, ->] (0,5) -- (0,7);
+   \node  at (-0.3,7) {$\hat{R}_{ij}^{\perp}$};
    
    
-   \draw[thick, ->] (5,5) -- (5,7);
-   \node  at (5+0.3,7+0.2) {$e^{\perp}_{ji}$};
+   \draw[thick, ->] (5,5) -- (5,3);
+   \node  at (5.3,3) {$\hat{R}_{ji}^{\perp}$};
    
    \end{tikzpicture}
    \end{center}
 The figure shows the different vectors involved in the computations which will follow.
-\\We define : 
+\\We define: 
 \begin{itemize}
-    \item $W_n(\mathrm{cos}(\theta))$ = $\frac{2}{n(n+1)}P_n'(\mathrm{cos}(\theta))$ \cite{Brumley}
-    \item $P_n(\mathrm{cos}(\theta))$ the Legendre polynomials \cite{Wikipedia}
-    \item $p_i\hat{R}_{ij} = -e_i.e_{ij}$
-    \item $p_i\hat{R}^{\perp}_{ij}$ = $-\frac{(Y_{R_j} - Y_{R_i})\mathrm{cos}(\theta) - (X_{R_j} - X_{R_i})\mathrm{sin}(\theta)}{\lvert R_{ij} \rvert} $
+    \item $W_n(x)$ = $\frac{2}{n(n+1)}P_n'(x)$ \cite{Brumley},
+    \item $P_n(x)$ the Legendre polynomials \cite{Wikipedia} given by:
+    \begin{itemize}
+        \item $P_1(x) = x,$
+        \item $P_2(x) = \frac{1}{2}(3x^2-1),$
+    \end{itemize}
+    \item $p_i = (\cos\theta_i, \sin\theta_i),$
+    \item $\hat{R}_{ij} = \frac{r_{ij}}{\left|r_{ij}\right|}$,
+    \item $\hat{R}^{\perp}_{ij} = rot(\frac{\pi}{2})\hat{R}_{ij}.$
 \end{itemize}
 
-The tangential lubrification forces acting on the two spheres can be calculated explicitly by:
-\\ $F_{i(j)\rightarrow i}^{y}$ = $-9 \mu \pi r \frac{\lambda ^2}{(\lambda +1)^2} \sum_{n} \left[ B_n W_n(p_i\hat{R}_{ij})(-p_i\hat{R}_{ij}) + \frac{1}{2} B_n W_n'(p_i\hat{R}_{ij})(p_i\hat{R}^{\perp}_{ij})^2 \right] (ln \epsilon + O(1)).$ \cite{Brumley}
-
+The tangential lubrification forces acting on the two spheres can be calculated explicitly by\cite{Brumley}:
+\\ 
+\footnotesize
+$F_{i(j)\rightarrow i}^{y}$ = $-9 \mu \pi R \frac{\lambda ^2}{(\lambda +1)^2} \sum_{n} \left[ B_n W_n(p_i\hat{R}_{ij})(-p_i\hat{R}_{ij}) + \frac{1}{2} B_n W_n'(p_i\hat{R}_{ij})(p_i\hat{R}^{\perp}_{ij})^2 \right] (ln \epsilon + O(1)).$
+\normalsize
 For $n$ = 1 : \begin{align*}
-    W_1(p_i\hat{R}_{ij}) &= 1 \\
-    W_1'(p_i\hat{R}_{ij}) &= 0 \\
+    W_1(p_i\hat{R}_{ij}) &= 1, \\
+    W_1'(p_i\hat{R}_{ij}) &= 0, \\
     -B_1 W_1(p_i\hat{R}_{ij})p_i\hat{R}_{ij} + \frac{1}{2} B_1  W_1'(p_i\hat{R}_{ij}) (p_i\hat{R}^{\perp}_{ij})^2  &= -B_1 p_i\hat{R}_{ij}.
 \end{align*} 
 For $n$ = 2 : \begin{align*}
-    W_2(p_i\hat{R}_{ij}) &= p_i\hat{R}_{ij} \\
-    W_2'(p_i\hat{R}_{ij}) &= 1\\
+    W_2(p_i\hat{R}_{ij}) &= p_i\hat{R}_{ij}, \\
+    W_2'(p_i\hat{R}_{ij}) &= 1,\\
     -B_2 W_2(p_i\hat{R}_{ij})p_i\hat{R}_{ij}+ \frac{1}{2} B_2  W_2'(p_i\hat{R}_{ij}) (p_i\hat{R}^{\perp}_{ij})^2  &= -B_2 (p_i\hat{R}_{ij})^2 + \frac{1}{2} B_2(p_i\hat{R}^{\perp}_{ij})^2.
 \end{align*}  
 
-We have $B_1 = \frac{3}{2}v_0$, $B_2 = B_1\cdot\beta$ and $\lambda=1$, so:
+Since all squirmers share the same radius $R$, we have $B_1 = \frac{3}{2}v_0$, $B_2 = B_1\cdot\beta$ and $\lambda=1$, so:
 \begin{align*}
 \footnotesize
-6\mu\pi rF_{i(j)\rightarrow i}^{y} = -9 \mu \pi r \frac{\lambda ^2}{(\lambda +1)^2} \left[ -B_1 p_i\hat{R}_{ij} -B_2 (p_i\hat{R}_{ij})^2 + \frac{1}{2} B_2(p_i\hat{R}^{\perp}_{ij})^2\right](ln \epsilon + O(1))\\
-= -9 \mu \pi r \frac{1}{4}\cdot\frac{3}{2}v_0\left[ -p_i\hat{R}_{ij} -\beta (p_i\hat{R}_{ij})^2 + \frac{1}{2} \beta(p_i\hat{R}^{\perp}_{ij})^2\right](ln \epsilon + O(1))
+6\mu\pi RF_{i(j)\rightarrow i}^{y} = -9 \mu \pi R \frac{\lambda ^2}{(\lambda +1)^2} \left[ -B_1 p_i\hat{R}_{ij} -B_2 (p_i\hat{R}_{ij})^2 + \frac{1}{2} B_2(p_i\hat{R}^{\perp}_{ij})^2\right](ln \epsilon + O(1))\\
+= -9 \mu \pi R \frac{1}{4}\cdot\frac{3}{2}v_0\left[ -p_i\hat{R}_{ij} -\beta (p_i\hat{R}_{ij})^2 + \frac{1}{2} \beta(p_i\hat{R}^{\perp}_{ij})^2\right](ln \epsilon + O(1))
 \end{align*}
 \begin{equation*}
 \boxed{
@@ -426,20 +434,22 @@ We have $B_1 = \frac{3}{2}v_0$, $B_2 = B_1\cdot\beta$ and $\lambda=1$, so:
 \normalsize
 \vspace{0.5cm}
 
-The normal forces acting on the two spheres can be calculated explicitly by: \\
- $F_{i(j)\rightarrow i}^{x}$ = $-\frac{4}{5} \mu \pi r \frac{\lambda(\lambda +4)}{(\lambda +1)^2} \sum_{n} B_n W_n(p_i\hat{R}_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
-\\ So :
+The normal forces acting on the two spheres can be calculated explicitly by\cite{Brumley}:
+\begin{center}
+    $F_{i(j)\rightarrow i}^{x}$ = $-\frac{4}{5} \mu \pi R \frac{\lambda(\lambda +4)}{(\lambda +1)^2} \sum_{n} B_n W_n(p_i\hat{R}_{ij}) (ln \epsilon + O(1))$
+\end{center}
+ So :
 \begin{align*}
     \footnotesize
-    6\mu\pi rF_{i(j)\rightarrow i}^{x} = -\frac{4}{5}\mu\pi r\frac{5}{4}p_i\hat{R}^{\perp}_{ij}(B_1 + B_2 p_i\hat{R}_{ij})(ln \epsilon + O(1))\\
-    = -\mu\pi r\frac{3}{2}v_0p_i\hat{R}^{\perp}_{ij}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))
+    6\mu\pi RF_{i(j)\rightarrow i}^{x} = -\frac{4}{5}\mu\pi R\frac{5}{4}p_i\hat{R}^{\perp}_{ij}(B_1 + B_2 p_i\hat{R}_{ij})(ln \epsilon + O(1)),\\
+    = -\mu\pi R\frac{3}{2}v_0p_i\hat{R}^{\perp}_{ij}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1)).
 \end{align*}
 \begin{equation*}
     \footnotesize
     \boxed{F_{i(j)\rightarrow i}^{x} = -\frac{1}{4}v_0p_i\hat{R}^{\perp}_{ij}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))}
 \end{equation*}
 
-The effect of a wall can be calculated by replacing one of the spheres with one of infinite diameter:
+The effect of a wall can be calculated by replacing one of the spheres with one of infinite diameter, so $\lambda\rightarrow\infty$:
 \begin{equation*}
     \footnotesize
     \boxed{F_{w\rightarrow i}^{y} = \frac{9}{4} v_0
@@ -459,59 +469,63 @@ We have:
 \begin{itemize}
     \item $\Gamma_{i(j)\rightarrow k}$ the torque exerted on the $k^{th}$ particle by the flow associated to the $i^{th}$ particle, but perturbed by the presence of the $j^{th}$ particle,
     \item $\Gamma_{k\rightarrow i}^w$ the torque exerted on the $i^{th}$ particle by the interactions with the $k^{th}$ walls,
-    \item $D_o$ the angular diffusivity is equal to $\frac{3D}{4r^2}$,
+    \item $D_o$ the angular diffusivity equal to $\frac{3D}{4r^2}$,
     \item $\eta_o^{(i)}$ the noises, independent of $\eta^{i}$.
 \end{itemize}
 \vspace{0.5cm}
-Similarly as with the forces, we have $\phi = 8\pi\mu r^3$ the rotation flow around a sphere\cite{Stokes}:
-$$\frac{d \theta_i}{dt} = \frac{1}{\phi}\sum\limits_{i \ne \phi}F_i\cite{Newton}.$$
-The torques acting on the squirmer $i$ can be calculated explicitly by: \\
-$\Gamma_{i(j)\rightarrow i}$ = $\frac{16 \lambda}{5(\lambda +1)} \mu \pi r^2 p_i\hat{R}_{ij}^{\perp}\sum_{n} B_n W_n(p_i\hat{R}_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
-\\ So :
+Similarly to the forces, one has $\phi = 8\pi\mu r^3$ the rotation flow around a sphere\cite{Stokes}:
+$$\frac{d \theta_i}{dt} = \frac{1}{\phi}\sum F\cite{Newton}.$$
+The torques acting on the squirmer $i$ can be calculated explicitly by\cite{Brumley}:
+\begin{center}
+    $\Gamma_{i(j)\rightarrow i}$ = $\frac{16 \lambda}{5(\lambda +1)} \mu \pi R^2 p_i\hat{R}_{ij}^{\perp}\sum_{n} B_n W_n(p_i\hat{R}_{ij}) (ln \epsilon + O(1))$.   
+\end{center}
+So:
 \begin{align*}
     \footnotesize
-    \phi \Gamma_{i(j)\rightarrow i} = \frac{8}{5}\mu\pi r^2p_i\hat{R}_{ij}^{\perp}(B_1 + B_2 p_i\hat{R}_{ij})(ln \epsilon + O(1))\\
-    = \frac{8}{5}\mu\pi r^2p_i\hat{R}_{ij}^{\perp}\frac{3}{2}v_0(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))
+    \phi \Gamma_{i(j)\rightarrow i} = \frac{8}{5}\mu\pi R^2p_i\hat{R}_{ij}^{\perp}(B_1 + B_2 p_i\hat{R}_{ij})(ln \epsilon + O(1)),\\
+    = \frac{8}{5}\mu\pi R^2p_i\hat{R}_{ij}^{\perp}\frac{3}{2}v_0(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1)).
 \end{align*}
 \begin{equation*}
-    \boxed{\Gamma_{i(j)\rightarrow i} = \frac{3}{10}\frac{v_0}{r}p_i\hat{R}_{ij}^{\perp}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))}
+    \boxed{\Gamma_{i(j)\rightarrow i} = \frac{3}{10}\frac{v_0}{R}p_i\hat{R}_{ij}^{\perp}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))}.
 \end{equation*}
 
-The torques acting on the squirmer $j$ can be calculated explicitly by : \\
-$\Gamma_{i(j)\rightarrow j}$ = $\frac{4 \lambda^2}{5(\lambda +1)} \mu \pi r^2 p_i\hat{R}_{ij}^{\perp}\sum_{n} B_n W_n(p_i\hat{R}_{ij}) (ln \epsilon + O(1))$ \cite{Brumley}
-\\ So :
+The torques acting on the squirmer $j$ can be calculated explicitly by:
+\begin{center}
+    $\Gamma_{i(j)\rightarrow j}$ = $\frac{4 \lambda^2}{5(\lambda +1)} \mu \pi R^2 p_i\hat{R}_{ij}^{\perp}\sum_{n} B_n W_n(p_i\hat{R}_{ij}) (ln \epsilon + O(1))$.    
+\end{center}
+So:
 \begin{align*}
     \footnotesize
-    \phi \Gamma_{i(j)\rightarrow j} = \frac{2}{5}\mu\pi r^2p_i\hat{R}_{ij}^{\perp}(B_1 + B_2 p_i\hat{R}_{ij})(ln \epsilon + O(1))\\
-    = \frac{2}{5}\mu\pi r^2p_i\hat{R}_{ij}^{\perp}\frac{3}{2}v_0(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))
+    \phi \Gamma_{i(j)\rightarrow j} = \frac{2}{5}\mu\pi R^2p_i\hat{R}_{ij}^{\perp}(B_1 + B_2 p_i\hat{R}_{ij})(ln \epsilon + O(1)),\\
+    = \frac{2}{5}\mu\pi R^2p_i\hat{R}_{ij}^{\perp}\frac{3}{2}v_0(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1)).
 \end{align*}
 \begin{equation*}
-    \boxed{\Gamma_{i(j)\rightarrow j} = \frac{3}{40}\frac{v_0}{r}p_i\hat{R}_{ij}^{\perp}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))}
+    \boxed{\Gamma_{i(j)\rightarrow j} = \frac{3}{40}\frac{v_0}{R}p_i\hat{R}_{ij}^{\perp}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))}.
 \end{equation*}
 One can note that for two squirmers having the same radius $r$, $\lambda = 1$ and:
 $$\Gamma_{i(j)\rightarrow j} = \frac{1}{4}\Gamma_{i(j)\rightarrow i}$$
 
 Similarly as for the forces, the torques produced by the walls can be calculated by replacing one of the spheres with one of infinite diameter:
 \begin{equation*}
-    \boxed{\Gamma_{w\rightarrow i} = \frac{3}{5} \frac{v_0}{r}p_i\hat{R}_{ij}^{\perp}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))}
+    \boxed{\Gamma_{w\rightarrow i} = \frac{3}{5} \frac{v_0}{R}p_i\hat{R}_{ij}^{\perp}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1))}
 \end{equation*}
 
 
-
+\newpage
 \section{Implementation}
-In this section we will detail the files of the \texttt{\href{https://github.com/master-csmi/2024-m1-nemo/tree/main/Code}{Code}} directory,
-it is detailed with comments within the code itself.
-\subsection{vicsek}
+In each file, we have added comments describing the various functions and classes. In this section, 
+we will briefly detail the files to make their reading and the reproducibility of the results easier to achieve.
+\subsection*{vicsek}
 \subsubsection*{Parameters}
 \begin{itemize}
-    \item $N$ the number of particles in the system
-    \item $R$ the range of interaction of the particles
-    \item $L$ the length of the square
-    \item $v0$ the constant velocity of the particles
-    \item $radius$ the radius of the particles
-    \item $T$ the time of simulation
-    \item $dt$ the time step
-    \item $noise$ the $\eta$ parameter, used to counteract the alignment of the particles
+    \item $N$ the number of particles in the system,
+    \item $R$ the range of interaction of the particles,
+    \item $L$ the length of the square,
+    \item $v0$ the constant velocity of the particles,
+    \item $radius$ the radius of the particles,
+    \item $T$ the time of simulation,
+    \item $dt$ the time step,
+    \item $noise$ the $\eta$ parameter, used to counteract the alignment of the particles.
 \end{itemize}
 The class initializes $N$ particles with random position and orientation within the square. The square has reflective boundary conditions.
 \subsubsection*{Methods}
@@ -523,7 +537,7 @@ The class initializes $N$ particles with random position and orientation within 
     \item \texttt{ploar\_order\_parameter()} computes and returns $v_a$ the polar order parameter.
     \item \texttt{ref\_border\_x(particle, boundary)} and \texttt{ref\_border\_y(particle, boundary)}
     simulates the reflective borders.
-    \item \texttt{vector\_x(p1, p2)} and \texttt{vector\_y(p1, p2)} return respectively the vector in the x and y direction of \texttt{p1} and \texttt{p2}.
+    \item \texttt{vector\_x(p1, p2)} and \texttt{vector\_y(p1, p2)} return respectively the vector in the x and y direction of the particles.
     \item \texttt{average\_orient(particle)} returns the average orientation of the particles in a range $R$ of the particle in argument (including itself).
     \item \texttt{update\_orient()} computes the orientation $\theta_i(t + \Delta t)$ using \texttt{average\_orient}.
     \item \texttt{update\_position()} computes the position $r_i(t + \Delta t)$ using the reflective boundaries if necessary
@@ -531,35 +545,35 @@ The class initializes $N$ particles with random position and orientation within 
     \item \texttt{plot(ax)} plots the square and the particles.
 \end{itemize}
 
-\subsection{simulation}
+\subsection*{simulation}
 \begin{itemize}
    \item \texttt{sim\_vicsek(N)} used to simulate the behaviors of \texttt{N} particles in a square with the Vicsek model. \texttt{loop\_time} is 
    used and a graph is made with
-   the positions and orientations of the particles for each \texttt{step} in \texttt{nb\_step}
+   the positions and orientations of the particles for each \texttt{step}.
 \end{itemize}
 
-\subsection{codemat}
+\subsection*{codemat}
 This file is the original matlab code that was the base of the study.
 
-\subsection{squirmer}
-The first file contains the \texttt{Squirmer} class which takes the initial parameters: 
+\subsection*{squirmer}
+The file contains the \texttt{Squirmer} class which takes the parameters: 
 \begin{itemize}
-   \item coordinates \texttt{x} and \texttt{y}
-   \item \texttt{orientation}
-   \item \texttt{radius}
-   \item \texttt{beta}
-   \item \texttt{velocity}
+   \item coordinates \texttt{x} and \texttt{y},
+   \item \texttt{orientation},
+   \item \texttt{radius},
+   \item \texttt{beta},
+   \item \texttt{velocity},
 \end{itemize}
 of a squirmer and computes \texttt{B1} and \texttt{B2}.
 
-\subsection{csv\_file}
+\subsection*{csv\_file}
 This file contains two functions:
 \begin{itemize}
    \item \texttt{export\_data\_csv(filename, data)} takes a file name and data from \texttt{loop\_time()} (section \texttt{interactingsquirmers}) and exports it.
    \item \texttt{read\_csv\_file(filename)} takes a file name and returns the data, not currently utilized but may be usefull for future functions.
 \end{itemize}
 
-\subsection{plot}
+\subsection*{plot}
 \begin{itemize}
    \item \texttt{plot\_sim\_nsquirmers(histories, Nx, Ny, N, a, border, sim\_border, filename, dir)} takes \texttt{histories}
    the liste returned by \texttt{loop\_time}, \texttt{Nx} and 
@@ -568,10 +582,11 @@ This file contains two functions:
     when a simulation with a single border and a single squirmer is done, \texttt{filename} and \texttt{dir} the names 
     of the file and directory in which the graph is saved.\\
    It then plots the evolution of each squirmer's position over time, a circle is plotted at the initial position, at
-   half of the time of the simulation and at the end of the simulation,
+   half of the simulation time and at the end of the simulation,
    the radius of the circle plotted is proportional to the radius of the squirmers.\\
    This function is used for simulations with a small number of Squirmers and a low simulation time.
-   \item \texttt{plot\_time(interact, list\_plot, filename, label, dir)} takes \texttt{interact} an \texttt{Interactingsquirmers}
+   \item \texttt{plot\_time(interact, list\_plot, filename, label, dir)} takes \\
+   \texttt{interact} an \texttt{Interactingsquirmers}
    , \texttt{list\_plot}, the list to plot over time, usually the list of the minimal distance between the squirmers or the liste of the polar parameter,
    \texttt{label} is a string used for the y-label in the graph and \texttt{filename} and \texttt{dir} is the name of the file
     and directory in which the graph will be saved.\\
@@ -583,26 +598,25 @@ This file contains two functions:
     This function is used to create videos with a high number of squirmers and a long simulation time.
 \end{itemize}
 
-\subsection{interactingsquirmers}
+\subsection*{interactingsquirmers}
 \subsubsection*{Parameters}
 This file implements the \texttt{Interactingsquirmers} class which takes:
 \begin{itemize}
-   \item \texttt{N}, the number of squirmers
-   \item \texttt{xs}, \texttt{ys} and \texttt{orientations} the positions and orientations of the squirmers
-   \item \texttt{radius}, the radius of the squirmers
-   \item \texttt{beta}, the $\beta$ parameter
-   \item \texttt{v0}, the velocity $v_0$
-   \item \texttt{Nx} and \texttt{Ny}, the length and width of the rectangle
-   \item \texttt{dt}, the time step and \texttt{dt\_out} the time step for output
-   \item \texttt{T}, the final time of simulation
-   \item \texttt{Es}, the amplitude (intensity) of steric interactions
-   \item \texttt{ds}, the distance where the steric interactions become significative
-   \item \texttt{mu}, the viscosity
-   \item \texttt{R}, the distance which defines if a particle is seen as a neighbour for the clustering order parameter
-   \item \texttt{lnEps\_cr}, threshold value for \( -\log(\epsilon) \)
-   \item \texttt{D}, the translational diffusivity $D$
-   \item \texttt{n} and \texttt{no} the noises associated with the forces and torques
-   \item \texttt{border}, a boolean which defines if the simulation is made in a box(\texttt{True}) or a chanel(\texttt{False})
+   \item \texttt{N}, the number of squirmers,
+   \item \texttt{xs}, \texttt{ys} and \texttt{orientations} the positions and orientations of the squirmers,
+   \item \texttt{radius}, the radius of the squirmers,
+   \item \texttt{beta}, the $\beta$ parameter,
+   \item \texttt{v0}, the velocity $v_0$,
+   \item \texttt{Nx} and \texttt{Ny}, the length and width of the rectangle,
+   \item \texttt{dt}, the time step and \texttt{dt\_out} the time step for output,
+   \item \texttt{T}, the final time of simulation,
+   \item \texttt{Es}, the amplitude (intensity) of steric interactions,
+   \item \texttt{ds}, the distance where the steric interactions become significative,
+   \item \texttt{mu}, the viscosity,
+   \item \texttt{R}, the distance which defines if a particle is seen as a neighbour for the clustering order parameter,
+   \item \texttt{D}, the translational diffusivity $D$,
+   \item \texttt{n} and \texttt{no} the noises associated with the forces and torques,
+   \item \texttt{border}, a boolean which defines if the simulation is made in a box(\texttt{True}) or a channel(\texttt{False}).
 \end{itemize}
 
 \subsubsection*{Methods}
@@ -616,31 +630,32 @@ This class has many functions:
    \item \texttt{forcesSteric(Dxs, Dys, dists)} returns the steric forces \texttt{(Fs\_x, Fs\_y)} computed with the directional vector and the distance calculated with \texttt{distance\_all()}.
    \item \texttt{forcesLubrification(Dx, Dy, dist, theta)} and \texttt{torquesLubrification(Dx, Dy, dist, theta)}
    returns the lubrification forces and torques.
-   \item \texttt{compute\_force\_squirmer\_border\_x(self, xs, ys)} and \texttt{compute\_force\_squirmer\_border\_y(self, xs, ys)}
-   computes and returns the steric forces between the squirmers and the according walls.
+   \item \texttt{compute\_force\_squirmer\_border\_x(self, xs, ys)} and \\
+   \texttt{compute\_force\_squirmer\_border\_y(self, xs, ys)}
+   computes and returns the steric forces between the squirmers and the walls.
    \item \texttt{force\_torque\_lubrification\_border\_x(self, xs, theta, border)} and \texttt{force\_torque\_lubrification\_border\_y(self, ys, theta, border)}
-   computes and returns the lubrification forces and torques between the squirmers and the according walls.
+   computes and returns the lubrification forces and torques between the squirmers and the walls.
    \item \texttt{ref\_border\_x(self, xs, orientation, boundary)} and \texttt{ref\_border\_y(self, xs, orientation, boundary)} simulates reflective borders when \texttt{border} is \texttt{True}.
    \item \texttt{perio\_border\_x(self, xs, boundary)} simulates periodic borders when \texttt{border} is \texttt{False}.
    \item \texttt{loop\_time()} is the primary function which updates the positions and orientations of each squirmer
-   for each time step \texttt{dt} based on the steric forces and the lubrification forces and torques, then updates four list, \texttt{self.vector\_min\_dist} for the minimal 
+   for each time step \texttt{dt} based on the steric forces and the lubrification forces and torques, then updates four lists, \texttt{self.vector\_min\_dist} for the minimal 
    distance between the squirmers, \texttt{self.list\_polar} for the polar order parameter, \texttt{self.list\_cluster\_param} for 
    the clustering order parameter and \texttt{history} for the positions, orientations,
    forces and torques at each time step \texttt{dt\_out}. The function then returns \texttt{history}.
    \item \texttt{run(choice, N, a, beta, v0, Nx, Ny, dt, dt\_out, T, Es, ds, mu, R, lnEps\_cr, D, n, no, border, filename, border\_plot)}
    is used to run a simulation, it takes the argument \texttt{choice} that can be:
    \begin{itemize}
-    \item 'plot' to plot the graph of the behaviors of the squirmers in the 'graphs' directory, used for a small number of squirmers and a low simulation time,
-    \item 'video' to create a video of the behaviors of the squirmers in the 'videos' directory, used for a large number of squirmers or a high simulation time,
-    \item 'Eo\_sim', not used anymore, to test the Eo parameter,
-    \item 'border', to simulate the behaviors of a squirmer near a wall, only plot possible
-    \item 'sim\_2\_sq', to simulate the behaviors of two squirmers near each other, plot and video possible
+    \item 'plot' to plot the graph of the trajectories of the squirmers in the 'graphs' directory, used for a small number of squirmers and a low simulation time,
+    \item 'video' to create a video of the trajectories of the squirmers in the 'videos' directory, used for a large number of squirmers or a high simulation time,
+    \item 'Eo\_sim', not used anymore, to test the lubrification torques' intensity,
+    \item 'border', to simulate the behaviors of a squirmer near a wall, only plot possible,
+    \item 'sim\_2\_sq', to simulate the behaviors of two squirmers near each other, plot and video possible,
     \item 'sim\_D', to simulate the influence of the D parameter on the squirmers' behaviors, only video possible.
    \end{itemize}
 \end{itemize}
 
-\subsection{Reproducibility-\texttt{run.py}}
-The file \texttt{run.py} is utilized to define the parameters and to choose the simulation to make.\\
+\subsection*{Reproducibility-\texttt{run.py}}
+The file \texttt{run.py} is utilized to define the parameters and to choose the simulation to conduct.\\
  To execute the simulations, run the following command:
  \begin{verbatim}
    python Code/run.py sim_choice N filename
@@ -649,19 +664,22 @@ with \texttt{N} the number of squirmers and \texttt{filename} the name of the fi
 \texttt{sim\_choice} can be:
 \begin{itemize}
    \item \texttt{vicsek} to simulate the behaviors of \texttt{N} particles using the Vicsek model.
-   \item \texttt{video} to run a simulation with \texttt{N} squirmers and to store the resulting video of the squirmers behaviors and the graphs of the 
+   \item \texttt{video} to run a simulation with \texttt{N} squirmers and to store the resulting video of the squirmers trajectories and the graphs of the 
    minimum distance between squirmers, the polar order parameter and the clustering order parameter over time
     in the \texttt{videos} directory.
    \item \texttt{plot} to run a simulation with \texttt{N} squirmers and to store the resulting graphs of the squirmers behaviors, the
    minimum distance between squirmers, the polar order parameter and the clustering order parameter over time
     in the \texttt{graphs} directory.
-   \item \texttt{Eo\_sim} used at the start of the internship to study the impact of the \texttt{Eo} parameter on the behaviors,
+   \item \texttt{Eo\_sim} used at the start of the internship to study the impact of the \texttt{Eo} parameter on the orientations,
    not used anymore.
-   \item \texttt{border} to run twenty simulations between a squirmer and a wall, four simulations is made per \texttt{beta} in the \texttt{betas}
-   list in the \texttt{run} function in the \texttt{interactingsquirmers} file. The graphs are stored in the \texttt{graphs/simulations/border/betalabel}
+   \item \texttt{border} to run simulations between a squirmer and a wall, four simulations are made per \texttt{beta} in the \texttt{betas}
+   list in the \texttt{run} function in the \texttt{interactingsquirmers} file. The graphs are stored in the \\
+   \texttt{graphs/simulations/border/betalabel}
    directory with \texttt{betalabel} the label of \texttt{beta}.
    \item \texttt{sim\_2\_sq} to simulate the behaviors of two squirmers near each other for five $\beta$ values. The
-   resulting graphs or videos are stored in the \texttt{graphs/simualtions/sim\_sq\_sq/labelbeta} or the \texttt{videos/simualtions/sim\_sq\_sq/labelbeta}
+   resulting graphs or videos are stored in the \\
+   \texttt{graphs/simualtions/sim\_sq\_sq/labelbeta} or the \\
+   \texttt{videos/simualtions/sim\_sq\_sq/labelbeta}
    directory.
    \item \texttt{sim\_D} to simulate the behaviors of \texttt{N} squirmers for different \texttt{D} values, the resulting graphs
    and videos are stored in the \texttt{videos/simulations/sim\_D} directory.
@@ -669,9 +687,9 @@ with \texttt{N} the number of squirmers and \texttt{filename} the name of the fi
 
 \subsection{Tests}
 Two tests are implemented to validate a simulation. The first test is in the \texttt{loop\_time()} of the \texttt{Interactingsquirmers} class.
-At each time step, the value of the forces verify:
+At each time step, we check that the forces verify:
 $$F\cdot dt < v_0,$$
-where $F$ represents the steric and lubrification forces.\\
+where $F$ represents the steric or lubrification forces.\\
 The second test is executed upon a push or a pull request. This test performs a simulation with $375$ squirmers in a box
 with reflective borders and test if at any point during the simulation a negative distance has been registered.
 
