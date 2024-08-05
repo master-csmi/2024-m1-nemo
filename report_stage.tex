@@ -992,16 +992,15 @@ One can do a simulation by running:
 where \texttt{N} is the number of squirmers, and \texttt{filename} is the name of the output file.
 
 \subsection{$E_0$ parameter}
-The first thing done during the internship was to study the effect of the $E_0$ parameter on the alignment of the squirmers.\\
-One can see the simulations done and their resulting graphs in the \texttt{graphs/Eo\_analysis} and \texttt{videos/Eo\_analysis} directories.\\
-One also can type:
+At the beginning of the internship, we studied the effect of the $E_0$ parameter on the alignment of the squirmers.\\
+One can see the simulations and their resulting graphs in the \texttt{graphs/Eo\_analysis} and \texttt{videos/Eo\_analysis} directories.\\
+One can type:
 \begin{verbatim}
     python3 Code/run.py Eo_sim 2 filename
 \end{verbatim}
-and modify the \texttt{Code/run.py} file with the parameters one wants to test,
- then for each $E_0$ in \texttt{Code/run.py} and each $orient2$ and $betas$ in \texttt{sim\_Eo\_param} in \texttt{Code/simulation.py}, 
- a simulation is done and the resulting graphs or videos are stored in the \texttt{graphs} or \texttt{videos} 
- directory depending on one's choice.\\
+and modify the \texttt{Code/run.py} file with the parameters one wants to test.
+ Then for each $E_0$ given in \texttt{Code/run.py}, 
+ a simulation is done and the resulting graphs or videos are stored in the \texttt{graphs} or \texttt{videos}.\\
 
 \subsubsection{Evolution of orientation}
 The evolution of the orientation of one squirmer is given by : 
@@ -1012,56 +1011,55 @@ $\Gamma_{ij\rightarrow k}$ is the torque exerted on the $k^\mathrm{th}$ particle
 
 \vspace{0.5cm}
 
-The torques acting on the squirmer $i$ can be calculated explicitly by: \\
+First we used the expression given in ref :\cite{Lauga}.The torques acting on the squirmer $i$ can
+ be calculated explicitly by:
 $$
-\Gamma_{ij->i} = E_0(1 + \beta_i e_{ij})(-\ln\epsilon)\hat{e}_{ij}\times \hat{e}_i \cite{Lauga}
+\Gamma_{i(j)\rightarrow i} = E_0p_i\hat{R}_{ij}^{\perp}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1)),
 $$
-and
+with $E_0$ the parameter to test and
 $$
-\Gamma_{ji->i} = \frac{1}{4}E_0(1 + \beta_j e_{ji})(-\ln\epsilon)\hat{e}_{ji}\times \hat{e}_j \cite{Lauga}
-$$
-with $\hat{e}_{ij} = \frac{(x_j - x_i)}{||x_j - x_i||}$, $e_{ij} = \hat{e}_i\cdot \hat{e}_{ij}$ and $E_0$ the parameter to test.\\ 
-For squirmers having the same $\beta$ parameter we note the following relation:
-$$
-\Gamma_{ji->i} = \frac{1}{4}\Gamma_{ij->i}
+\Gamma_{j(i)\rightarrow i} = \frac{1}{4}\Gamma_{i(j)\rightarrow i}.
 $$
 We want to study the effect of $E_0$ on the alignment of squirmers in an open environment so $\Gamma_{i}^W$, which is the torque 
-exerted by a wall on the squirmer, is not used.
+exerted by a wall on the squirmer vanishes.
 
 \subsubsection{Numerical Experiments}
 The simulations are done with two squirmers placed at coordinates $(x_1, y_1) = (-a, 0)$ and $(x_2, y_2) = (\frac{2a}{1.5}, 0)$ with radius $a=0.05$, velocity $v_0=1$, viscosity $\mu = 1$, $\beta$ varying from $\beta_1 = 0$,
  $\beta_2 = -7.5$ and $\beta_3 = 7.5$, orientation $\theta_1 = \frac{\pi}{2}$ and $\theta_2$ varying between the major orientations of the unit circle.\\
- The value chosen for the $E_0$ parameter are chosen from the previous studies or to test the impact of larger values on the squirmers, such as:
+ The value for the $E_0$ parameter are chosen from previous studies\cite{Brumley}\cite{Lauga}:
  $$
  E_{0_{1}} = \frac{3}{10}\frac{v_0}{a}, E_{0_{2}} = \frac{8}{5}\mu\pi a^2 \cite{Brumley}, E_{0_{3}} = \frac{-3}{2}\frac{v_0}{a} \cite{Lauga},
  E_{0_{4}} = -E_{0_{1}}, E_{0_{5}} = -5$$
  $$
  E_{0_{6}} = \frac{5}{1000}, E_{0_{7}} = -2, E_{0_{8}} = -\frac{1}{2}, E_{0_{9}} = -E_{0_{8}}
  $$
-The focus is for $\theta_2 = \pi$ and $\theta_2 = \frac{3\pi}{4}$ as the interactions are the biggest when the two squirmers are about to collide.
+We will show the results obtained for $\theta_2 = \pi$ and $\beta = 0$.
 \begin{figure}[H]
     \centering
     \textbf{$\beta_1$ and $\theta_2 = \pi$}\par\medskip
     \begin{minipage}{0.49\textwidth}
         \includegraphics[width=1\textwidth]{graphs/Eo_analysis/beta0/pi_/pi_Eo_brumley.png}
-        \caption{\footnotesize Simulation parameters: $a=0.05$, $v_0=1$, $\beta_1=0$, $\mu=1$ and $E_{0_{2}}=\frac{8}{5}\mu\pi a^2$}
+        \caption{\footnotesize $E_{0_{2}}=\frac{8}{5}\mu\pi a^2$}
     \end{minipage}\hfill
     \begin{minipage}{0.49\textwidth}
         \includegraphics[width=1\textwidth]{graphs/Eo_analysis/beta0/pi_/pi_Eo_init.png}
-        \caption{\footnotesize Simulation parameters: $a=0.05$, $v_0=1$, $\beta_1=0$, $\mu=1$ and $E_{0_{1}}=\frac{3}{10}\frac{v_0}{a}$}
+        \caption{\footnotesize $E_{0_{1}}=\frac{3}{10}\frac{v_0}{a}$}
     \end{minipage}
     \begin{minipage}{0.49\textwidth}
         \includegraphics[width=1\textwidth]{graphs/Eo_analysis/beta0/pi_/pi_m2.png}
-        \caption{\footnotesize Simulation parameters: $a=0.05$, $v_0=1$, $\beta_1=0$, $\mu=1$ and $E_{0_{7}}=-2$}
+        \caption{\footnotesize $E_{0_{7}}=-2$}
     \end{minipage}\hfill
     \begin{minipage}{0.49\textwidth}
         \includegraphics[width=1\textwidth]{graphs/Eo_analysis/beta0/pi_/pi_m5.png}
-        \caption{\footnotesize Simulation parameters: $a=0.05$, $v_0=1$, $\beta_1=0$, $\mu=1$ and $E_{0_{5}}=-5$}
+        \caption{\footnotesize $E_{0_{5}}=-5$}
     \end{minipage}
-    position and orientation of squirmer1: $(x1,y1)=(-a,0)$, $\theta_1=\frac{\pi}{2}$\\
-    position and orientation of squirmer2: $(x2,y2)=(\frac{2a}{1.5},0)$, $\theta_2=\pi$\\
-    The arrows shows when the orientations of the squirmers are affected and a circle is plotted every four time the orientation of a squirmer is affected
+    The arrows show the changes of orientations and a circle is plotted every four times the orientation of a squirmer is affected.
 \end{figure}
+Our results show that as $E_0$decreases, the torques acting on the squirmers become stronger, as 
+demonstrated by the example of $E_0 = -5$. 
+No value of $E_0$
+could be found that affects the alignment of the squirmers. The alignment of the particles 
+could not be controlled by varying the parameter $E_0$.
 
 \newpage
 
