@@ -25,7 +25,7 @@ Supervisors: Van Landeghem Céline, Giraldi Laetitia,\\ Agathe Chouippe
 \newpage
 \section{Introduction}
 This internship is the continuation of a project realised last semester. The aim of the project was
-to develop numerical methods for modeling the dynamics of interacting squirmers. The squirmer is model for active particle imitating the propulsion of bacteria.\\
+to develop numerical methods for modeling the dynamics of interacting squirmers. The squirmer is a model for active particles imitating the propulsion of bacteria.\\
 A python code to simulate the behaviors of two interacting squirmers has been implemented during the project.\\
 These interactions are governed by steric and lubrification forces.
 Test cases were conducted to validate our model. Moving forward, we plan to adapt this model to 
@@ -33,11 +33,12 @@ simulate interactions among a large number of squirmers.
 \section{Context}
 The collective behavior of active particles is well studied in the literature. 
 Various models exist to simulate these active particles, such as the Vicsek model\cite{Vicsek} and the Squirmer model. \\
-This model, initially proposed by Lighthill in 1952\cite{Wikipedia}, represents a spherical Stokesian swimmer with a surface that undergoes 
-small-amplitude deformations to achieve propulsion. This model was enhanced by Blake\cite{Wikipedia}, who adapted it to describe a spherical microswimmer
+The squirmer model initially proposed by Lighthill in 1952\cite{Wikipedia}, represents a spherical Stokesian swimmer with a surface that undergoes 
+small-amplitude deformations to achieve propulsion. 
+This model has been applied to a range of microswimmer dynamics in both biological and artificial contexts. 
+Blake\cite{Wikipedia} later refined the model, adapting it to describe a spherical microswimmer
  covered with a dense array of beating cilia. Instead of representing individual cilia, the model uses a continuous, deformable layer 
- that propagates the wave.
-This model has been applied to a range of microswimmer dynamics in both biological and artificial contexts.\\
+ that propagates the wave.\\
 The aim of this internship is to study squirmers, 
 in a confined domain and to compare their collective motion with that of the active particles using the Vicsek model. 
 The motion of the squirmers is described by a continuous model that approximates lubrification and 
@@ -59,7 +60,7 @@ The main goal is to model the dynamics of a group of squirmers within confined e
 \end{itemize}
 All of these steps are consolidated in the following roadmap:
 \begin{center}
-    \includegraphics[width=1\textwidth]{Presentation/images/roadmap_stage.png}
+    \includegraphics[width=1.2\textwidth]{Presentation/images/roadmap_stage.png}
 \end{center}
 
 \newpage
@@ -295,11 +296,11 @@ We have : \begin{itemize}
 The second law of Newton states\cite{Newton}:
 $$m\vec{a} = \sum\limits_i \vec{F}_i.$$
 The force of viscosity on a small sphere moving through a viscous fluid is given by the Stokes-Einstein relation\cite{Stokes}:
-$$F_d = 6\mu\pi rv_0\frac{dr_i}{dt}.$$
+$$F_d = 6\mu\pi Rv_0\frac{dr_i}{dt}.$$
 We consider the squirmers propulsion in absence of inertia: $m\vec{a} = 0$. Hence one has:
 $$0 = -F_d + \sum\limits_{i \ne d} F_i,$$
 we have:
-$$\frac{dR_i}{dt} = \frac{1}{6\mu\pi r}\sum\limits_{i \ne d} F_i.$$
+$$\frac{dr_i}{dt} = \frac{1}{6\mu\pi R}\sum\limits_{i \ne d} F_i.$$
 The Weeks-Chandler-Andersen potential is given by:
 $V_{ij}$ = $\frac{E_s}{6\pi\mu R}\left[\left(\frac{2R}{\lvert r_{ij}\rvert}\right)^{12} - \left(\frac{2R}{\lvert r_{ij}\rvert}\right)^6\right]$ and  $V_i$ = $\frac{E_s}{6\pi\mu R} \left[ \left( \frac{R}{\lvert r - r_i \rvert} \right)^{12} - \left( \frac{R}{\lvert r - r_i \rvert} \right) ^6 \right]$ 
 \vspace{0,3cm}
@@ -348,7 +349,7 @@ We have :
 \begin{equation*}
     \boxed{\nabla_{r_i} V_i = \begin{pmatrix}
         - \frac{E_s (X_{box}-X)}{\pi\mu R^2 \lvert r - r_i \rvert } \left[ 2 \left( \frac{R}{\lvert r-r_i\rvert} \right)^{13} - \left( \frac{R}{\lvert r-r_i\rvert}\right)^7 \right] \\
-        - \frac{E_s (Y_{box}-Y)}{\pi\mu r^2 \lvert r - r_i \rvert } \left[ 2 \left( \frac{R}{\lvert r-r_i\rvert} \right)^{13} - \left( \frac{R}{\lvert r-r_i\rvert}\right)^7 \right]
+        - \frac{E_s (Y_{box}-Y)}{\pi\mu R^2 \lvert r - r_i \rvert } \left[ 2 \left( \frac{R}{\lvert r-r_i\rvert} \right)^{13} - \left( \frac{R}{\lvert r-r_i\rvert}\right)^7 \right]
     \end{pmatrix}}
 \end{equation*}
 These steric forces are applied on two squirmers when $r_{ij} < R2^{\frac{7}{6}}$.
@@ -738,6 +739,9 @@ We then compare our results to those of a previous study, as shown in the follow
         \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/betam3/pi_2_.png}
         \caption{\footnotesize $\beta = -3$}
     \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \centering
     \includegraphics[width=0.55\textwidth]{graphs/simulations/sim_sq_sq/beta0/pi_2_.png}
     \caption{\footnotesize $\beta = 0$}
  \end{figure}
@@ -761,6 +765,9 @@ for $\beta = -3$ at $x_1 = -0.22$ and $x_2 = 0.22$,
         \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/beta3/3pi_4_.png}
         \caption{\footnotesize $\beta = 3$}
     \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \centering
     \begin{minipage}{0.49\textwidth}
         \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/betam1_5/3pi_4_.png}
         \caption{\footnotesize $\beta = -1.5$}
@@ -797,6 +804,9 @@ $\beta$ decreases, the right squirmer is more strongly pushed away from the left
         \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/beta3/pi_.png}
         \caption{\footnotesize $\beta = 3$}
     \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \centering
     \includegraphics[width=0.55\textwidth]{graphs/simulations/sim_sq_sq/beta0/pi_.png}
     \caption{\footnotesize $\beta = 0$}
 \end{figure}
@@ -835,6 +845,9 @@ towards the left one, while as $\beta$ decreases, the torques acting on the left
         \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/beta3/m3pi_4_.png}
         \caption{\footnotesize $\beta = 3$}
     \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \centering
     \includegraphics[width=0.55\textwidth]{graphs/simulations/sim_sq_sq/beta0/m3pi_4_.png}
     \caption{\footnotesize $\beta = 0$}
 \end{figure}
@@ -853,6 +866,9 @@ than the ones acting on the left one.
         \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/beta3/mpi_2_.png}
         \caption{\footnotesize $\beta = 3$}
     \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \centering
     \includegraphics[width=0.55\textwidth]{graphs/simulations/sim_sq_sq/beta0/mpi_2_.png}
     \caption{\footnotesize $\beta = 0$}
 \end{figure}
@@ -870,6 +886,9 @@ those acting on the left squirmer for all values of $\beta$.
         \includegraphics[width=1.1\textwidth]{graphs/simulations/sim_sq_sq/beta3/mpi_4_.png}
         \caption{\footnotesize $\beta = 3$}
     \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \centering
     \includegraphics[width=0.55\textwidth]{graphs/simulations/sim_sq_sq/beta0/mpi_4_.png}
     \caption{\footnotesize $\beta = 0$}
 \end{figure}
@@ -960,6 +979,9 @@ height more quickly, as observed when $\beta = -3$ compared to when $\beta = -1.
         \includegraphics[width=1.1\textwidth]{graphs/simulations/border/beta3/mpi_4.png}
         \caption{\footnotesize $\beta = 3$}
     \end{minipage}
+\end{figure}
+\begin{figure}[H]
+    \centering
     \begin{minipage}{0.49\textwidth}
         \includegraphics[width=1.1\textwidth]{graphs/simulations/border/betam1_5/mpi_4.png}
         \caption{\footnotesize $\beta = -1.5$}
@@ -984,16 +1006,16 @@ $\beta = 1.5$, the squirmer does not reach the initial height.
 \subsection{$E_0$ parameter}
 At the beginning of the internship, we studied the effect of the $E_0$ parameter on the alignment of the squirmers.\\
 One can see the simulations and their resulting graphs in the \texttt{graphs/Eo\_analysis} and \texttt{videos/Eo\_analysis} directories.\\
-One can type:
+The simulation is executed using:
 \begin{verbatim}
     python3 Code/run.py Eo_sim 2 filename
 \end{verbatim}
-and modify the \texttt{Code/run.py} file with the parameters one wants to test.
+and one modify the \texttt{Code/run.py} file with the parameters one wants to test.
  Then for each $E_0$ given in \texttt{Code/run.py}, 
- a simulation is done and the resulting graphs or videos are stored in the \texttt{graphs} or \texttt{videos}.\\
+ a simulation is performed and the resulting graphs or videos are stored in the directories \texttt{graphs} or \texttt{videos}.\\
 
-\subsubsection*{Evolution of orientation}
-First we used the expression given in ref:\cite{Lauga}.The torques acting on the squirmer $i$ can
+\subsubsection*{Evolution of the orientation}
+First we used the expression given in reference:\cite{Lauga}.The torques acting on the squirmer $i$ can
  be calculated explicitly by:
 $$
 \Gamma_{i(j)\rightarrow i} = E_0p_i\hat{R}_{ij}^{\perp}(1 + \beta p_i\hat{R}_{ij})(ln \epsilon + O(1)),
@@ -1008,7 +1030,7 @@ exerted by a wall on the squirmer vanishes.
 \subsubsection*{Numerical Experiments}
 The simulations are done with two squirmers placed at coordinates $(x_1, y_1) = (-R, 0)$ and $(x_2, y_2) = (\frac{2R}{1.5}, 0)$ with radius $R=0.05$, velocity $v_0=1$, viscosity $\mu = 1$, $\beta$ varying from $\beta_1 = 0$,
  $\beta_2 = -7.5$ and $\beta_3 = 7.5$, orientation $\theta_1 = \frac{\pi}{2}$ and $\theta_2$ varying between the major orientations of the unit circle.\\
- The value for the $E_0$ parameter are chosen from previous studies\cite{Brumley}\cite{Lauga}:
+ The values for the $E_0$ parameter are chosen from previous studies\cite{Brumley}\cite{Lauga}:
  $$
  E_{0_{1}} = \frac{3}{10}\frac{v_0}{R}, E_{0_{2}} = \frac{8}{5}\mu\pi a^2, E_{0_{3}} = \frac{-3}{2}\frac{v_0}{R},
  E_{0_{4}} = -E_{0_{1}}, E_{0_{5}} = -5$$
@@ -1040,15 +1062,16 @@ We will show the results obtained for $\theta_2 = \pi$ and $\beta = 0$.
     \end{minipage}
     The arrows show the changes of orientations and a circle is plotted every four times the orientation of a squirmer is affected.
 \end{figure}
-Our results show that as $E_0$decreases, the torques acting on the squirmers become stronger, as 
+Our results show that as $E_0$ decreases, the torques acting on the squirmers become stronger, as 
 demonstrated by the example of $E_0 = -5$. 
 No value of $E_0$
-could be found that affects the alignment of the squirmers. The alignment of the particles 
-could not be controlled by varying the parameter $E_0$.
+could be found that allows the alignment of the squirmers. The alignment of the particles 
+could not be controlled by varying the parameter $E_0$. The same conclusion was reached for all other tested values of $\beta$
+and $\theta$.
 
 \subsection{Simulation of N squirmers}
 In this section, simulations of $375$ squirmers are conducted in a rectangle with dimensions $L_y = 3$ and $L_x=6$, over 
-a simulation time of $T=10$.  Two types of boundary conditions are considered: a box with reflective boundaries, 
+a simulation time of $T=10$. Two types of boundary conditions are considered: a box with reflective boundaries, 
 and a channel with reflective boundaries in the y-direction and periodic boundaries in the x-direction.
 The squirmers have a radius of $R = 0.02$, a velocity of $v_0 = 1$, a translational diffusivity of $D=0$, and $\beta = 0$.
  They are randomly positioned within the rectangle, each with a random orientation. The minimum distance between 
@@ -1068,8 +1091,8 @@ where \texttt{N} is the number of squirmers, and \texttt{filename} is the name o
         \caption{\footnotesize Minimum distance between squirmers over time}
     \end{minipage}
 \end{figure}
-The squirmers are represented with their orientations, one can see the videos in the \texttt{videos} directory. The minimal
-distance, polar order parameter and the clustering order parameter are also plotted. 
+The squirmers are represented with their orientations and one can see the videos in the \texttt{videos} directory. The minimal
+distance and polar order parameter, defined in the following section, are also plotted. 
 Note that in the channel configuration, the minimum distance can appear negative due to the periodic boundaries, 
 which can position one squirmer on top of another.
 
@@ -1082,12 +1105,12 @@ $\beta_0 = 0, \beta_1 = 1.5, \beta_2 = 3, \beta_3 = -1.5, \beta_4 = -3$
 $$D_0 = 0.5, D_1 = 1, D_2 = 3.$$
 Two different sizes of channel are used: $Ch_1$ with dimensions $L_y = 3$ and $L_x = 6$ and $Ch_2$ with dimensions $L_y=2$ and $L_x=4$. 
 The objective is to examine 
-the impact on the particle density $\rho$ on collective behaviors, $\rho$ is given by:
+the impact on the particle density $\rho$ on collective behavior, $\rho$ is given by:
 $$\rho = \frac{N\pi R^2}{L_xL_y}.$$
 The squirmers are randomly positioned within the channel, each with a random orientation.
 For simulations with the same $\beta$ and $\rho$, the initial positions and orientations of the squirmers are identical,
 ensuring that the only varying parameter between two simulations is the diffusivity $D$.\\
-To analyze the collective behaviors of the squirmers, the polar order parameter $v_a$ is employed:
+To analyze the collective behavior of the squirmers, the polar order parameter $v_a$ is employed:
 $$v_a = \frac{1}{N}\left|\sum^{N}_{i=1}p_i\right|,$$
 where $p_i$ denotes the orientation of the $i$-th squirmer.
 A value of $v_a = 1$ indicates that all squirmers are moving in the same direction, while $v_a\approx 0$ suggests uncorrelated motions.
@@ -1102,6 +1125,8 @@ A value of $v_a = 1$ indicates that all squirmers are moving in the same directi
         \includegraphics[width=1\textwidth]{videos/simulations/sim_D/beta1_5/dens_0_26/combined_polars.png}
         \caption{\footnotesize $\beta = 1.5$}
     \end{minipage}
+\end{figure}
+\begin{figure}[H]
     \begin{minipage}{0.49\textwidth}
         \includegraphics[width=1\textwidth]{videos/simulations/sim_D/beta3/dens_0_26/combined_polars.png}
         \caption{\footnotesize $\beta = 3$}
@@ -1117,11 +1142,11 @@ A value of $v_a = 1$ indicates that all squirmers are moving in the same directi
     \caption{\footnotesize $\beta = -3$}
 \end{figure}
 The polar order parameter $v_a$ is shown over time in blue for $D = 0.5$, in orange for $D = 1$ and in green $D=3$. 
-The results indicates that for $Ch_1$, no collective behaviors can be identified, as there is significant variation of $\rho$ values
-between consecutive time steps. One can note that for $\beta < 0$ and $\beta = 3$, the fluctuations of $\rho$ are 
+The results indicates that for $Ch_1$, no collective behaviors can be identified, as there is significant variation of $v_a$ values
+between consecutive time steps. One can note that for $\beta < 0$ and $\beta = 3$, the fluctuations of $v_a$ are 
 even more pronounced compared to cases where $0 < \beta < 3$.
-This can be explained by the behaviors seen in section \texttt{Simulation of two interacting squirmers}, for $\beta <0$, squirmers
-tend to repel each other more strongly as $\beta$ decreases, while for $\beta =3$, squirmers tend to attract each other
+This can be explained by the behavior seen in section \texttt{Simulation of two interacting squirmers}, for $\beta <0$, squirmers
+tend to repel each other more strongly as $\beta$ decreases, while squirmers tend to attract each other
 as $\beta$ increases. 
 
 \begin{figure}[H]
@@ -1149,16 +1174,17 @@ as $\beta$ increases.
     \includegraphics[width=0.5\textwidth]{videos/simulations/sim_D/betam3/dens_0_59/combined_polars.png}
     \caption{\footnotesize $\beta = -3$}
 \end{figure}
-The results for $Ch_2$ indicates that collective behaviors can be identified for $\beta = 0$ and $D = 3$, as
-$\rho$ increases over time. 
+The results for $Ch_2$ indicates that collective behavior can be identified for $\beta = 0$ and $D = 3$, as
+$v_a$ increases over time. 
 A similar trend is observed for $D = 1$ and $D = 0$, although longer simulations are required to
-confirm this definitively. For $\beta \neq 0$, no collective behaviors are observed during the simulation time. One can see that 
+confirm this definitively. For $\beta \neq 0$, no collective behavior are observed during the simulation. One can see that 
 for $\beta \leq 0$ in $Ch_2$, the divergence of polar order parameter value between time steps is even greater
 than for $\beta \leq 0$ in $Ch_1$. This can be attributed to the smaller channel size, implying more frequent interactions 
 between squirmers.\\
 
-\section{Conclusion and perspective}
-In the studies by Brumley \cite{Brumley} and Lauga \cite{Lauga}, we have successfully reformulated the expressions for all relevant forces and torques. 
+\section{Conclusion and perspectives}
+We have successfully reformulated the expressions for all forces and torques defined in the studies defined in the studies by
+Brumley\cite{Brumley} and Lauga\cite{Lauga}. 
 These have been implemented in a Python code to analyze their variations, either between two squirmers, between a 
 squirmer and a border or between a group of squirmers.
  
@@ -1166,18 +1192,19 @@ Our numerical results have yielded trajectories for specific initial orientation
 by Stark \cite{Stark}.
 
 Our simulations reveal that collective behaviors are largely absent in the $Ch_1$
-channel, with significant variations in $\rho$ values, particularly for $\beta <0$ and $\beta = 3$. 
+channel, with significant variations in $v_a$ values, particularly for $\beta <0$ and $\beta = 3$. 
 These variations can be linked to the repulsive 
 and attractive interactions observed for these $\beta$ values. 
 In the $Ch_2$ channel, collective behavior emerges for $\beta = 0$ and higher diffusivity, 
 suggesting that a smaller channel size enhances 
-interactions that promote such behavior. However, for $\beta \neq 0$, no collective behavior is observed within the simulation timeframe. 
+interactions that promote such behavior. However, for $\beta \neq 0$, no collective behavior is observed during the simulation. 
 Additionally, the increasing divergence in polar order parameter values with decreasing $\beta$ 
 across both channels highlights the influence of $\beta$ on the system's dynamics.
 
-Having thoroughly examined the interactions between squirmers and their collective behaviors, 
+Having thoroughly examined the interactions between squirmers and their collective behavior, 
 the next phase of our research will focus on longer simulation times, higher particle densities, 
 and exploring the propensity of squirmers to form clusters over time.
+Another approach will involve controlling the collective behavior of squirmers using $\beta$.
 \newpage
 
 \nocite{*}
