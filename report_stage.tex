@@ -137,9 +137,6 @@ Where $L_x$ represents the length of the domain, and $L_y$ represents the width 
         \draw[thick] (0,0) -- (4,0) -- (4,2) -- (0,2) -- cycle;
         \draw[<->,thick] (-0.2,0) -- (-0.2,2) node[midway,left] {$L_y$};
         \draw[<->,thick] (0,-0.2) -- (4,-0.2) node[midway,below] {$L_x$};
-        \filldraw[color=green, fill=green, very thick](0.5,0.2) circle(0.05);
-        \filldraw[color=green, fill=green, very thick](1.5,0.8) circle(0.05);
-        \filldraw[color=green, fill=green, very thick](1.7,1.2) circle(0.05);
     \end{tikzpicture}
 \end{center}
 These conditions ensures that the particles reflect off the boundaries.
@@ -407,10 +404,10 @@ The figure shows the different vectors involved in the computations which will f
     \item $\hat{R}^{\perp}_{ij} = rot(\frac{\pi}{2})\hat{R}_{ij}.$
 \end{itemize}
 
-The tangential lubrification forces acting on the two spheres can be calculated explicitly by\cite{Brumley}:
+The tangential lubrication forces acting on the two spheres, depending on the direction of the vectors $\hat{R}_{ij}$ and $\hat{R}^{\perp}_{ij}$, are defined by\cite{Brumley}:
 \\ 
 \footnotesize
-$F_{i(j)\rightarrow i}^{y}$ = $-9 \mu \pi R \frac{\lambda ^2}{(\lambda +1)^2} \sum_{n} \left[ B_n W_n(p_i\hat{R}_{ij})(-p_i\hat{R}_{ij}) + \frac{1}{2} B_n W_n'(p_i\hat{R}_{ij})(p_i\hat{R}^{\perp}_{ij})^2 \right] (ln \epsilon + O(1)).$
+$F_{i(j)\rightarrow i}^{y}$ = $9 \mu \pi R \frac{\lambda ^2}{(\lambda +1)^2} \sum_{n} \left[ B_n W_n(p_i\hat{R}_{ij})(-p_i\hat{R}_{ij}) + \frac{1}{2} B_n W_n'(p_i\hat{R}_{ij})(p_i\hat{R}^{\perp}_{ij})^2 \right] (ln \epsilon + O(1)).$
 \normalsize
 For $n$ = 1 : \begin{align*}
     W_1(p_i\hat{R}_{ij}) &= 1, \\
@@ -426,12 +423,12 @@ For $n$ = 2 : \begin{align*}
 Since all squirmers share the same radius $R$, we have $B_1 = \frac{3}{2}v_0$, $B_2 = B_1\cdot\beta$ and $\lambda=1$, so:
 \begin{align*}
 \footnotesize
-6\mu\pi RF_{i(j)\rightarrow i}^{y} = -9 \mu \pi R \frac{\lambda ^2}{(\lambda +1)^2} \left[ -B_1 p_i\hat{R}_{ij} -B_2 (p_i\hat{R}_{ij})^2 + \frac{1}{2} B_2(p_i\hat{R}^{\perp}_{ij})^2\right](ln \epsilon + O(1))\\
-= -9 \mu \pi R \frac{1}{4}\cdot\frac{3}{2}v_0\left[ -p_i\hat{R}_{ij} -\beta (p_i\hat{R}_{ij})^2 + \frac{1}{2} \beta(p_i\hat{R}^{\perp}_{ij})^2\right](ln \epsilon + O(1))
+6\mu\pi RF_{i(j)\rightarrow i}^{y} = 9 \mu \pi R \frac{\lambda ^2}{(\lambda +1)^2} \left[ -B_1 p_i\hat{R}_{ij} -B_2 (p_i\hat{R}_{ij})^2 + \frac{1}{2} B_2(p_i\hat{R}^{\perp}_{ij})^2\right](ln \epsilon + O(1))\\
+= 9 \mu \pi R \frac{1}{4}\cdot\frac{3}{2}v_0\left[ -p_i\hat{R}_{ij} -\beta (p_i\hat{R}_{ij})^2 + \frac{1}{2} \beta(p_i\hat{R}^{\perp}_{ij})^2\right](ln \epsilon + O(1))
 \end{align*}
 \begin{equation*}
 \boxed{
-    F_{i(j)\rightarrow i}^{y} = \frac{9}{16}v_0
+    F_{i(j)\rightarrow i}^{y} = -\frac{9}{16}v_0
 \left[(p_i\hat{R}_{ij})(1 + \beta p_i\hat{R}_{ij}) - \frac{1}{2}\beta(p_i\hat{R}^{\perp}_{ij})^2\right](ln \epsilon + O(1))
 }
 \end{equation*}
@@ -456,7 +453,7 @@ The normal forces acting on the two spheres can be calculated explicitly by\cite
 The effect of a wall can be calculated by replacing one of the spheres with one of infinite diameter, so $\lambda\rightarrow\infty$:
 \begin{equation*}
     \footnotesize
-    \boxed{F_{w\rightarrow i}^{y} = \frac{9}{4} v_0
+    \boxed{F_{w\rightarrow i}^{y} = -\frac{9}{4} v_0
     \left[(p_i\hat{R}_{ij})(1 + \beta p_i\hat{R}_{ij}) - \frac{1}{2}\beta(p_i\hat{R}^{\perp}_{ij})^2\right](ln \epsilon + O(1))}\\
 \end{equation*}
 \begin{equation*}

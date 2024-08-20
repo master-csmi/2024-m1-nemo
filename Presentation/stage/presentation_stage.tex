@@ -212,7 +212,7 @@ environments}
     \begin{itemize}
         \item The tangential lubrification forces acting on the two spheres : \begin{equation*}
             \boxed{
-F_{i(j)\rightarrow i}^{y} = \frac{9}{16}v_0
+F_{i(j)\rightarrow i}^{y} = -\frac{9}{16}v_0
 \left[(p_i\hat{R}_{ij})(1 + \beta p_i\hat{R}_{ij}) - \frac{1}{2}\beta(p_i\hat{R}^{\perp}_{ij})^2\right](ln \epsilon + O(1))
 }
 \end{equation*}
@@ -222,7 +222,7 @@ F_{i(j)\rightarrow i}^{y} = \frac{9}{16}v_0
 \end{equation*}
     \item The effect of a wall can be calculated by replacing one of the spheres with one of infinite diameter, so $\lambda\rightarrow\infty$:
     \begin{equation*}
-        \boxed{F_{w\rightarrow i}^{y} = \frac{9}{4} v_0
+        \boxed{F_{w\rightarrow i}^{y} = -\frac{9}{4} v_0
         \left[(p_i\hat{R}_{ij})(1 + \beta p_i\hat{R}_{ij}) - \frac{1}{2}\beta(p_i\hat{R}^{\perp}_{ij})^2\right](ln \epsilon + O(1))}
     \end{equation*}
     \begin{equation*}
@@ -268,20 +268,27 @@ $$\frac{d \theta_i}{dt} = \frac{1}{\phi}\sum F\cite{Newton}.$$
 
 \section{Implementation in Python}
 \begin{frame}{Implementation in Python}
-In the implementation of : \begin{center}
-        \(\boxed{\frac{dR_i}{dt} = v_0 p_i -  \nabla_{R_{ij}} V_{ij} - \nabla_{R_i} V_i + F^{hydro}}\)
+\begin{center}
+    \footnotesize
+        \(\boxed{\frac{dr_i}{dt} = v_0 p_i -  \sum\limits_{i \ne j}\nabla_{r_{ij}} V_{ij} - \sum\limits_{i}\nabla_{r_i} V_i + \sum\limits_{i\ne j}\left[F_{i(j)\rightarrow i} + F_{j(i)\rightarrow i}\right]+ \sum\limits_{k \in w}F_{k\rightarrow i}^w + \sqrt{2D}\eta_i(t)}\)
 \end{center}
+\begin{center}
+    \footnotesize
+        \(\boxed{\frac{d \theta_i}{dt} = \sum\limits_{i\ne j} \left[\Gamma_{i(j)\rightarrow i} + \Gamma_{j(i)\rightarrow i}\right] + \sum\limits_{k\in w} \Gamma_{k\rightarrow i}^w + \sqrt{2D_o} \eta_o^{(i)}}\)
+\end{center}
+\normalsize
 \begin{itemize}
-    \item two squirmers are too close if $\lvert R_i-R_j\rvert < 3r$, we add $\nabla_{R_{ij}}V_{ij}$
-    \item a squirmers is too close from the boundary if $\lvert R-R_i\rvert < 2^{\frac{1}{6}}r$, we add $\nabla_{R_{i}}V_{i}$
+    \item Steric forces:
+    \begin{itemize}
+        \item if $\lvert r_i-r_j\rvert < 2^{\frac{7}{6}}R$, we add $\nabla_{r_{ij}}V_{ij}$
+        \item if $\lvert B-r_i\rvert < 2^{\frac{1}{6}}R$, we add $\nabla_{r_{i}}V_{i}$
+    \end{itemize}
+    \item Lubrification forces:
+    \begin{itemize}
+        \item if $\lvert r_i-r_j\rvert < 3R$, we add $F_{i(j)\rightarrow i}$ and $\Gamma_{i(j)\rightarrow i}$ to the $i^{th}$ squirmer, and $F_{i(j)\rightarrow j}$ and $\Gamma_{i(j)\rightarrow j}$ to the $j^{th}$
+        \item if $\lvert B-r_i\rvert < 2R$, we add $F_{k\rightarrow i}^w$ and $\Gamma_{k\rightarrow i}^w$
+    \end{itemize}
 \end{itemize}
-\end{frame}
-
-\begin{frame}{Numerical Experiments}
-    \begin{center}
-        First simulation
-        \includegraphics[width=0.8\textwidth]{../../graphs/squirmers_colliding.png}
-    \end{center}
 \end{frame}
 
 \section{Numerical Experiments}
@@ -293,20 +300,163 @@ In the implementation of : \begin{center}
     \end{center}
 \end{frame}
 
-% \begin{frame}{Numerical Experiments}
-%     \begin{center}
-%         Simulation consistent with previous study \cite{Stark}
-%         \includegraphics[width=0.7\textwidth]{../../graphs/simulations/twosquirmerinter/sq2.pi.2.png}
-%     \end{center}
-% \end{frame}
+\subsection{Simulation of two interacting squirmers}
+\begin{frame}{Numerical Experiments}
+    \framesubtitle{Simulation of two interacting squirmers}
+    \begin{center}
+        \textbf{$\theta_2 = \frac{3\pi}{4}$}
+    \end{center}
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{../../graphs/simulations/sim_sq_sq/betam1_5/3pi_4_.png}
+        $\beta = -1.5$
+    \end{minipage}
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{../../graphs/simulations/sim_sq_sq/beta1_5/3pi_4_.png}
+        $\beta = 1.5$
+    \end{minipage}
+\end{frame}
 
-% \begin{frame}{Numerical Experiments}
-%     \begin{center}
-%         Example of divergence in results
-%         \includegraphics[width=0.7\textwidth]{../../graphs/simulations/twosquirmerinter/sq2.3pi.4.png}
-%     \end{center}
-% \end{frame}
+\begin{frame}{Numerical Experiments}
+    \framesubtitle{Simulation of two interacting squirmers}
+    \centering
+    \includegraphics[width=0.5\textwidth]{../../graphs/simulations/sim_sq_sq/beta0/3pi_4_.png}
+    \begin{center}
+        $\beta = 0$
+    \end{center}
+\end{frame}
 
+\begin{frame}{Numerical Experiments}
+    \framesubtitle{Simulation of two interacting squirmers}
+    \begin{center}
+        Two different positive $\beta$ values
+    \end{center}
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{../../graphs/simulations/sim_sq_sq/beta1_5/3pi_4_.png}
+        $\beta = 1.5$
+    \end{minipage}
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{../../graphs/simulations/sim_sq_sq/beta3/3pi_4_.png}
+        $\beta = 3$
+    \end{minipage}
+\end{frame}
+
+\begin{frame}{Numerical Experiments}
+    \framesubtitle{Simulation of two interacting squirmers}
+    \begin{center}
+        Two different negative $\beta$ values
+    \end{center}
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{../../graphs/simulations/sim_sq_sq/betam1_5/3pi_4_.png}
+        $\beta = -1.5$
+    \end{minipage}
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{../../graphs/simulations/sim_sq_sq/betam3/3pi_4_.png}
+        $\beta = -3$
+    \end{minipage}
+\end{frame}
+
+\begin{frame}{Numerical Experiments}
+    \framesubtitle{Simulation of two interacting squirmers}
+    \begin{center}
+        \textbf{$\theta_2 = \pi$}
+    \end{center}
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{../../graphs/simulations/sim_sq_sq/betam1_5/pi_.png}
+        $\beta = -1.5$
+    \end{minipage}
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{../../graphs/simulations/sim_sq_sq/beta1_5/pi_.png}
+        $\beta = 1.5$
+    \end{minipage}
+\end{frame}
+
+\begin{frame}{Numerical Experiments}
+    \framesubtitle{Simulation of two interacting squirmers}
+    \centering
+    \includegraphics[width=0.5\textwidth]{../../graphs/simulations/sim_sq_sq/beta0/pi_.png}
+    \begin{center}
+        $\beta = 0$
+    \end{center}
+\end{frame}
+
+\begin{frame}{Numerical Experiments}
+    \framesubtitle{Simulation of squirmer-border interaction}
+    \begin{center}
+        \textbf{$\theta = -\frac{\pi}{4}$}
+    \end{center}
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{../../graphs/simulations/border/betam1_5/mpi_4.png}
+        $\beta = -1.5$
+    \end{minipage}
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{../../graphs/simulations/border/beta1_5/mpi_4.png}
+        $\beta = 1.5$
+    \end{minipage}
+\end{frame}
+
+\begin{frame}{Numerical Experiments}
+    \framesubtitle{Simulation of squirmer-border interaction}
+    \centering
+    \includegraphics[width=0.5\textwidth]{../../graphs/simulations/border/beta0/mpi_4.png}
+    \begin{center}
+        $\beta = 0$
+    \end{center}
+\end{frame}
+
+\begin{frame}{Numerical Experiments}
+    \framesubtitle{Simulation of squirmer-border interaction}
+    \begin{center}
+        Two different positive $\beta$ values
+    \end{center}
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{../../graphs/simulations/border/beta1_5/mpi_4.png}
+        $\beta = 1.5$
+    \end{minipage}
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{../../graphs/simulations/border/beta3/mpi_4.png}
+        $\beta = 3$
+    \end{minipage}
+\end{frame}
+
+\begin{frame}{Numerical Experiments}
+    \framesubtitle{Simulation of squirmer-border interaction}
+    \begin{center}
+        Two different negative $\beta$ values
+    \end{center}
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{../../graphs/simulations/border/betam1_5/mpi_4.png}
+        $\beta = -1.5$
+    \end{minipage}
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{../../graphs/simulations/border/betam3/mpi_4.png}
+        $\beta = -3$
+    \end{minipage}
+\end{frame}
+
+\section{N squirmers}
+\begin{frame}{N squirmers}
+    \href{https://youtu.be/Uy90m-Cd2AA}{Video of 375 squirmers in a box}\\
+    \href{https://www.youtube.com/watch?v=wKGb-HLe0Ik}{Video of 375 squirmers in a channel}
+\end{frame}
+
+\section{Simulation of 375 squirmers by varying the D parameter}
+\begin{frame}{Simulation of 375 squirmers by varying the D parameter}
+    
+\end{frame}
 
 \section{Conclusion and perspective}
 \begin{frame}{Conclusion and perspective}

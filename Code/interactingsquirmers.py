@@ -116,8 +116,8 @@ class InteractingSquirmers:
         lnEps = np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
         
         #lambda=1
-        F_x = (1/4) * self.v0 * eieijt * (1 + self.beta*eieij) * lnEps * Dx
-        F_y = (9/16) * self.v0 * sommeFz* lnEps * Dy
+        F_x = -(1/4) * self.v0 * eieijt * (1 + self.beta*eieij) * lnEps * Dx
+        F_y = -(9/16) * self.v0 * sommeFz* lnEps * Dy
 
         return F_x, F_y
     
@@ -158,7 +158,7 @@ class InteractingSquirmers:
         lnEps_torque = np.log(np.maximum(self.lnEps_cr,(R-dist-a)/a))
         
         #lambda=1
-        F_x = (1/5) * self.v0 * eieijt * (1 + self.beta * eieij) * lnEps_force * Dx
+        F_x = -(1/5) * self.v0 * eieijt * (1 + self.beta * eieij) * lnEps_force * Dx
         gamma_w = (3/5) * (self.v0/a) * eieijt * (1 + self.beta * eieij) * lnEps_torque
         return F_x, gamma_w
     
@@ -185,7 +185,7 @@ class InteractingSquirmers:
         lnEps_torque = np.log(np.maximum(self.lnEps_cr,(R-dist-a)/a))
         
         #lambda=1
-        F_y = (1/5) * self.v0 * sommeFz * lnEps_force * Dy
+        F_y = -(1/5) * self.v0 * sommeFz * lnEps_force * Dy
         gamma_w = (3/5) * (self.v0/a) * eieijt * (1 + self.beta * eieij) * lnEps_torque
         return F_y, gamma_w
 
@@ -495,7 +495,7 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
         plot_sim_nsquirmers(history, Nx, Ny, N, a, border_plot, False, filename=filename, dir=dir)
     elif choice == 'border':
         a = 0.05
-        betas = [(0, "beta0"), (-1.5, "betam3_2"), (1.5, "beta3_2"), (-3, "betam3"), (3, "beta3")]
+        betas = [(0, "beta0"), (-1.5, "betam1_5"), (1.5, "beta1_5"), (-3, "betam3"), (3, "beta3")]
         xs = [-0.4]
         ys = [-0.7]
         orient = [(-np.pi/6, "mpi_6"), (-np.pi/4, "mpi_4"), (-np.pi/3, "mpi_3"), (-np.pi/2, "mpi_2")] 
@@ -511,7 +511,7 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
                 interact = InteractingSquirmers(N, xs, ys, [pi], a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border)
                 history = interact.loop_time()
 
-                dir = 'graphs/simulations/border/' + labelbeta
+                dir = 'graphs/simulations/border2/' + labelbeta
 
                 plot_sim_nsquirmers(history, Nx, Ny, N, a, border_plot, sim_border, filename=filename, dir=dir)
     elif choice == 'Eo_sim':

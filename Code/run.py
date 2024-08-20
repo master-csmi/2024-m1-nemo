@@ -19,7 +19,7 @@ def main(simulation, N, filename):
     #squirmers' radius
     a = 0.02
     #betas
-    beta = 0
+    beta = 1.5
     #time-step
     dt = 1e-4
     #cut-off for -log
@@ -43,7 +43,7 @@ def main(simulation, N, filename):
     #Distance of particle seen as "Neighbour"
     R = 4*a
     #border defines the simulation, in a chanel(False) or a box(True)
-    border = True
+    border = False
     #border_plot defines if the borders are plotted or not when using 'plot_sim_nsquirmers'
     border_plot = False
 
