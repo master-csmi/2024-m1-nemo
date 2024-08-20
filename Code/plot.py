@@ -75,7 +75,6 @@ def plot_sim_nsquirmers(histories, Nx, Ny, N, a, border_plot, sim_border, filena
 
     for i in range(N):
         plt.plot(squirmer_xs[i], squirmer_ys[i], color=colors[i % len(colors)])
-        last_orient = squirmer_orients[i][0]
         reach_init_y = False
         for j in range(len(squirmer_orients[i])):
             if j>0 and sim_border and not reach_init_y and squirmer_ys[i][j] >= initial_position:
@@ -95,8 +94,8 @@ def plot_sim_nsquirmers(histories, Nx, Ny, N, a, border_plot, sim_border, filena
         plt.scatter(xs[i], ys[i], color=colors[i % len(colors)], s=s)
         plt.quiver(xs[i], ys[i], np.cos(orientations[i]), np.sin(orientations[i]), color='black', scale=scale_arrow, width=w)
 
-    if sim_border != True:
-        plt.scatter([-Nx, Nx], [-Ny, Ny], color='white', alpha=0)
+    # if sim_border != True:
+    #     plt.scatter([-Nx, Nx], [-Ny, Ny], color='white', alpha=0)
 
     plt.axis('equal')
     plt.xlabel('X')

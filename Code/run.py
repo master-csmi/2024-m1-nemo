@@ -1,5 +1,6 @@
 import argparse
 import time
+import numpy as np
 from interactingsquirmers import run
 from simulation import sim_vicsek
 
@@ -26,7 +27,7 @@ def main(simulation, N, filename):
     #amplitude of steric interactions
     Es = 0.05
     #simulation time
-    T = 5
+    T = 10
     #periodicity of outputs
     dt_out = 0.01
     #viscovity parameter
@@ -40,9 +41,9 @@ def main(simulation, N, filename):
     #Angular noise
     no = 1e-2
     #Distance of particle seen as "Neighbour"
-    R = 0.07
+    R = 4*a
     #border defines the simulation, in a chanel(False) or a box(True)
-    border = True
+    border = False
     #border_plot defines if the borders are plotted or not when using 'plot_sim_nsquirmers'
     border_plot = False
 
@@ -59,7 +60,7 @@ def main(simulation, N, filename):
     elif simulation == 'sim_D':
         run('sim_D', N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border, filename, border_plot)
     elif simulation == 'vicsek':
-        sim_vicsek()
+        sim_vicsek(N)
     end_time = time.time()
     print(f"Simulation time : {(end_time - start_time)/60}min")
 

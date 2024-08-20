@@ -58,13 +58,13 @@ class InteractingSquirmers:
         summ_final = np.sqrt(sum1**2 + sum2**2)
         return summ_final
     
-    def is_in_square(self):
+    def is_in_rectangle(self):
         #return True if the squirmers are in the square
         return np.all(abs(self.xs) <= (self.Nx - self.radius)) & np.all(abs(self.ys) <= (self.Ny - self.radius))
 
-    def check_squirmers_square(self):
+    def check_squirmers_rectangle(self):
         #return True if the squirmers have been successfully initialized
-        if (self.is_in_square() == False):
+        if (self.is_in_rectangle() == False):
             raise ValueError("Squirmers must be inside the square")
         return True
     
@@ -116,8 +116,8 @@ class InteractingSquirmers:
         lnEps = np.log(np.maximum(self.lnEps_cr,(dist/a - 2)))
         
         #lambda=1
-        F_x = (1/4) * self.v0 * eieijt * (1 + self.beta*eieij) * lnEps * Dx
-        F_y = (9/16) * self.v0 * sommeFz* lnEps * Dy
+        F_x = -(1/4) * self.v0 * eieijt * (1 + self.beta*eieij) * lnEps * Dx
+        F_y = -(9/16) * self.v0 * sommeFz* lnEps * Dy
 
         return F_x, F_y
     
@@ -158,7 +158,7 @@ class InteractingSquirmers:
         lnEps_torque = np.log(np.maximum(self.lnEps_cr,(R-dist-a)/a))
         
         #lambda=1
-        F_x = (1/5) * self.v0 * eieijt * (1 + self.beta * eieij) * lnEps_force * Dx
+        F_x = -(1/5) * self.v0 * eieijt * (1 + self.beta * eieij) * lnEps_force * Dx
         gamma_w = (3/5) * (self.v0/a) * eieijt * (1 + self.beta * eieij) * lnEps_torque
         return F_x, gamma_w
     
@@ -185,7 +185,7 @@ class InteractingSquirmers:
         lnEps_torque = np.log(np.maximum(self.lnEps_cr,(R-dist-a)/a))
         
         #lambda=1
-        F_y = (1/5) * self.v0 * sommeFz * lnEps_force * Dy
+        F_y = -(1/5) * self.v0 * sommeFz * lnEps_force * Dy
         gamma_w = (3/5) * (self.v0/a) * eieijt * (1 + self.beta * eieij) * lnEps_torque
         return F_y, gamma_w
 
@@ -231,6 +231,7 @@ class InteractingSquirmers:
         """simulates the behaviors of the squirmers
         for T final time with a time-step dt and puts the informations
         in a list with a time-step dt_out, it returns the list"""
+        self.check_squirmers_rectangle()
         self.vector_dists_min = []
         tout = self.dt_out
         a = self.radius
@@ -345,6 +346,20 @@ class InteractingSquirmers:
             self.xs += self.dt*(self.v0*np.cos(self.orientations) - self.Fs_x - self.Fs_pw[0] + self.Fl_x) + np.sqrt(2*self.dt*self.D)*self.ns
             self.ys += self.dt*(self.v0*np.sin(self.orientations) - self.Fs_y - self.Fs_pw[1] + self.Fl_y) + np.sqrt(2*self.dt*self.D)*self.ns
 
+            #Test if forces*dt<v0
+            if self.Fs_x.any() * self.dt > self.v0:
+                raise ValueError("Steric forces * time step > v0")
+            if self.Fs_y.any() * self.dt > self.v0:
+                raise ValueError("Steric forces * time step > v0")
+            if self.Fl_x.any() * self.dt > self.v0:
+                raise ValueError("Lubrification forces * time step > v0")
+            if self.Fl_y.any() * self.dt > self.v0:
+                raise ValueError("Lubrification forces * time step > v0")
+            if self.Fs_pw[0].any() * self.dt > self.v0:
+                raise ValueError("Steric forces * time step > v0")
+            if self.Fs_pw[1].any() * self.dt > self.v0:
+                raise ValueError("Steric forces * time step > v0")
+
             #Borders
             mask_x1 = (self.xs + a) > self.Nx
             mask_x2 = (self.xs - a) < -self.Nx
@@ -406,6 +421,7 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
             'Eo_sim', not used anymore, to test every Eo parameter and plot or make a video
             'border', to simulate the behaviors of a squirmer near a wall, can only plot
             'sim_2_sq', to simulate the behaviors of two squirmers near each other, plot and video possible
+            'sim_D', to simulate the influence of the D parameter on the squirmers' behaviors
     N: number of squirmers
     a: radius of the squirmers
     beta: beta of the squirmers
@@ -479,7 +495,7 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
         plot_sim_nsquirmers(history, Nx, Ny, N, a, border_plot, False, filename=filename, dir=dir)
     elif choice == 'border':
         a = 0.05
-        betas = [(0, "beta0"), (-1.5, "betam3_2"), (1.5, "beta3_2"), (-3, "betam3"), (3, "beta3")]
+        betas = [(0, "beta0"), (-1.5, "betam1_5"), (1.5, "beta1_5"), (-3, "betam3"), (3, "beta3")]
         xs = [-0.4]
         ys = [-0.7]
         orient = [(-np.pi/6, "mpi_6"), (-np.pi/4, "mpi_4"), (-np.pi/3, "mpi_3"), (-np.pi/2, "mpi_2")] 
@@ -495,7 +511,7 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
                 interact = InteractingSquirmers(N, xs, ys, [pi], a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, D, n, no, border)
                 history = interact.loop_time()
 
-                dir = 'graphs/border/' + labelbeta
+                dir = 'graphs/simulations/border2/' + labelbeta
 
                 plot_sim_nsquirmers(history, Nx, Ny, N, a, border_plot, sim_border, filename=filename, dir=dir)
     elif choice == 'Eo_sim':
@@ -531,7 +547,7 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
                         create_video_from_history(history, 1, 1, 2, a, filename=filenameeo, dir=direo)
 
     elif choice == 'sim_2_sq':
-        betas = [(0, "beta0"), (-1.5, "betam3_2"), (1.5, "beta3_2"), (-3, "betam3"), (3, "beta3")]
+        betas = [(0, "beta0"), (-1.5, "betam1_5"), (1.5, "beta1_5"), (-3, "betam3"), (3, "beta3")]
         while True:
             output_type = input("Which type of simulation? (plot/video): ").strip().lower()
             if output_type in ['plot', 'video']:
@@ -582,12 +598,11 @@ def run(choice, N, a, beta, v0, Nx, Ny, dt, dt_out, T, Es, ds, mu, R, lnEps_cr, 
             plot_time(interact, interact.list_polar, "polar_" + filename, 'polar parameter', dir=dir)
             polars.append(interact.list_polar)
 
+            create_video_from_history(history, Nx, Ny, N, a, filename=filename, dir=dir)
+            print(f"Simulation {labeld} done")
             del interact.vector_dists_min
             del interact.list_polar
             del history
             gc.collect()
-
-            print(f"Simulation {labeld} done")
-            # create_video_from_history(history, Nx, Ny, N, a, filename=filename, dir=dir)
         plot_polars(interact, polars, D, dir=dir)
         

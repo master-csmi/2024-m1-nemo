@@ -12,6 +12,15 @@ from squirmer import Squirmer
 class Vicsek_continous:
 
     def __init__(self, N, R, L, v0, beta, radius, T, dt, noise):
+        """N, the number of particles
+            R, the distance between particles that influence the orientation
+            L, the length of a side of the square
+            v0, the initial velocity
+            beta, not used anymore
+            radius, the radius of the particles
+            T, the time of simulation
+            dt, the time step
+            noise, the value of the noises goes from -noise/2 to noise/2"""
         self.N = N
         self.R = R
         self.L = L

@@ -3,12 +3,11 @@ import time
 import matplotlib.pyplot as plt
 from vicsek import Vicsek_continous
 
-def sim_vicsek():
-    N = 20
+def sim_vicsek(N):
     R = 0.25
     L = 10.0
     v0 = 1.0
-    beta = 0.5
+    beta = 0
     radius = 0.1
     T = 1
     dt = 0.1
